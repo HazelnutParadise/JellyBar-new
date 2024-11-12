@@ -6,6 +6,11 @@
     --color-green-sage: #7ea172;
     --color-green-mint: #98ddca;
 
+    /* 灰色系 */
+    --color-gray-light: #f2f5f7;
+    --color-gray-medium: #e0e7e9;
+    --color-gray-dark: #6c7a89;
+
     /* 黃色系 */
     --color-yellow-pale: #fffde7;
     --color-yellow-light: #ffe599;
@@ -42,5 +47,5 @@
 
 body {
     margin: 0;
-    background: var(--color-green-light);
+    background-color: var(--color-gray-medium);
 }

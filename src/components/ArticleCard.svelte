@@ -10,102 +10,156 @@
         default: {
             background: 'var(--color-green-light)',
             borderColor: 'var(--color-green-dark)',
+            textColor: '#333',
+            buttonTextColor: '#fff',
             icon: '📄'
         },
         forest: {
             background: 'var(--color-green-pale)',
             borderColor: 'var(--color-green-sage)',
+            textColor: '#2c3e50',
+            buttonTextColor: '#fff',
             icon: '🌲'
         },
         ocean: {
             background: 'var(--color-blue-light)',
             borderColor: 'var(--color-blue-dark)',
+            textColor: '#1a237e',
+            buttonTextColor: '#fff',
             icon: '🌊'
         },
         sunset: {
             background: 'var(--color-orange-light)',
             borderColor: 'var(--color-orange-dark)',
+            textColor: '#e65100',
+            buttonTextColor: '#fff',
             icon: '🌅'
         },
         lavender: {
             background: 'var(--color-purple-light)',
             borderColor: 'var(--color-purple-deep)',
+            textColor: '#4a148c',
+            buttonTextColor: '#fff',
             icon: '💜'
         },
         sakura: {
             background: 'var(--color-pink-light)',
             borderColor: 'var(--color-pink-dark)',
+            textColor: '#880e4f',
+            buttonTextColor: '#fff',
             icon: '🌸'
         },
         honey: {
             background: 'var(--color-yellow-pale)',
             borderColor: 'var(--color-yellow-dark)',
+            textColor: '#f57f17',
+            buttonTextColor: '#fff',
             icon: '🍯'
         },
         mint: {
             background: 'var(--color-green-mint)',
             borderColor: 'var(--color-green-dark)',
+            textColor: '#004d40',
+            buttonTextColor: '#fff',
             icon: '🌿'
         },
         coral: {
             background: 'var(--color-red-light)',
             borderColor: 'var(--color-red-dark)',
+            textColor: '#b71c1c',
+            buttonTextColor: '#fff',
             icon: '🐚'
         },
         twilight: {
             background: 'var(--color-purple-dusty)',
             borderColor: 'var(--color-purple-deep)',
+            textColor: '#311b92',
+            buttonTextColor: '#fff',
             icon: '🌙'
         },
         sunshine: {
             background: 'var(--color-yellow-light)',
             borderColor: 'var(--color-yellow-amber)',
+            textColor: '#ff6f00',
+            buttonTextColor: '#fff',
             icon: '☀️'
         },
         autumn: {
             background: 'var(--color-orange-medium)',
             borderColor: 'var(--color-orange-dark)',
+            textColor: '#e65100',
+            buttonTextColor: '#fff',
             icon: '🍁'
         },
         spring: {
             background: 'var(--color-green-pale)',
             borderColor: 'var(--color-pink-medium)',
+            textColor: '#2e7d32',
+            buttonTextColor: '#fff',
             icon: '🌺'
         },
         winter: {
             background: 'var(--color-blue-light)',
             borderColor: 'var(--color-purple-dusty)',
+            textColor: '#0d47a1',
+            buttonTextColor: '#fff',
             icon: '❄️'
         },
         desert: {
             background: 'var(--color-yellow-pale)',
             borderColor: 'var(--color-orange-dark)',
+            textColor: '#bf360c',
+            buttonTextColor: '#fff',
             icon: '🏜️'
         },
         galaxy: {
             background: 'var(--color-purple-deep)',
             borderColor: 'var(--color-blue-dark)',
+            textColor: '#e0f7fa',
+            buttonTextColor: '#fff',
             icon: '🌌'
         },
         rose: {
             background: 'var(--color-pink-light)',
             borderColor: 'var(--color-red-dark)',
+            textColor: '#c2185b',
+            buttonTextColor: '#fff',
             icon: '🌹'
         },
         emerald: {
             background: 'var(--color-green-mint)',
             borderColor: 'var(--color-green-sage)',
+            textColor: '#1b5e20',
+            buttonTextColor: '#fff',
             icon: '💎'
         },
         dawn: {
             background: 'var(--color-yellow-pale)',
             borderColor: 'var(--color-pink-medium)',
+            textColor: '#f06292',
+            buttonTextColor: '#fff',
             icon: '🌄'
         },
         dusk: {
             background: 'var(--color-purple-dusty)',
             borderColor: 'var(--color-blue-dark)',
+            textColor: '#ffffff',
+            buttonTextColor: '#ffffff',
             icon: '🌆'
+        },
+        midnight: {
+            background: '#2c3e50',
+            borderColor: '#1c2833',
+            textColor: '#ecf0f1',
+            buttonTextColor: '#ecf0f1',
+            icon: '🌌'
+        },
+        charcoal: {
+            background: '#34495e',
+            borderColor: '#2c3e50',
+            textColor: '#bdc3c7',
+            buttonTextColor: '#bdc3c7',
+            icon: '🌑'
         }
     };
 
@@ -117,6 +171,7 @@
     style="
         background-color: {currentTheme.background};
         border-left-color: {currentTheme.borderColor};
+        color: {currentTheme.textColor};
     "
 >
     <div class="card-icon">
@@ -130,7 +185,7 @@
         <div class="card-footer">
             <button 
                 class="button custom-button"
-                style="background-color: {currentTheme.borderColor}"
+                style="background-color: {currentTheme.borderColor}; color: {currentTheme.buttonTextColor}"
             >
                 {buttonText}
             </button>
@@ -168,13 +223,11 @@
     .card-title {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--color-green-dark);
         margin-bottom: 1rem;
         line-height: 1.3;
     }
 
     .description {
-        color: rgba(74, 74, 74, 0.9);
         line-height: 1.7;
         margin-bottom: 1.5rem;
         flex: 1;
@@ -190,7 +243,6 @@
         border-radius: 8px;
         transition: all 0.3s ease;
         border: none;
-        color: white;
         text-transform: uppercase;
     }
 

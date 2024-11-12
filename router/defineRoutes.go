@@ -8,13 +8,13 @@ import (
 func defineRoutes(r *gin.Engine) {
 	r.GET("/", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/App", map[string]any{
-			"title": "Golte",
+			"title": "繽果吉樂 BAR",
 		})
 	})
 
 	r.GET("/themes", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Themes", map[string]any{
-			"title": "Themes",
+			"title": "主題展示",
 		})
 	})
 }
