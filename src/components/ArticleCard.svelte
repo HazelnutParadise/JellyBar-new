@@ -182,7 +182,7 @@
         <p class="description">
             {description}
         </p>
-        <div class="card-footer">
+        <div class="card-button">
             <button 
                 class="button custom-button"
                 style="background-color: {currentTheme.borderColor}; color: {currentTheme.buttonTextColor}"
@@ -234,7 +234,12 @@
         font-size: 1.1rem;
     }
 
+    .card-button {
+        margin-top: auto;
+    }
+ 
     .custom-button {
+        margin-top: 0;
         width: 100%;
         padding: 1.2rem;
         font-weight: 600;
@@ -271,5 +276,15 @@
         .description {
             font-size: 1rem;
         }
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .card-button {
+        margin-top: auto;
     }
 </style> 
