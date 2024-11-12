@@ -45,7 +45,13 @@
     --color-orange-dark: #f57c00;
 }
 
+@font-face {
+    font-family: "jf-openhuninn";
+    src: url("/assets/jf-openhuninn-2.1.ttf");
+}
+
 body {
     margin: 0;
     background-color: var(--color-gray-medium);
+    font-family: "jf-openhuninn";
 }
