@@ -3,18 +3,41 @@
     --color-green-light: #bee3e1;
     --color-green-dark: #354649;
     --color-green-pale: #d8ebc0;
+    --color-green-sage: #7ea172;
+    --color-green-mint: #98ddca;
 
     /* 黃色系 */
     --color-yellow-pale: #fffde7;
     --color-yellow-light: #ffe599;
     --color-yellow-medium: #ffd54f;
     --color-yellow-dark: #ffbb00;
+    --color-yellow-amber: #ffab00;
 
-    /* 紫色 */
+    /* 紫色系 */
     --color-purple: #d5c7ed;
+    --color-purple-deep: #9575cd;
+    --color-purple-light: #e1bee7;
+    --color-purple-dusty: #b39ddb;
 
-    /* 紅色 */
+    /* 紅色系 */
     --color-red: #e13239;
+    --color-red-light: #ef9a9a;
+    --color-red-dark: #c62828;
+
+    /* 藍色系 */
+    --color-blue-light: #bbdefb;
+    --color-blue-medium: #64b5f6;
+    --color-blue-dark: #1976d2;
+
+    /* 粉色系 */
+    --color-pink-light: #f8bbd0;
+    --color-pink-medium: #f06292;
+    --color-pink-dark: #c2185b;
+
+    /* 橙色系 */
+    --color-orange-light: #ffe0b2;
+    --color-orange-medium: #ffb74d;
+    --color-orange-dark: #f57c00;
 }
 
 body {
