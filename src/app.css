@@ -1,10 +1,23 @@
 :root {
-    --bg-1: #c2cce4;
-    --bg-2: #8ab0ba;
+    /* 綠色系 */
+    --color-green-light: #bee3e1;
+    --color-green-dark: #354649;
+    --color-green-pale: #d8ebc0;
+
+    /* 黃色系 */
+    --color-yellow-pale: #fffde7;
+    --color-yellow-light: #ffe599;
+    --color-yellow-medium: #ffd54f;
+    --color-yellow-dark: #ffbb00;
+
+    /* 紫色 */
+    --color-purple: #d5c7ed;
+
+    /* 紅色 */
+    --color-red: #e13239;
 }
 
 body {
     margin: 0;
-
-    background: var(--bg-1);
+    background: var(--color-green-light);
 }
