@@ -14,7 +14,7 @@
         },
         forest: {
             background: 'var(--color-green-pale)',
-            borderColor: 'var(--color-green-dark)',
+            borderColor: 'var(--color-green-sage)',
             icon: '🌲'
         },
         ocean: {
@@ -26,6 +26,86 @@
             background: 'var(--color-orange-light)',
             borderColor: 'var(--color-orange-dark)',
             icon: '🌅'
+        },
+        lavender: {
+            background: 'var(--color-purple-light)',
+            borderColor: 'var(--color-purple-deep)',
+            icon: '💜'
+        },
+        sakura: {
+            background: 'var(--color-pink-light)',
+            borderColor: 'var(--color-pink-dark)',
+            icon: '🌸'
+        },
+        honey: {
+            background: 'var(--color-yellow-pale)',
+            borderColor: 'var(--color-yellow-dark)',
+            icon: '🍯'
+        },
+        mint: {
+            background: 'var(--color-green-mint)',
+            borderColor: 'var(--color-green-dark)',
+            icon: '🌿'
+        },
+        coral: {
+            background: 'var(--color-red-light)',
+            borderColor: 'var(--color-red-dark)',
+            icon: '🐚'
+        },
+        twilight: {
+            background: 'var(--color-purple-dusty)',
+            borderColor: 'var(--color-purple-deep)',
+            icon: '🌙'
+        },
+        sunshine: {
+            background: 'var(--color-yellow-light)',
+            borderColor: 'var(--color-yellow-amber)',
+            icon: '☀️'
+        },
+        autumn: {
+            background: 'var(--color-orange-medium)',
+            borderColor: 'var(--color-orange-dark)',
+            icon: '🍁'
+        },
+        spring: {
+            background: 'var(--color-green-pale)',
+            borderColor: 'var(--color-pink-medium)',
+            icon: '🌺'
+        },
+        winter: {
+            background: 'var(--color-blue-light)',
+            borderColor: 'var(--color-purple-dusty)',
+            icon: '❄️'
+        },
+        desert: {
+            background: 'var(--color-yellow-pale)',
+            borderColor: 'var(--color-orange-dark)',
+            icon: '🏜️'
+        },
+        galaxy: {
+            background: 'var(--color-purple-deep)',
+            borderColor: 'var(--color-blue-dark)',
+            icon: '🌌'
+        },
+        rose: {
+            background: 'var(--color-pink-light)',
+            borderColor: 'var(--color-red-dark)',
+            icon: '🌹'
+        },
+        emerald: {
+            background: 'var(--color-green-mint)',
+            borderColor: 'var(--color-green-sage)',
+            icon: '💎'
+        },
+        dawn: {
+            background: 'var(--color-yellow-pale)',
+            borderColor: 'var(--color-pink-medium)',
+            icon: '🌄'
+        },
+        dusk: {
+            background: 'var(--color-purple-dusty)',
+            borderColor: 'var(--color-blue-dark)',
+            icon: '🌆'
         }
     };
 
