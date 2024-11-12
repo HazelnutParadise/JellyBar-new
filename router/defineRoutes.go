@@ -11,4 +11,10 @@ func defineRoutes(r *gin.Engine) {
 			"title": "Golte",
 		})
 	})
+
+	r.GET("/themes", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Themes", map[string]any{
+			"title": "Themes",
+		})
+	})
 }
