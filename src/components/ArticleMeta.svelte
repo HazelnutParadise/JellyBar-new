@@ -17,13 +17,19 @@
                 <a href="/authors/{author.id}" class="author-name">{author.name}</a>
             </div>
         </div>
-        <div class="publish-date">
-            <h6>發布於</h6>
-            <p>{formatDate(article.publishDate)}</p>
-        </div>
-        <div class="last-updated">
-            <h6>最後更新於</h6>
-            <p>{formatDate(article.updateDate)}</p>
+        <div class="article-meta columns is-mobile is-multiline">
+            <div class="column is-6-mobile">
+                <div class="publish-date">
+                    <h6>發布於</h6>
+                    <p>{formatDate(article.publishDate)}</p>
+                </div>
+            </div>
+            <div class="column is-6-mobile">
+                <div class="last-updated">
+                    <h6>最後更新於</h6>
+                    <p>{formatDate(article.updateDate)}</p>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -3,7 +3,7 @@
     import Navbar from '../components/Navbar.svelte'
     import setTitle from '../js/setTitle.js'
     import Breadcrumbs from '../components/Breadcrumbs.svelte'
-    import AuthorInfo from '../components/AuthorInfo.svelte'
+    import ArticleMeta from '../components/ArticleMeta.svelte'
     import SideBar from '../components/SideBar.svelte'
     export let siteName
     export let article = {}
@@ -26,7 +26,7 @@
                     <p class="description">{article.description}</p>
                 </div>
                 <div class="column is-12-mobile is-3-tablet author-column">
-                    <AuthorInfo {author} {article} />
+                    <ArticleMeta {author} {article} />
                 </div>
             </div>
         </div>
