@@ -3,6 +3,7 @@
     import Navbar from '../components/Navbar.svelte';
     import '../app.css';
     
+    export let siteName = '';
     export let title = '';
     export let description = '';
     export let icon = '';
@@ -13,7 +14,7 @@
 </script> 
  
 <section class="category-page">
-    <Navbar />
+    <Navbar {siteName} />
     <div class="category-header" style="--theme: {theme || 'var(--theme-subtle)'}">
         <div class="container">
             <h1 class="title">
