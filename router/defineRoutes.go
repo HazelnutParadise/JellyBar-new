@@ -47,12 +47,11 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"title":       "文章分類",
 			"description": "test",
 			"icon":        "🍋",
-			"articles": []obj.Article{
+			"categories": []obj.Category{
 				{
 					Title:       "test",
 					Description: "test",
 					Url:         "test",
-					Category:    "test",
 					Icon:        "🍋",
 					ButtonText:  "test",
 				},
@@ -60,7 +59,6 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 					Title:       "test2",
 					Description: "test2",
 					Url:         "test2",
-					Category:    "test",
 					Icon:        "🍋",
 					ButtonText:  "test",
 				},

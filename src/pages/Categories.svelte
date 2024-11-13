@@ -9,7 +9,7 @@
     export let title = '';
     export let description = '';
     export let icon = '';
-    export let articles = [];
+    export let categories = [];
     export let theme = 'default';
 
     setTitle(title, siteName)
@@ -31,8 +31,8 @@
 
     <div class="container articles-container">
         <div class="articles-grid">
-            {#each articles as article}
-                <ArticleCard title={article.title} description={article.description} {theme} url={article.url} icon={article.icon} buttonText={article.buttonText} />
+            {#each categories as category}
+                <ArticleCard title={category.title} description={category.description} {theme} url={category.url} icon={category.icon} buttonText={category.buttonText} />
             {/each}
         </div>
     </div>
