@@ -42,6 +42,25 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Category", map[string]any{
 			"siteName": siteName,
 			"title":    "文章分類",
+			"category": map[string]any{
+				"name":        "test",
+				"description": "test",
+				"icon":        "🍋",
+			},
+			"articles": []map[string]any{
+				{
+					"title":       "test",
+					"description": "test",
+					"theme":       "forest",
+					"url":         "test",
+				},
+				{
+					"title":       "test2",
+					"description": "test2",
+					"theme":       "default",
+					"url":         "test2",
+				},
+			},
 		})
 	})
 

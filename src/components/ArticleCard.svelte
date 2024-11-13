@@ -5,6 +5,7 @@
     export let customTheme = null;
     export let icon = null;
     export let buttonText = '查看更多';
+    export let url = null;
 
     const themes = {
         default: {
@@ -186,6 +187,9 @@
             <button 
                 class="button custom-button"
                 style="background-color: {currentTheme.borderColor}; color: {currentTheme.buttonTextColor}"
+                on:click={() => {
+                    window.location.href = url;
+                }}
             >
                 {buttonText}
             </button>

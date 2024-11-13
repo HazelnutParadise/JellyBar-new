@@ -3,6 +3,8 @@
     
     export let category = {};
     export let articles = [];
+
+    console.log(articles);
 </script>
 
 <section class="category-page">
@@ -21,7 +23,7 @@
     <div class="container articles-container">
         <div class="articles-grid">
             {#each articles as article}
-                <ArticleCard {article} />
+                <ArticleCard title={article.title} description={article.description} theme={article.theme} url={article.url} icon={article.icon} buttonText={article.buttonText} />
             {/each}
         </div>
     </div>
