@@ -38,8 +38,8 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
 			"siteName": siteName,
 			"article": obj.Article{
-				Title:       "test",
-				Description: "testDescription",
+				Title:       "testjkjkknknknknkmnmknkmnmnjmnmnmnmnmnmnmnjbhjbjefbcjebnfjebnfjewnejcejcnjencnjencjencejjncnecejcnejnncejncjncjenej",
+				Description: "testDescriptionlłlll	lłll	llllllllllllllknkjnknknknknknknknknkn",
 				PublishDate: time.Now().Format(time.DateOnly),
 				Content:     "<h1>testContent</h1>",
 				Url:         "test",

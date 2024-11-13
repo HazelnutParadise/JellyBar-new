@@ -14,38 +14,49 @@
 
 <Navbar {siteName} />
 <div class="article-page">
-    <div class="container">
-        <div class="article-layout">
-            <main class="article-main">
-                <header class="article-header">
-                    <Breadcrumbs {category} {article} />
-                    <h1 class="title">{article.title}</h1>
-                    <p class="description">{article.description}</p>
-                </header>
-
-                {#if article.coverImage}
-                    <div class="cover-image">
-                        <img src={article.coverImage} alt={article.title} />
-                    </div>
-                {/if}
-
-                <div class="article-content">
-                    {@html article.content}
-                </div>
-            </main>
-
-            <aside class="article-side">
-                <ArticleMeta {author} {article} {category} />
-            </aside>
+    <header class="article-header">
+        <div class="header-content">
+            <div class="title-container">
+                <Breadcrumbs {category} {article} />
+                <h1 class="title">{article.title}</h1>
+                <p class="description">{article.description}</p>
+            </div>
+            <ArticleMeta {author} {article} {category} />
         </div>
+    </header>
+
+    <div class="container">
+        <main class="article-main">
+            {#if article.coverImage}
+                <div class="cover-image">
+                    <img src={article.coverImage} alt={article.title} />
+                </div>
+            {/if}
+
+            <div class="article-content">
+                {@html article.content}
+            </div>
+        </main>
     </div>
 </div>
 
 <style>
     .article-page {
-        padding: 2rem 0;
         background-color: var(--bg-primary);
         min-height: 100vh;
+    }
+
+    .article-header {
+        width: 100%;
+        background-color: var(--support-purple);
+        padding: 5rem 1rem;
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     .container {
@@ -54,21 +65,9 @@
         padding: 0 1rem;
     }
 
-    .article-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 300px;
-        gap: 3rem;
-        margin-top: 2rem;
-        align-items: start;
-    }
-
     .article-main {
-        min-width: 0; /* 防止內容溢出 */
-    }
-
-    .article-header {
-        margin-bottom: 2rem;
-        background-color: var(--support-purple-muted);
+        min-width: 0;
+        margin-top: 2rem;
     }
 
     .title {
@@ -76,6 +75,9 @@
         font-weight: 800;
         margin-bottom: 1rem;
         line-height: 1.2;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
 
     .description {
@@ -99,29 +101,19 @@
         vertical-align: middle;
     }
 
+    .title-container {
+        flex: 1;
+    }
+
     .article-content {
         font-size: 1.1rem;
         line-height: 1.8;
     }
 
-    .article-side {
-        position: sticky;
-    }
-
-    @media (max-width: 1024px) {
-        .article-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .article-side {
-            position: static;
-            margin-top: 2rem;
-        }
-    }
-
     @media (max-width: 768px) {
-        .article-page {
-            padding: 1rem 0;
+        .header-content {
+           display: flex;
+           flex-direction: column;
         }
 
         .title {
