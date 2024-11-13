@@ -103,8 +103,8 @@
         color: var(--interactive-dark-hover);
     }
 
-    .publish-date {
-        font-size: 0.9rem;
+    .publish-date, .last-updated {
+        font-size: 1rem;
         color: var(--text-secondary);
     }
 
