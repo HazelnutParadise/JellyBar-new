@@ -7,7 +7,7 @@
     <a href="/" class="crumb">首頁</a>
     <span class="separator">/</span>
     {#if category && category.title}
-        <a href="/categories/{category.id}" class="crumb">{category.title}</a>
+        <a href="/categories/{category.id}" class="crumb category">{category.title}</a>
         <span class="separator">/</span>
     {/if}
     {#if article && article.title}
@@ -26,16 +26,28 @@
     }
 
     .crumb {
-        color: var(--text-secondary);
+        color: var(--text-primary);
         text-decoration: none;
         max-width: 300px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        font-weight: 500;
+        font-size: 1rem;
     }
 
     .crumb:not(.current):hover {
         text-decoration: underline;
+    }
+
+    .category {
+        color: var(--interactive-dark);
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    .category:hover {
+        color: var(--interactive-dark-hover);
     }
 
     .current {

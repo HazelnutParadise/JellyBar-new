@@ -5,6 +5,7 @@
     import Breadcrumbs from '../components/Breadcrumbs.svelte'
     import ArticleMeta from '../components/ArticleMeta.svelte'
     import SideBar from '../components/SideBar.svelte'
+    import Footer from '../components/Footer.svelte'
     export let siteName
     export let article = {}
     export let author = {}
@@ -32,27 +33,30 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="columns is-mobile is-multiline content-wrapper">
-            <main class="column is-12-mobile is-8-tablet article-main">
-                {#if article.coverImage}
-                    <div class="cover-image">
-                        <img src={article.coverImage} alt={article.title} />
-                    </div>
-                {/if}
+    <div class="main-content">
+        <div class="container">
+            <div class="columns is-mobile is-multiline content-wrapper">
+                <main class="column is-12-mobile is-8-tablet article-main">
+                    {#if article.coverImage}
+                        <div class="cover-image">
+                            <img src={article.coverImage} alt={article.title} />
+                        </div>
+                    {/if}
 
-                <div class="article-content">
-                    {@html article.content}
-                </div>
-            </main>
-            <aside class="column is-12-mobile is-4-tablet sidebar-column">
-                <div class="sidebar-wrapper">
-                    <SideBar {categories} {latestArticles} />
-                </div>
-            </aside>
+                    <div class="article-content">
+                        {@html article.content}
+                    </div>
+                </main>
+                <aside class="column is-12-mobile is-4-tablet sidebar-column">
+                    <div class="sidebar-wrapper">
+                        <SideBar {categories} {latestArticles} />
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
 </div>
+<Footer {siteName} />
 
 <style>
     .article-page {
@@ -60,20 +64,14 @@
         min-height: 100vh;
         width: 100%;
         overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
-    .article-header {
-        width: 100%;
-        background-color: var(--support-purple);
-        padding: 0 1rem;
-        padding-top: 120px;
-        padding-bottom: 0;
-    }
-
-    .header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 1rem;
+    .main-content {
+        flex: 1;
+        display: flex;
+        background: linear-gradient(to right, var(--bg-primary) calc(100% - 300px), var(--bg-secondary) 300px);
     }
 
     .container {
@@ -82,6 +80,8 @@
         margin: 0 auto;
         padding: 0 1rem;
         box-sizing: border-box;
+        display: flex;
+        flex: 1;
     }
 
     .content-wrapper {
@@ -89,16 +89,17 @@
         margin: 0;
         width: 100%;
         display: flex;
-        flex-wrap: wrap;
+        flex: 1;
     }
 
     .article-main {
         min-width: 0;
-        margin-top: 2rem;
+        margin-top: 1rem;
         padding-right: 2rem;
         box-sizing: border-box;
         flex: 1;
         max-width: calc(100% - 300px);
+        background-color: var(--bg-primary);
     }
 
     .title {
@@ -118,7 +119,6 @@
     .article-content {
         font-size: 1.1rem;
         line-height: 1.8;
-        min-height: 500px;
         width: 100%;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -132,22 +132,35 @@
 
     .sidebar-column {
         margin-top: 2rem;
+        margin-bottom: 2rem;
         padding: 0;
         box-sizing: border-box;
         width: 300px !important;
         flex: none !important;
+        background-color: var(--bg-secondary);
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 200px);
     }
 
     .sidebar-wrapper {
         width: 300px;
         position: sticky;
         top: 2rem;
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
     @media (max-width: 768px) {
-        .author-column {
-            margin-top: 2rem;
-            padding: 1rem 0;
+        .main-content {
+            background: var(--bg-primary);
+        }
+
+        .content-wrapper {
+            flex-direction: column;
         }
 
         .article-main {
@@ -157,12 +170,15 @@
 
         .sidebar-column {
             width: 100% !important;
-            padding: 0 1rem;
+            /* padding: 0 1rem; */
+            background-color: var(--bg-secondary);
+            min-height: auto;
         }
 
         .sidebar-wrapper {
             width: 100%;
             position: static;
+            height: auto;
         }
     }
 
@@ -170,6 +186,7 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 1rem;
+        padding-top: 20px;
     }
 
     .article-header {

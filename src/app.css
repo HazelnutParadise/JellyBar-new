@@ -33,6 +33,7 @@
     --interactive-light: #bbdefb;   /* 原 blue-light */
     --interactive-medium: #64b5f6;  /* 原 blue-medium */
     --interactive-dark: #1976d2;    /* 原 blue-dark */
+    --interactive-dark-hover: #1565c0;
 
     /* 裝飾色系 */
     --decorative-pink-light: #f8bbd0;

@@ -99,6 +99,10 @@
         margin-bottom: 0.25rem;
     }
 
+    .author-name:hover {
+        color: var(--interactive-dark-hover);
+    }
+
     .publish-date {
         font-size: 0.9rem;
         color: var(--text-secondary);

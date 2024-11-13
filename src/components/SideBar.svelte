@@ -29,7 +29,9 @@
         background-color: var(--theme-subtle);
         padding: 20px;
         border-radius: 12px;
-        min-width: 300px;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
     }
 
     .sidebar-section {
