@@ -94,7 +94,7 @@
         display: block;
         font-size: 1.1rem;
         font-weight: 600;
-        color: var(--theme-primary);
+        color: var(--interactive-dark);
         text-decoration: none;
         margin-bottom: 0.25rem;
     }
