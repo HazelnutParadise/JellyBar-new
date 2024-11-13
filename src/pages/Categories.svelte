@@ -3,24 +3,26 @@
     import Navbar from '../components/Navbar.svelte';
     import '../app.css';
     
-    export let category = {};
+    export let title = '';
+    export let description = '';
+    export let icon = '';
     export let articles = [];
     export let theme = 'default';
 
     console.log(articles);
 </script> 
-
+ 
 <section class="category-page">
     <Navbar />
-    <div class="category-header" style="--theme: {category.theme || 'var(--theme-subtle)'}">
+    <div class="category-header" style="--theme: {theme || 'var(--theme-subtle)'}">
         <div class="container">
             <h1 class="title">
-                {#if category.icon}
-                    <span class="icon">{category.icon}</span>
+                {#if icon}
+                    <span class="icon">{icon}</span>
                 {/if}
-                {category.name}
+                {title}
             </h1>
-            <p class="description">{category.description}</p>
+            <p class="description">{description}</p>
         </div>
     </div>
 
