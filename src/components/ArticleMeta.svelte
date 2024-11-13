@@ -10,11 +10,13 @@
 
 <div class="article-sidebar">
     <div class="sidebar-section author-section">
-        <h3>作者資訊</h3>
-        <div class="author-info">
-            <img src={author.avatar} alt={author.name} class="avatar" />
-            <div class="author-details">
-                <a href="/authors/{author.id}" class="author-name">{author.name}</a>
+        <div class="author-info-wrapper">
+            <h3>作者資訊</h3>
+            <div class="author-info">
+                <img src={author.avatar} alt={author.name} class="avatar" />
+                <div class="author-details">
+                    <a href="/authors/{author.id}" class="author-name">{author.name}</a>
+                </div>
             </div>
         </div>
         <div class="article-meta columns is-mobile is-multiline">
@@ -55,13 +57,19 @@
         border-radius: 12px;
     }
 
+    .author-info-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
     .sidebar-section:last-child {
         margin-bottom: 0;
     }
 
     .sidebar-section h3 {
         font-size: 1.1rem;
-        margin-bottom: 1rem;
         color: var(--text-primary);
     }
 
