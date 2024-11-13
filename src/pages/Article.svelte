@@ -3,120 +3,100 @@
     import Navbar from '../components/Navbar.svelte';
     import setTitle from '../js/setTitle.js';
     import Breadcrumbs from '../components/Breadcrumbs.svelte';
-
+    import ArticleMeta from '../components/ArticleMeta.svelte';
     export let siteName;
     export let article = {};
     export let author = {};
     export let category = {};
 
     setTitle(article.title, siteName);
-    function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('zh-TW');
-    }
 </script>
 
-<Breadcrumbs {category} {article} />
 <Navbar {siteName} />
-<article class="article-page">
-    {#if article.coverImage}
-        <div class="cover-image">
-            <img src={article.coverImage} alt={article.title} />
-        </div>
-    {/if}
-
+<div class="article-page">
     <div class="container">
-        <header class="article-header">
-            <div class="meta">
-                <Breadcrumbs {category} {article} />
-                <time datetime={article.publishDate}>
-                    {formatDate(article.publishDate)}
-                </time>
-            </div>
-            
-            <h1 class="title">{article.title}</h1>
-            <p class="description">{article.description}</p>
+        <div class="article-layout">
+            <main class="article-main">
+                <header class="article-header">
+                    <Breadcrumbs {category} {article} />
+                    <h1 class="title">{article.title}</h1>
+                    <p class="description">{article.description}</p>
+                </header>
 
-            <div class="author-info">
-                <img src={author.avatar} alt={author.name} class="avatar" />
-                <a href="/authors/{author.id}" class="author-name">
-                    {author.name}
-                </a>
-            </div>
-        </header>
+                {#if article.coverImage}
+                    <div class="cover-image">
+                        <img src={article.coverImage} alt={article.title} />
+                    </div>
+                {/if}
 
-        <div class="article-content">
-            {@html article.content}
+                <div class="article-content">
+                    {@html article.content}
+                </div>
+            </main>
+
+            <aside class="article-side">
+                <ArticleMeta {author} {article} {category} />
+            </aside>
         </div>
-
-        {#if article.tags && article.tags.length}
-            <div class="tags">
-                {#each article.tags as tag}
-                    <span class="tag">#{tag}</span>
-                {/each}
-            </div>
-        {/if}
     </div>
-</article>
+</div>
 
 <style>
     .article-page {
-        padding-top: 2rem;
+        padding: 2rem 0;
+        background-color: var(--bg-primary);
+        min-height: 100vh;
     }
 
-    .cover-image {
-        width: 100%;
-        height: 400px;
-        overflow: hidden;
-        margin-bottom: 2rem;
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
     }
 
-    .cover-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    .article-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 3rem;
+        margin-top: 2rem;
+        align-items: start;
+    }
+
+    .article-main {
+        min-width: 0; /* 防止內容溢出 */
     }
 
     .article-header {
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
+        background-color: var(--support-purple-muted);
     }
-
-    .meta {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        justify-content: space-between;
-        color: var(--text-secondary);
-    }
-
 
     .title {
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 1rem;
+        line-height: 1.2;
     }
 
     .description {
         font-size: 1.2rem;
         color: var(--text-secondary);
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
     }
 
-    .author-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
+    .cover-image {
+        width: 100%;
+        margin: 2rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-    }
-
-    .author-name {
-        color: var(--theme-primary);
-        text-decoration: none;
-        font-weight: 600;
+    .cover-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        vertical-align: middle;
     }
 
     .article-content {
@@ -124,31 +104,33 @@
         line-height: 1.8;
     }
 
-    .tags {
-        margin-top: 2rem;
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
+    .article-side {
+        position: sticky;
     }
 
-    .tag {
-        padding: 0.25rem 0.75rem;
-        background-color: var(--bg-secondary);
-        border-radius: 999px;
-        font-size: 0.9rem;
+    @media (max-width: 1024px) {
+        .article-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .article-side {
+            position: static;
+            margin-top: 2rem;
+        }
     }
 
     @media (max-width: 768px) {
-        .cover-image {
-            height: 250px;
+        .article-page {
+            padding: 1rem 0;
         }
 
         .title {
             font-size: 2rem;
         }
 
-        .container {
-            padding: 0 1rem;
+        .cover-image {
+            margin: 1.5rem 0;
+            border-radius: 8px;
         }
     }
 </style> 
