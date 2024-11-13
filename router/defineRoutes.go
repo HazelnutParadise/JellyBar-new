@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"time"
 
 	"jellybar/obj"
 
@@ -38,10 +39,15 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"siteName": siteName,
 			"article": obj.Article{
 				Title:       "test",
-				Description: "test",
+				Description: "testDescription",
+				Category:    "testCategory",
+				PublishDate: time.Now().Format(time.DateOnly),
 				Url:         "test",
 				Icon:        "🍋",
 				ButtonText:  "test",
+			},
+			"author": obj.Author{
+				Name: "testAuthor",
 			},
 		})
 	})

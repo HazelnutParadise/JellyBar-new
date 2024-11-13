@@ -2,12 +2,12 @@
     import '../app.css';
     import Navbar from '../components/Navbar.svelte';
     import setTitle from '../js/setTitle.js';
+    import Breadcrumbs from '../components/Breadcrumbs.svelte';
 
     export let siteName;
     export let article = {};
     export let author = {};
     export let category = {};
-
 
     setTitle(article.title, siteName);
     function formatDate(dateString) {
@@ -15,6 +15,7 @@
     }
 </script>
 
+<Breadcrumbs {category} {article} />
 <Navbar {siteName} />
 <article class="article-page">
     {#if article.coverImage}
