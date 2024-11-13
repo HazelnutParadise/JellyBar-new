@@ -13,11 +13,9 @@
     <div class="navbar-menu">
         <div class="navbar-end">
             <a class="navbar-item" href="/">歡迎光臨 Jelly Bar！</a>
-            <a class="navbar-item" href="/rust">Rust繁中簡學！</a>
             <a class="navbar-item" href="/articles">所有文章</a>
             <a class="navbar-item" href="/about">我的帳號</a>
             <a class="navbar-item" href="/about">關於</a>
-            <a class="navbar-item" href="/fans">檸果織粉絲</a>
             <a class="navbar-item" href="/themes">主題展示</a>
             <a class="navbar-item" href="/author">作者帳號</a>
             <a class="navbar-item" href="/article">文章</a>

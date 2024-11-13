@@ -1,13 +1,21 @@
 <script>
+    import '../app.css';
+    import Navbar from '../components/Navbar.svelte';
+    import setTitle from '../js/setTitle.js';
+
+    export let siteName;
     export let article = {};
     export let author = {};
     export let category = {};
 
+
+    setTitle(article.title, siteName);
     function formatDate(dateString) {
         return new Date(dateString).toLocaleDateString('zh-TW');
     }
 </script>
 
+<Navbar {siteName} />
 <article class="article-page">
     {#if article.coverImage}
         <div class="cover-image">
