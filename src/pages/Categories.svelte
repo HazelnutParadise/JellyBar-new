@@ -1,7 +1,9 @@
 <script>
     import ArticleCard from '../components/ArticleCard.svelte';
     import Navbar from '../components/Navbar.svelte';
+    import Footer from '../components/Footer.svelte';
     import '../app.css';
+    import setTitle from '../js/setTitle.js';
     
     export let siteName = '';
     export let title = '';
@@ -10,12 +12,12 @@
     export let articles = [];
     export let theme = 'default';
 
-    console.log(articles);
+    setTitle(title, siteName)
 </script> 
  
-<section class="category-page">
+<section class="categories-page">
     <Navbar {siteName} />
-    <div class="category-header" style="--theme: {theme || 'var(--theme-subtle)'}">
+    <div class="categories-header" style="--theme: var(--theme-subtle)">
         <div class="container">
             <h1 class="title">
                 {#if icon}
@@ -35,13 +37,14 @@
         </div>
     </div>
 </section>
+<Footer {siteName} />
 
 <style>
-    .category-page {
+    .categories-page {
         padding-top: 2rem;
     }
 
-    .category-header {
+    .categories-header {
         background-color: var(--theme);
         padding: 4rem 2rem;
         margin-bottom: 2rem;
@@ -76,7 +79,7 @@
     }
 
     @media (max-width: 768px) {
-        .category-header {
+        .categories-header {
             padding: 2rem 1rem;
         }
 

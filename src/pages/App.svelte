@@ -1,11 +1,13 @@
 <script>
-    import { onMount } from 'svelte';
+    import setTitle from '../js/setTitle.js';
     export let siteName;
     export let title;
     import '../app.css';
     import ArticleGrid from '../components/ArticleGrid.svelte';
     import Navbar from '../components/Navbar.svelte';
     import Footer from '../components/Footer.svelte';
+
+    setTitle(title, siteName); 
 
     const articles = [
         {
@@ -35,10 +37,6 @@
             icon: '🍋'
         }
     ];
-
-    onMount(() => {
-        document.title = `${title} | ${siteName}`;
-    });
 </script>
 
 <Navbar {siteName} />
