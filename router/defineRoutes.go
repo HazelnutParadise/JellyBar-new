@@ -6,6 +6,8 @@ import (
 	"io/fs"
 	"net/http"
 
+	"jellybar/obj"
+
 	"github.com/gin-gonic/gin"
 	"github.com/nichady/golte"
 )
@@ -41,24 +43,29 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 	r.GET("/category", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Category", map[string]any{
 			"siteName": siteName,
+			"theme":    "sunset",
 			"title":    "文章分類",
 			"category": map[string]any{
 				"name":        "test",
 				"description": "test",
 				"icon":        "🍋",
 			},
-			"articles": []map[string]any{
+			"articles": []obj.Article{
 				{
-					"title":       "test",
-					"description": "test",
-					"theme":       "forest",
-					"url":         "test",
+					Title:       "test",
+					Description: "test",
+					Url:         "test",
+					Category:    "test",
+					Icon:        "🍋",
+					ButtonText:  "test",
 				},
 				{
-					"title":       "test2",
-					"description": "test2",
-					"theme":       "default",
-					"url":         "test2",
+					Title:       "test2",
+					Description: "test2",
+					Url:         "test2",
+					Category:    "test",
+					Icon:        "🍋",
+					ButtonText:  "test",
 				},
 			},
 		})

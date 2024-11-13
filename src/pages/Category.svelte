@@ -1,15 +1,18 @@
 <script>
     import ArticleCard from '../components/ArticleCard.svelte';
+    import Navbar from '../components/Navbar.svelte';
     import '../app.css';
     
     export let category = {};
     export let articles = [];
+    export let theme = 'default';
 
     console.log(articles);
 </script> 
 
 <section class="category-page">
-    <div class="category-header" style="--theme: {category.theme || 'var(--theme-primary)'}">
+    <Navbar />
+    <div class="category-header" style="--theme: {category.theme || 'var(--theme-subtle)'}">
         <div class="container">
             <h1 class="title">
                 {#if category.icon}
@@ -24,7 +27,7 @@
     <div class="container articles-container">
         <div class="articles-grid">
             {#each articles as article}
-                <ArticleCard title={article.title} description={article.description} theme={article.theme} url={article.url} icon={article.icon} buttonText={article.buttonText} />
+                <ArticleCard title={article.title} description={article.description} {theme} url={article.url} icon={article.icon} buttonText={article.buttonText} />
             {/each}
         </div>
     </div>
@@ -46,6 +49,7 @@
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 1rem;
+        color: var(--theme-primary);
     }
 
     .icon {
@@ -55,6 +59,7 @@
     .description {
         font-size: 1.2rem;
         opacity: 0.9;
+        color: var(--neutral-dark);
     }
 
     .articles-container {
