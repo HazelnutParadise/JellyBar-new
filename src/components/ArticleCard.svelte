@@ -8,141 +8,141 @@
 
     const themes = {
         default: {
-            background: 'var(--color-green-light)',
-            borderColor: 'var(--color-green-dark)',
+            background: 'var(--theme-secondary)',
+            borderColor: 'var(--theme-primary)',
             textColor: '#333',
             buttonTextColor: '#fff',
             icon: '📄'
         },
         forest: {
-            background: 'var(--color-green-pale)',
-            borderColor: 'var(--color-green-sage)',
+            background: 'var(--theme-tertiary)',
+            borderColor: 'var(--theme-accent)',
             textColor: '#2c3e50',
             buttonTextColor: '#fff',
             icon: '🌲'
         },
         ocean: {
-            background: 'var(--color-blue-light)',
-            borderColor: 'var(--color-blue-dark)',
+            background: 'var(--interactive-light)',
+            borderColor: 'var(--interactive-dark)',
             textColor: '#1a237e',
             buttonTextColor: '#fff',
             icon: '🌊'
         },
         sunset: {
-            background: 'var(--color-orange-light)',
-            borderColor: 'var(--color-orange-dark)',
+            background: 'var(--decorative-orange-light)',
+            borderColor: 'var(--decorative-orange-dark)',
             textColor: '#e65100',
             buttonTextColor: '#fff',
             icon: '🌅'
         },
         lavender: {
-            background: 'var(--color-purple-light)',
-            borderColor: 'var(--color-purple-deep)',
+            background: 'var(--support-purple-light)',
+            borderColor: 'var(--support-purple-dark)',
             textColor: '#4a148c',
             buttonTextColor: '#fff',
             icon: '💜'
         },
         sakura: {
-            background: 'var(--color-pink-light)',
-            borderColor: 'var(--color-pink-dark)',
+            background: 'var(--decorative-pink-light)',
+            borderColor: 'var(--decorative-pink-dark)',
             textColor: '#880e4f',
             buttonTextColor: '#fff',
             icon: '🌸'
         },
         honey: {
-            background: 'var(--color-yellow-pale)',
-            borderColor: 'var(--color-yellow-dark)',
+            background: 'var(--accent-soft)',
+            borderColor: 'var(--accent-dark)',
             textColor: '#f57f17',
             buttonTextColor: '#fff',
             icon: '🍯'
         },
         mint: {
-            background: 'var(--color-green-mint)',
-            borderColor: 'var(--color-green-dark)',
+            background: 'var(--theme-subtle)',
+            borderColor: 'var(--theme-primary)',
             textColor: '#004d40',
             buttonTextColor: '#fff',
             icon: '🌿'
         },
         coral: {
-            background: 'var(--color-red-light)',
-            borderColor: 'var(--color-red-dark)',
+            background: 'var(--state-error-light)',
+            borderColor: 'var(--state-error-dark)',
             textColor: '#b71c1c',
             buttonTextColor: '#fff',
             icon: '🐚'
         },
         twilight: {
-            background: 'var(--color-purple-dusty)',
-            borderColor: 'var(--color-purple-deep)',
+            background: 'var(--support-purple-muted)',
+            borderColor: 'var(--support-purple-dark)',
             textColor: '#311b92',
             buttonTextColor: '#fff',
             icon: '🌙'
         },
         sunshine: {
-            background: 'var(--color-yellow-light)',
-            borderColor: 'var(--color-yellow-amber)',
+            background: 'var(--accent-light)',
+            borderColor: 'var(--accent-strong)',
             textColor: '#ff6f00',
             buttonTextColor: '#fff',
             icon: '☀️'
         },
         autumn: {
-            background: 'var(--color-orange-medium)',
-            borderColor: 'var(--color-orange-dark)',
+            background: 'var(--decorative-orange-medium)',
+            borderColor: 'var(--decorative-orange-dark)',
             textColor: '#e65100',
             buttonTextColor: '#fff',
             icon: '🍁'
         },
         spring: {
-            background: 'var(--color-green-pale)',
-            borderColor: 'var(--color-pink-medium)',
+            background: 'var(--theme-tertiary)',
+            borderColor: 'var(--decorative-pink-medium)',
             textColor: '#2e7d32',
             buttonTextColor: '#fff',
             icon: '🌺'
         },
         winter: {
-            background: 'var(--color-blue-light)',
-            borderColor: 'var(--color-purple-dusty)',
+            background: 'var(--interactive-light)',
+            borderColor: 'var(--support-purple-muted)',
             textColor: '#0d47a1',
             buttonTextColor: '#fff',
             icon: '❄️'
         },
         desert: {
-            background: 'var(--color-yellow-pale)',
-            borderColor: 'var(--color-orange-dark)',
+            background: 'var(--accent-soft)',
+            borderColor: 'var(--decorative-orange-dark)',
             textColor: '#bf360c',
             buttonTextColor: '#fff',
             icon: '🏜️'
         },
         galaxy: {
-            background: 'var(--color-purple-deep)',
-            borderColor: 'var(--color-blue-dark)',
+            background: 'var(--support-purple-dark)',
+            borderColor: 'var(--interactive-dark)',
             textColor: '#e0f7fa',
             buttonTextColor: '#fff',
             icon: '🌌'
         },
         rose: {
-            background: 'var(--color-pink-light)',
-            borderColor: 'var(--color-red-dark)',
+            background: 'var(--decorative-pink-light)',
+            borderColor: 'var(--state-error-dark)',
             textColor: '#c2185b',
             buttonTextColor: '#fff',
             icon: '🌹'
         },
         emerald: {
-            background: 'var(--color-green-mint)',
-            borderColor: 'var(--color-green-sage)',
+            background: 'var(--theme-subtle)',
+            borderColor: 'var(--theme-accent)',
             textColor: '#1b5e20',
             buttonTextColor: '#fff',
             icon: '💎'
         },
         dawn: {
-            background: 'var(--color-yellow-pale)',
-            borderColor: 'var(--color-pink-medium)',
+            background: 'var(--accent-soft)',
+            borderColor: 'var(--decorative-pink-medium)',
             textColor: '#f06292',
             buttonTextColor: '#fff',
             icon: '🌄'
         },
         dusk: {
-            background: 'var(--color-purple-dusty)',
-            borderColor: 'var(--color-blue-dark)',
+            background: 'var(--support-purple-muted)',
+            borderColor: 'var(--interactive-dark)',
             textColor: '#ffffff',
             buttonTextColor: '#ffffff',
             icon: '🌆'

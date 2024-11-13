@@ -1,48 +1,47 @@
 :root {
-    /* 綠色系 */
-    --color-green-light: #bee3e1;
-    --color-green-dark: #354649;
-    --color-green-pale: #d8ebc0;
-    --color-green-sage: #7ea172;
-    --color-green-mint: #98ddca;
+    /* 主題色系 */
+    --theme-primary: #354649;      /* 原 green-dark */
+    --theme-secondary: #bee3e1;    /* 原 green-light */
+    --theme-tertiary: #d8ebc0;     /* 原 green-pale */
+    --theme-accent: #7ea172;       /* 原 green-sage */
+    --theme-subtle: #98ddca;       /* 原 green-mint */
 
-    /* 灰色系 */
-    --color-gray-light: #f2f5f7;
-    --color-gray-medium: #e0e7e9;
-    --color-gray-dark: #6c7a89;
+    /* 中性色系 */
+    --neutral-light: #f2f5f7;      /* 原 gray-light */
+    --neutral-medium: #e0e7e9;     /* 原 gray-medium */
+    --neutral-dark: #6c7a89;       /* 原 gray-dark */
 
-    /* 黃色系 */
-    --color-yellow-pale: #fffde7;
-    --color-yellow-light: #ffe599;
-    --color-yellow-medium: #ffd54f;
-    --color-yellow-dark: #ffbb00;
-    --color-yellow-amber: #ffab00;
+    /* 強調色系 */
+    --accent-soft: #fffde7;        /* 原 yellow-pale */
+    --accent-light: #ffe599;       /* 原 yellow-light */
+    --accent-medium: #ffd54f;      /* 原 yellow-medium */
+    --accent-dark: #ffbb00;        /* 原 yellow-dark */
+    --accent-strong: #ffab00;      /* 原 yellow-amber */
 
-    /* 紫色系 */
-    --color-purple: #d5c7ed;
-    --color-purple-deep: #9575cd;
-    --color-purple-light: #e1bee7;
-    --color-purple-dusty: #b39ddb;
+    /* 輔助色系 */
+    --support-purple: #d5c7ed;
+    --support-purple-dark: #9575cd;
+    --support-purple-light: #e1bee7;
+    --support-purple-muted: #b39ddb;
 
-    /* 紅色系 */
-    --color-red: #e13239;
-    --color-red-light: #ef9a9a;
-    --color-red-dark: #c62828;
+    /* 狀態色系 */
+    --state-error: #e13239;        /* 原 red */
+    --state-error-light: #ef9a9a;
+    --state-error-dark: #c62828;
 
-    /* 藍色系 */
-    --color-blue-light: #bbdefb;
-    --color-blue-medium: #64b5f6;
-    --color-blue-dark: #1976d2;
+    /* 互動色系 */
+    --interactive-light: #bbdefb;   /* 原 blue-light */
+    --interactive-medium: #64b5f6;  /* 原 blue-medium */
+    --interactive-dark: #1976d2;    /* 原 blue-dark */
 
-    /* 粉色系 */
-    --color-pink-light: #f8bbd0;
-    --color-pink-medium: #f06292;
-    --color-pink-dark: #c2185b;
+    /* 裝飾色系 */
+    --decorative-pink-light: #f8bbd0;
+    --decorative-pink-medium: #f06292;
+    --decorative-pink-dark: #c2185b;
 
-    /* 橙色系 */
-    --color-orange-light: #ffe0b2;
-    --color-orange-medium: #ffb74d;
-    --color-orange-dark: #f57c00;
+    --decorative-orange-light: #ffe0b2;
+    --decorative-orange-medium: #ffb74d;
+    --decorative-orange-dark: #f57c00;
 }
 
 @font-face {
@@ -52,6 +51,6 @@
 
 body {
     margin: 0;
-    background-color: var(--color-gray-medium);
+    background-color: var(--neutral-medium);
     font-family: "jf-openhuninn";
 }

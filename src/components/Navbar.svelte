@@ -36,7 +36,7 @@
     }
 
     .navbar-item {
-        color: var(--color-green-light) !important;
+        color: var(--theme-secondary) !important;
         font-weight: 500;
         transition: all 0.3s ease;
     }

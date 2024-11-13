@@ -41,7 +41,7 @@
     .main-title {
         font-size: 3rem;
         font-weight: 800;
-        color: var(--color-green-dark);
+        color: var(--theme-primary);
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         letter-spacing: 1px;
         animation: fadeInDown 1s ease-out;

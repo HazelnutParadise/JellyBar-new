@@ -27,8 +27,8 @@
             title: "檸果織粉絲",
             description: "檸果織粉絲 是 繪果吉樂 BAR 的粉絲專頁。",
             customTheme: {
-                background: 'var(--color-yellow-light)',
-                borderColor: 'var(--color-yellow-dark)',
+                background: 'var(--accent-light)',
+                borderColor: 'var(--accent-dark)',
             },
             icon: '🍋'
         }
@@ -58,7 +58,7 @@
     .main-title {
         font-size: 3rem;
         font-weight: 800;
-        color: var(--color-green-dark);
+        color: var(--theme-primary);
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         letter-spacing: 1px;
         animation: fadeInDown 1s ease-out;
