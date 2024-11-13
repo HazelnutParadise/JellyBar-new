@@ -42,6 +42,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				Description: "testDescription",
 				Category:    "testCategory",
 				PublishDate: time.Now().Format(time.DateOnly),
+				Content:     "<h1>testContent</h1>",
 				Url:         "test",
 				Icon:        "🍋",
 				ButtonText:  "test",
