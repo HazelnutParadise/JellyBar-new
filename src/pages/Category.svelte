@@ -1,11 +1,12 @@
 <script>
     import ArticleCard from '../components/ArticleCard.svelte';
+    import '../app.css';
     
     export let category = {};
     export let articles = [];
 
     console.log(articles);
-</script>
+</script> 
 
 <section class="category-page">
     <div class="category-header" style="--theme: {category.theme || 'var(--theme-primary)'}">
