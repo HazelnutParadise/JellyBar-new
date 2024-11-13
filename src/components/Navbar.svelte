@@ -1,18 +1,18 @@
 <script>
-    export let title;
+    export let siteName;
 </script>
 
 <nav class="navbar is-fixed-top">
     <div class="navbar-brand">
         <a class="navbar-item brand-logo" href="/">
             <img src="/logo.png" alt="Logo" height="28">
-            <span class="ml-2 has-text-weight-bold">{title}</span>
+            <span class="ml-2 has-text-weight-bold">{siteName}</span>
         </a>
     </div>
     
     <div class="navbar-menu">
         <div class="navbar-end">
-            <a class="navbar-item" href="/welcome">歡迎光臨 Jelly Bar！</a>
+            <a class="navbar-item" href="/">歡迎光臨 Jelly Bar！</a>
             <a class="navbar-item" href="/rust">Rust繁中簡學！</a>
             <a class="navbar-item" href="/articles">所有文章</a>
             <a class="navbar-item" href="/about">我的帳號</a>

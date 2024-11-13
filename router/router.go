@@ -10,7 +10,7 @@ import (
 	"github.com/nichady/golte"
 )
 
-func GinRouter(assetsDir embed.FS) http.Handler {
+func GinRouter(siteName string, assetsDir embed.FS) http.Handler {
 	// Gin doesn't have a function to wrap middleware, so define our own
 	wrapMiddleware := func(middleware func(http.Handler) http.Handler) func(ctx *gin.Context) {
 		return func(ctx *gin.Context) {
@@ -36,7 +36,7 @@ func GinRouter(assetsDir embed.FS) http.Handler {
 	// register the main Golte middleware
 	r.Use(wrapMiddleware(build.Golte))
 
-	defineRoutes(r, assetsDir)
+	defineRoutes(r, siteName, assetsDir)
 
 	return r
 }

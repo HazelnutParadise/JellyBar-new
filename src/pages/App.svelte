@@ -1,5 +1,6 @@
 <script>
-    export let title = "繪果吉樂 BAR";
+    export let siteName;
+    export let title;
     import '../app.css';
     import ArticleGrid from '../components/ArticleGrid.svelte';
     import Navbar from '../components/Navbar.svelte';
@@ -34,7 +35,7 @@
     ];
 </script>
 
-<Navbar {title} />
+<Navbar {siteName} />
 
 <section class="hero is-fullheight main-content">
     <div class="hero-body">
