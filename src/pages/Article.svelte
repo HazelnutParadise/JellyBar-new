@@ -1,42 +1,56 @@
 <script>
-    import '../app.css';
-    import Navbar from '../components/Navbar.svelte';
-    import setTitle from '../js/setTitle.js';
-    import Breadcrumbs from '../components/Breadcrumbs.svelte';
-    import ArticleMeta from '../components/ArticleMeta.svelte';
-    export let siteName;
-    export let article = {};
-    export let author = {};
-    export let category = {};
+    import '../app.css'
+    import Navbar from '../components/Navbar.svelte'
+    import setTitle from '../js/setTitle.js'
+    import Breadcrumbs from '../components/Breadcrumbs.svelte'
+    import AuthorInfo from '../components/AuthorInfo.svelte'
+    import SideBar from '../components/SideBar.svelte'
+    export let siteName
+    export let article = {}
+    export let author = {}
+    export let category = {}
+    export let categories = []
+    export let latestArticles = []
 
-    setTitle(article.title, siteName);
+    setTitle(article.title, siteName)
 </script>
 
 <Navbar {siteName} />
 <div class="article-page">
     <header class="article-header">
         <div class="header-content">
-            <div class="title-container">
-                <Breadcrumbs {category} {article} />
-                <h1 class="title">{article.title}</h1>
-                <p class="description">{article.description}</p>
+            <div class="columns is-mobile is-multiline">
+                <div class="column is-12-mobile is-9-tablet">
+                    <Breadcrumbs {category} {article} />
+                    <h1 class="title">{article.title}</h1>
+                    <p class="description">{article.description}</p>
+                </div>
+                <div class="column is-12-mobile is-3-tablet author-column">
+                    <AuthorInfo {author} {article} />
+                </div>
             </div>
-            <ArticleMeta {author} {article} {category} />
         </div>
     </header>
 
     <div class="container">
-        <main class="article-main">
-            {#if article.coverImage}
-                <div class="cover-image">
-                    <img src={article.coverImage} alt={article.title} />
-                </div>
-            {/if}
+        <div class="columns is-mobile is-multiline content-wrapper">
+            <main class="column is-12-mobile is-9-tablet article-main">
+                {#if article.coverImage}
+                    <div class="cover-image">
+                        <img src={article.coverImage} alt={article.title} />
+                    </div>
+                {/if}
 
-            <div class="article-content">
-                {@html article.content}
-            </div>
-        </main>
+                <div class="article-content">
+                    {@html article.content}
+                </div>
+            </main>
+            <aside class="column is-12-mobile is-3-tablet sidebar-column">
+                <div class="sidebar-wrapper">
+                    <SideBar {categories} {latestArticles} />
+                </div>
+            </aside>
+        </div>
     </div>
 </div>
 
@@ -44,36 +58,48 @@
     .article-page {
         background-color: var(--bg-primary);
         min-height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
     }
 
     .article-header {
         width: 100%;
         background-color: var(--support-purple);
-        padding: 5rem 1rem;
+        padding: 0 1rem;
+        padding-top: 120px;
+        padding-bottom: 0;
     }
 
     .header-content {
         max-width: 1200px;
         margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
+        padding: 0 1rem;
     }
 
     .container {
+        width: 100%;
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+    .content-wrapper {
+        position: relative;
+        margin: 0;
+        width: 100%;
     }
 
     .article-main {
         min-width: 0;
         margin-top: 2rem;
+        padding-right: 2rem;
+        box-sizing: border-box;
     }
 
     .title {
         font-size: 2.5rem;
         font-weight: 800;
-        margin-bottom: 1rem;
         line-height: 1.2;
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -83,46 +109,68 @@
     .description {
         font-size: 1.2rem;
         color: var(--text-secondary);
-        margin-bottom: 1.5rem;
-    }
-
-    .cover-image {
-        width: 100%;
-        margin: 2rem 0;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .cover-image img {
-        width: 100%;
-        height: auto;
-        display: block;
-        vertical-align: middle;
-    }
-
-    .title-container {
-        flex: 1;
     }
 
     .article-content {
         font-size: 1.1rem;
         line-height: 1.8;
+        min-height: 500px;
+        width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .author-column {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .sidebar-column {
+        margin-top: 2rem;
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+    .sidebar-wrapper {
+        width: 100%;
+        overflow-x: hidden;
     }
 
     @media (max-width: 768px) {
-        .header-content {
-           display: flex;
-           flex-direction: column;
+        .author-column {
+            margin-top: 2rem;
+            padding: 1rem 0;
         }
 
-        .title {
-            font-size: 2rem;
+        .article-main {
+            padding-right: 0;
         }
 
-        .cover-image {
-            margin: 1.5rem 0;
-            border-radius: 8px;
+        .sidebar-column {
+            padding: 0 1rem;
+        }
+
+        .article-content {
+            padding: 0 1rem;
+        }
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .article-header {
+        width: 100%;
+        background-color: var(--support-purple);
+        padding: 120px 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .article-header {
+            padding: 60px 1rem;
         }
     }
 </style> 

@@ -1,14 +1,13 @@
 <script>
     export let author = {};
     export let article = {};
-    export let category = {};
     
     function formatDate(dateString) {
         return new Date(dateString).toLocaleDateString('zh-TW');
     }
 </script>
 
-<aside class="article-sidebar">
+<div class="article-sidebar">
     <div class="sidebar-section author-section">
         <h3>作者資訊</h3>
         <div class="author-info">
@@ -16,6 +15,7 @@
             <div class="author-details">
                 <a href="/authors/{author.id}" class="author-name">{author.name}</a>
                 <p class="publish-date">發布於 {formatDate(article.publishDate)}</p>
+                <p class="last-updated">最後更新於 {formatDate(article.updateDate)}</p>
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
             </div>
         </div>
     {/if}
-</aside>
+</div>
 
 <style>
     .article-sidebar {
@@ -40,10 +40,6 @@
         padding: 1.5rem;
         background: var(--bg-secondary);
         border-radius: 12px;
-    }
-
-    .sidebar-section {
-        margin-bottom: 2rem;
     }
 
     .sidebar-section:last-child {

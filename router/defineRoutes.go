@@ -41,6 +41,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				Title:       "testjkjkknknknknkmnmknkmnmnjmnmnmnmnmnmnmnjbhjbjefbcjebnfjebnfjewnejcejcnjencnjencjencejjncnecejcnejnncejncjncjenej",
 				Description: "testDescriptionlłlll	lłll	llllllllllllllknkjnknknknknknknknknkn",
 				PublishDate: time.Now().Format(time.DateOnly),
+				UpdateDate:  time.Now().Format(time.DateOnly),
 				Content:     "<h1>testContent</h1>",
 				Url:         "test",
 				Icon:        "🍋",
@@ -51,6 +52,16 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			},
 			"author": obj.Author{
 				Name: "testAuthor",
+			},
+			"categories": []obj.Category{
+				{
+					Title: "testCategory",
+				},
+			},
+			"latestArticles": []obj.Article{
+				{
+					Title: "testLatestArticle",
+				},
 			},
 		})
 	})
