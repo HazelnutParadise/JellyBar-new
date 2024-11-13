@@ -34,7 +34,7 @@
 
     <div class="container">
         <div class="columns is-mobile is-multiline content-wrapper">
-            <main class="column is-12-mobile is-9-tablet article-main">
+            <main class="column is-12-mobile is-8-tablet article-main">
                 {#if article.coverImage}
                     <div class="cover-image">
                         <img src={article.coverImage} alt={article.title} />
@@ -45,7 +45,7 @@
                     {@html article.content}
                 </div>
             </main>
-            <aside class="column is-12-mobile is-3-tablet sidebar-column">
+            <aside class="column is-12-mobile is-4-tablet sidebar-column">
                 <div class="sidebar-wrapper">
                     <SideBar {categories} {latestArticles} />
                 </div>
@@ -88,6 +88,8 @@
         position: relative;
         margin: 0;
         width: 100%;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     .article-main {
@@ -95,6 +97,8 @@
         margin-top: 2rem;
         padding-right: 2rem;
         box-sizing: border-box;
+        flex: 1;
+        max-width: calc(100% - 300px);
     }
 
     .title {
@@ -128,13 +132,16 @@
 
     .sidebar-column {
         margin-top: 2rem;
-        padding: 0 1rem;
+        padding: 0;
         box-sizing: border-box;
+        width: 300px !important;
+        flex: none !important;
     }
 
     .sidebar-wrapper {
-        width: 100%;
-        overflow-x: hidden;
+        width: 300px;
+        position: sticky;
+        top: 2rem;
     }
 
     @media (max-width: 768px) {
@@ -145,14 +152,17 @@
 
         .article-main {
             padding-right: 0;
+            max-width: 100%;
         }
 
         .sidebar-column {
+            width: 100% !important;
             padding: 0 1rem;
         }
 
-        .article-content {
-            padding: 0 1rem;
+        .sidebar-wrapper {
+            width: 100%;
+            position: static;
         }
     }
 

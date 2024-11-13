@@ -29,7 +29,7 @@
         background-color: var(--theme-subtle);
         padding: 20px;
         border-radius: 12px;
-        width: 300px;
+        min-width: 300px;
     }
 
     .sidebar-section {

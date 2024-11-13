@@ -1,9 +1,10 @@
 <script>
-    export let author = {};
-    export let article = {};
+    import "../app.css"
+    export let author = {}
+    export let article = {}
     
     function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('zh-TW');
+        return new Date(dateString).toLocaleDateString('zh-TW')
     }
 </script>
 
@@ -14,9 +15,15 @@
             <img src={author.avatar} alt={author.name} class="avatar" />
             <div class="author-details">
                 <a href="/authors/{author.id}" class="author-name">{author.name}</a>
-                <p class="publish-date">發布於 {formatDate(article.publishDate)}</p>
-                <p class="last-updated">最後更新於 {formatDate(article.updateDate)}</p>
             </div>
+        </div>
+        <div class="publish-date">
+            <h6>發布於</h6>
+            <p>{formatDate(article.publishDate)}</p>
+        </div>
+        <div class="last-updated">
+            <h6>最後更新於</h6>
+            <p>{formatDate(article.updateDate)}</p>
         </div>
     </div>
 
