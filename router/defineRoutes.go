@@ -22,7 +22,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 	r.GET("/", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/App", map[string]any{
 			"siteName": siteName,
-			"title":    "繽果吉樂 BAR",
+			"title":    "歡迎光臨 Jelly Bar",
 		})
 	})
 

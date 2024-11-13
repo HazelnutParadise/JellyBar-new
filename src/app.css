@@ -54,3 +54,12 @@ body {
     background-color: var(--neutral-medium);
     font-family: "jf-openhuninn";
 }
+
+a {
+    color: var(--accent-strong); 
+}
+
+a:hover {
+    color: var(--accent-medium);
+    text-decoration: underline;
+}

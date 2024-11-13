@@ -47,5 +47,6 @@
     .navbar-item:hover {
         background-color: rgba(255, 255, 255, 0.1) !important;
         transform: translateY(-2px);
+        text-decoration: none;
     }
 </style> 

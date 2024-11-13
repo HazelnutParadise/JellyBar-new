@@ -1,9 +1,11 @@
 <script>
+    import { onMount } from 'svelte';
     export let siteName;
     export let title;
     import '../app.css';
     import ArticleGrid from '../components/ArticleGrid.svelte';
     import Navbar from '../components/Navbar.svelte';
+    import Footer from '../components/Footer.svelte';
 
     const articles = [
         {
@@ -33,6 +35,10 @@
             icon: '🍋'
         }
     ];
+
+    onMount(() => {
+        document.title = `${title} | ${siteName}`;
+    });
 </script>
 
 <Navbar {siteName} />
@@ -48,6 +54,8 @@
         </div>
     </div>
 </section>
+
+<Footer {siteName} />
 
 <style>
     /* 主要內容區域 */
