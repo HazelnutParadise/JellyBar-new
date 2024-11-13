@@ -64,13 +64,15 @@
     }
 
     .sidebar-section a {
-        color: var(--text-secondary);
+        color: var(--interactive-dark);
+        font-weight: 500;
+        font-size: 1.1rem;
         text-decoration: none;
         transition: color 0.2s;
     }
 
     .sidebar-section a:hover {
-        color: var(--primary);
+        color: var(--interactive-dark-hover);
     }
 
     @media (max-width: 768px) {
