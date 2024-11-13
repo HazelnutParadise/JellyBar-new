@@ -5,7 +5,7 @@
 
 <nav class="breadcrumbs">
     <a href="/">首頁</a> &gt; 
-    <a href="/categories/{category.id}">{category.name}</a> &gt; 
+    <a href="/categories/{category.id}">{category.title}</a> &gt; 
     <span>{article.title}</span>
 </nav>
 

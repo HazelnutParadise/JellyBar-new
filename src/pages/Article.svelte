@@ -27,9 +27,7 @@
     <div class="container">
         <header class="article-header">
             <div class="meta">
-                <a href="/categories/{category.id}" class="category-link">
-                    {category.name}
-                </a>
+                <Breadcrumbs {category} {article} />
                 <time datetime={article.publishDate}>
                     {formatDate(article.publishDate)}
                 </time>
@@ -86,13 +84,10 @@
         display: flex;
         gap: 1rem;
         margin-bottom: 1rem;
+        justify-content: space-between;
         color: var(--text-secondary);
     }
 
-    .category-link {
-        color: var(--theme-primary);
-        text-decoration: none;
-    }
 
     .title {
         font-size: 3rem;

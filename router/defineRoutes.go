@@ -40,12 +40,14 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"article": obj.Article{
 				Title:       "test",
 				Description: "testDescription",
-				Category:    "testCategory",
 				PublishDate: time.Now().Format(time.DateOnly),
 				Content:     "<h1>testContent</h1>",
 				Url:         "test",
 				Icon:        "🍋",
 				ButtonText:  "test",
+			},
+			"category": obj.Category{
+				Title: "testCategory",
 			},
 			"author": obj.Author{
 				Name: "testAuthor",
