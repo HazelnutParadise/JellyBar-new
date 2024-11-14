@@ -11,8 +11,8 @@ export default (()=>{
         author: {
             header: 'var(--support-purple-dark)',
             text: 'var(--neutral-light)',
-            title: 'var(--support-purple-light)',
-            theme: 'twilight',
+            title: 'var(--interactive-light)',
+            theme: 'winter',
             icon: '👤'
         },
         search: {
