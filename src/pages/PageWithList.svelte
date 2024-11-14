@@ -5,46 +5,21 @@
     import Footer from '../components/Footer.svelte'
     import setTitle from '../js/setTitle.js'
     import SideBar from '../components/SideBar.svelte'
+    import pageConfigs from '../js/pageStyle.js'
     
+    export let siteName
     export let data = {}
-    let siteName = data.siteName
+   
     let title = data.title
     let description = data.description
-    let icon = data.icon
     let items = data.items
     let pageType = data.pageType
+    let icon = pageConfigs[pageType].icon
     let htmlContent = data.htmlContent
     let categories = data.categories
     let latestArticles = data.latestArticles
 
-    // 定義主題配色映射
-    const pageConfigs = {
-        categories: {
-            header: 'var(--theme-subtle)',
-            text: 'var(--neutral-dark)',
-            title: 'var(--theme-primary)',
-            theme: 'sunset'
-        },
-        primary: {
-            header: 'var(--theme-primary)',
-            text: 'var(--neutral-light)',
-            title: 'var(--neutral-lighter)',
-            theme: 'sunset'
-        },
-        secondary: {
-            header: 'var(--theme-secondary)',
-            text: 'var(--neutral-light)',
-            title: 'var(--neutral-lighter)',
-            theme: 'sunset'
-        },
-        dark: {
-            header: 'var(--neutral-darker)',
-            text: 'var(--neutral-light)',
-            title: 'var(--theme-accent)',
-            theme: 'sunset'
-        }
-    }
-
+    
     // 獲取當前主題配置
     $: currentTheme = pageConfigs[pageType] || pageConfigs.categories
 
@@ -102,7 +77,7 @@
 
     .categories-header {
         background-color: var(--header-bg);
-        padding: 4rem 2rem;
+        padding: 4rem;
         padding-top: 4rem;
         margin-bottom: 2rem;
     }
@@ -229,6 +204,9 @@
 
         .title {
             font-size: 2rem;
+            text-align: center;
+        }
+        .description {
             text-align: center;
         }
     }
