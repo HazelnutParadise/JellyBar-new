@@ -52,13 +52,13 @@
         box-sizing: border-box;
         position: sticky;
         top: 2rem;
-        width: 200px;
+        width: 300px;
         padding: 1.75rem;
         background: linear-gradient(145deg, var(--decorative-orange-light), #fff8f3);
         border-radius: 16px;
         /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); */
         border: 1px solid rgba(255, 255, 255, 0.8);
-        margin: 0 20px;
+        margin: 0;
     }
 
     .sidebar-section {

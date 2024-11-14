@@ -193,12 +193,14 @@
     .article-header {
         width: 100%;
         background-color: var(--theme-tertiary);
-        padding: 120px 1rem;
+        padding: 40px 1rem;
+        padding-top: 120px;
     }
 
     @media (max-width: 768px) {
         .article-header {
-            padding: 60px 1rem;
+            padding: 40px 1rem;
+            padding-top: 60px;
         }
     }
 </style> 

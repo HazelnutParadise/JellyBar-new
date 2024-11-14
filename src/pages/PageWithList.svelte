@@ -13,6 +13,8 @@
     export let items = []
     export let theme = 'default'
     export let htmlContent = ''
+    export let categories = []
+    export let latestArticles = []
 
     setTitle(title, siteName)
 </script> 
@@ -49,7 +51,7 @@
                 </main>
                 <aside class="column is-12-mobile is-4-tablet sidebar-column">
                     <div class="sidebar-wrapper">
-                        <SideBar />
+                        <SideBar {categories} {latestArticles} />
                     </div>
                 </aside>
             </div>
@@ -66,6 +68,7 @@
     .categories-header {
         background-color: var(--theme);
         padding: 4rem 2rem;
+        padding-top: 4rem;
         margin-bottom: 2rem;
         color: white;
     }
@@ -187,11 +190,12 @@
         }
 
         .categories-header {
-            padding: 2rem 1rem;
+            padding: 3rem 1rem;
         }
 
         .title {
             font-size: 2rem;
+            text-align: center;
         }
     }
 </style> 

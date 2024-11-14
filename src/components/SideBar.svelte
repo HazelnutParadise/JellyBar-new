@@ -29,7 +29,7 @@
         background-color: var(--theme-subtle);
         padding: 20px;
         border-radius: 12px;
-        width: 100%;
+        width: 300px;
         height: 100%;
         box-sizing: border-box;
     }
