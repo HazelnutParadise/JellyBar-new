@@ -1,8 +1,9 @@
 <script>
-    import ArticleCard from '../components/ArticleCard.svelte';
+    import "../app.css"
+    import ArticleCard from '../components/ArticleCard.svelte'
     
-    export let author = {};
-    export let articles = [];
+    export let author = {}
+    export let articles = []
 </script>
 
 <section class="author-page">

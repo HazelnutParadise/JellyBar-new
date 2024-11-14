@@ -183,15 +183,16 @@
     }
 
     .header-content {
-        max-width: 1200px;
+        /* max-width: 1200px; */
         margin: 0 auto;
         padding: 0 1rem;
         padding-top: 20px;
+        margin-left: 2rem;
     }
 
     .article-header {
         width: 100%;
-        background-color: var(--support-purple);
+        background-color: var(--theme-tertiary);
         padding: 120px 1rem;
     }
 
