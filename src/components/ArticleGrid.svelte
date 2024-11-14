@@ -1,6 +1,6 @@
 <script>
-    import ArticleCard from './ArticleCard.svelte';
-    export let articles;
+    import ArticleCard from './ArticleCard.svelte'
+    export let articles
 </script>
 
 <div class="articles-grid">

@@ -1,11 +1,12 @@
 <script>
-    export let title;
-    export let description;
-    export let theme = 'default';
-    export let customTheme = null;
-    export let icon = null;
-    export let buttonText = '查看更多';
-    export let url = null;
+    export let title = null
+    export let name = null
+    export let description = null
+    export let theme = 'default'
+    export let customTheme = null
+    export let icon = null
+    export let buttonText = '查看更多'
+    export let url = null
 
     const themes = {
         default: {
@@ -162,9 +163,9 @@
             buttonTextColor: '#bdc3c7',
             icon: '🌑'
         }
-    };
+    }
 
-    $: currentTheme = customTheme || themes[theme] || themes.default;
+    $: currentTheme = customTheme || themes[theme] || themes.default
 </script>
 
 <div 
@@ -179,7 +180,7 @@
         {icon || currentTheme.icon}
     </div>
     <div class="card-content">
-        <h2 class="card-title">{title}</h2>
+        <h2 class="card-title">{title || name}</h2>
         <p class="description">
             {description}
         </p>

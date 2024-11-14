@@ -54,7 +54,7 @@
                     <div class="articles-container">
                         <div class="articles-grid">
                             {#each items as item}
-                                <ArticleCard title={item.title} description={item.description} theme={currentTheme.theme} url={item.url} icon={item.icon} buttonText={item.buttonText} />
+                                <ArticleCard title={item.title} description={item.description} theme={currentTheme.theme} url={item.url} icon={item.icon} buttonText={item.buttonText} name={item.name} />
                             {/each}
                         </div>
                     </div>

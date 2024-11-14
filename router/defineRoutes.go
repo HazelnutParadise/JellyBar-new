@@ -100,9 +100,18 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 	})
 
 	r.GET("/author", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Author", map[string]any{
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
-			"title":    "作者帳號",
+			"data": map[string]any{
+				"pageType": "author",
+				"title":    "作者帳號",
+				"items": []obj.Author{
+					{
+						Name:        "testAuthor",
+						Description: "testDescription",
+					},
+				},
+			},
 		})
 	})
 }
