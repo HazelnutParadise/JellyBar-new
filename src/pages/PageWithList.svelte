@@ -11,17 +11,51 @@
     export let description = ''
     export let icon = ''
     export let items = []
-    export let theme = 'default'
+    export let pageType = 'categories'
     export let htmlContent = ''
     export let categories = []
     export let latestArticles = []
+
+    // 定義主題配色映射
+    const pageConfigs = {
+        categories: {
+            header: 'var(--theme-subtle)',
+            text: 'var(--neutral-dark)',
+            title: 'var(--theme-primary)',
+            theme: 'sunset'
+        },
+        primary: {
+            header: 'var(--theme-primary)',
+            text: 'var(--neutral-light)',
+            title: 'var(--neutral-lighter)',
+            theme: 'sunset'
+        },
+        secondary: {
+            header: 'var(--theme-secondary)',
+            text: 'var(--neutral-light)',
+            title: 'var(--neutral-lighter)',
+            theme: 'sunset'
+        },
+        dark: {
+            header: 'var(--neutral-darker)',
+            text: 'var(--neutral-light)',
+            title: 'var(--theme-accent)',
+            theme: 'sunset'
+        }
+    }
+
+    // 獲取當前主題配置
+    $: currentTheme = pageConfigs[pageType] || pageConfigs.categories
 
     setTitle(title, siteName)
 </script> 
  
 <section class="categories-page">
     <Navbar {siteName} />
-    <header class="categories-header" style="--theme: var(--theme-subtle)">
+    <header class="categories-header" 
+        style="--header-bg: {currentTheme.header}; 
+               --header-text: {currentTheme.text}; 
+               --header-title: {currentTheme.title}">
         <h1 class="title">
             {#if icon}
                 <span class="icon">{icon}</span>
@@ -44,7 +78,7 @@
                     <div class="articles-container">
                         <div class="articles-grid">
                             {#each items as item}
-                            <ArticleCard title={item.title} description={item.description} {theme} url={item.url} icon={item.icon} buttonText={item.buttonText} />
+                                <ArticleCard title={item.title} description={item.description} theme={currentTheme.theme} url={item.url} icon={item.icon} buttonText={item.buttonText} />
                             {/each}
                         </div>
                     </div>
@@ -66,18 +100,17 @@
     }
 
     .categories-header {
-        background-color: var(--theme);
+        background-color: var(--header-bg);
         padding: 4rem 2rem;
         padding-top: 4rem;
         margin-bottom: 2rem;
-        color: white;
     }
 
     .title {
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 1rem;
-        color: var(--theme-primary);
+        color: var(--header-title);
     }
 
     .icon {
@@ -87,7 +120,7 @@
     .description {
         font-size: 1.2rem;
         opacity: 0.9;
-        color: var(--neutral-dark);
+        color: var(--header-text);
     }
 
     .main-content {
