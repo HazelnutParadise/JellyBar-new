@@ -40,6 +40,14 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"data": map[string]any{
 				"pageType": "articles",
 				"title":    "文章列表",
+				"items": []obj.Article{
+					{
+						Title:       "test",
+						Description: "test",
+						Url:         "test",
+						ButtonText:  "test",
+					},
+				},
 			},
 		})
 	})
@@ -117,7 +125,10 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				"title":    "文章分類",
 				"items": []obj.Article{
 					{
-						Title: "test",
+						Title:       "test",
+						Description: "test",
+						Url:         "test",
+						ButtonText:  "test",
 					},
 				},
 			},

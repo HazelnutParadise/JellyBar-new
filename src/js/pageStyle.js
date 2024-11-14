@@ -8,6 +8,20 @@ export default (()=>{
             theme: 'sakura',
             icon: '📚'
         },
+        category: {
+            header: 'var(--decorative-pink-medium)',
+            text: 'var(--neutral-light)',
+            title: 'var(--accent-soft)',
+            theme: 'dawn',
+            icon: '📃'
+        },
+        articles: {
+            header: 'var(--state-error)',
+            text: 'var(--neutral-light)',
+            title: 'var(--decorative-pink-light)',
+            theme: 'rose',
+            icon: '🗒️'
+        },
         author: {
             header: '#2c3e50',
             text: 'var(--neutral-light)',
@@ -21,14 +35,7 @@ export default (()=>{
             title: 'var(--accent-soft)',
             theme: 'desert',
             icon: '🔍'
-        },
-        category: {
-            header: 'var(--decorative-pink-medium)',
-            text: 'var(--neutral-light)',
-            title: 'var(--accent-soft)',
-            theme: 'dawn',
-            icon: '📃'
-        }
+        }, 
     }
     return pageConfigs
 })()
