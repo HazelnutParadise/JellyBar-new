@@ -35,6 +35,16 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 	})
 
 	r.GET("/article", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+			"siteName": siteName,
+			"data": map[string]any{
+				"pageType": "articles",
+				"title":    "文章列表",
+			},
+		})
+	})
+
+	r.GET("/article/:id", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
 			"siteName": siteName,
 			"article": obj.Article{
@@ -69,8 +79,8 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
-				"pageType":    "author",
-				"title":       "文章分類",
+				"pageType":    "categories",
+				"title":       "類別列表",
 				"description": "test",
 				"items": []obj.Category{
 					{
@@ -95,6 +105,21 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				}
 			</style>
 			`,
+			},
+		})
+	})
+
+	r.GET("/category/:id", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+			"siteName": siteName,
+			"data": map[string]any{
+				"pageType": "category",
+				"title":    "文章分類",
+				"items": []obj.Article{
+					{
+						Title: "test",
+					},
+				},
 			},
 		})
 	})
