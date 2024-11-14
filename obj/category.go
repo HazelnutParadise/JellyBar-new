@@ -5,4 +5,5 @@ type Category struct {
 	Description string `json:"description"`
 	Url         string `json:"url"`
 	ButtonText  string `json:"buttonText"`
+	Icon        string `json:"icon"`
 }

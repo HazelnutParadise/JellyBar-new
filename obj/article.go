@@ -10,4 +10,5 @@ type Article struct {
 	ButtonText  string `json:"buttonText"`
 	Category    string `json:"category"`
 	Author      string `json:"author"`
+	Icon        string `json:"icon"`
 }
