@@ -6,15 +6,16 @@
     import setTitle from '../js/setTitle.js'
     import SideBar from '../components/SideBar.svelte'
     
-    export let siteName = ''
-    export let title = ''
-    export let description = ''
-    export let icon = ''
-    export let items = []
-    export let pageType = 'categories'
-    export let htmlContent = ''
-    export let categories = []
-    export let latestArticles = []
+    export let data = {}
+    let siteName = data.siteName
+    let title = data.title
+    let description = data.description
+    let icon = data.icon
+    let items = data.items
+    let pageType = data.pageType
+    let htmlContent = data.htmlContent
+    let categories = data.categories
+    let latestArticles = data.latestArticles
 
     // 定義主題配色映射
     const pageConfigs = {

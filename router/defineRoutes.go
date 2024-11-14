@@ -68,28 +68,29 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 
 	r.GET("/category", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
-			"siteName":    siteName,
-			"pageType":    "categories",
-			"title":       "文章分類",
-			"description": "test",
-			"icon":        "🍋",
-			"items": []obj.Category{
-				{
-					Title:       "test",
-					Description: "test",
-					Url:         "test",
-					Icon:        "🍋",
-					ButtonText:  "test",
+			"siteName": siteName,
+			"data": map[string]any{
+				"pageType":    "categories",
+				"title":       "文章分類",
+				"description": "test",
+				"icon":        "🍋",
+				"items": []obj.Category{
+					{
+						Title:       "test",
+						Description: "test",
+						Url:         "test",
+						Icon:        "🍋",
+						ButtonText:  "test",
+					},
+					{
+						Title:       "test2",
+						Description: "test2",
+						Url:         "test2",
+						Icon:        "🍋",
+						ButtonText:  "test",
+					},
 				},
-				{
-					Title:       "test2",
-					Description: "test2",
-					Url:         "test2",
-					Icon:        "🍋",
-					ButtonText:  "test",
-				},
-			},
-			"htmlContent": `<h1>test</h1>
+				"htmlContent": `<h1>test</h1>
 			<p>test</p>
 			<li>test</li>
 			<style>
@@ -98,6 +99,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				}
 			</style>
 			`,
+			},
 		})
 	})
 
