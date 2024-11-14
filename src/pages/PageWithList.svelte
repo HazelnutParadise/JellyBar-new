@@ -1,39 +1,58 @@
 <script>
-    import ArticleCard from '../components/ArticleCard.svelte';
-    import Navbar from '../components/Navbar.svelte';
-    import Footer from '../components/Footer.svelte';
-    import '../app.css';
-    import setTitle from '../js/setTitle.js';
+    import '../app.css'
+    import ArticleCard from '../components/ArticleCard.svelte'
+    import Navbar from '../components/Navbar.svelte'
+    import Footer from '../components/Footer.svelte'
+    import setTitle from '../js/setTitle.js'
+    import SideBar from '../components/SideBar.svelte'
     
-    export let siteName = '';
-    export let title = '';
-    export let description = '';
-    export let icon = '';
-    export let items = [];
-    export let theme = 'default';
+    export let siteName = ''
+    export let title = ''
+    export let description = ''
+    export let icon = ''
+    export let items = []
+    export let theme = 'default'
+    export let htmlContent = ''
 
     setTitle(title, siteName)
 </script> 
  
 <section class="categories-page">
     <Navbar {siteName} />
-    <div class="categories-header" style="--theme: var(--theme-subtle)">
-        <div class="container">
-            <h1 class="title">
-                {#if icon}
-                    <span class="icon">{icon}</span>
-                {/if}
-                {title}
-            </h1>
-            <p class="description">{description}</p>
-        </div>
-    </div>
+    <header class="categories-header" style="--theme: var(--theme-subtle)">
+        <h1 class="title">
+            {#if icon}
+                <span class="icon">{icon}</span>
+            {/if}
+            {title}
+        </h1>
+        <p class="description">{description}</p>
+    </header>
 
-    <div class="container articles-container">
-        <div class="articles-grid">
-            {#each items as item}
-                <ArticleCard title={item.title} description={item.description} {theme} url={item.url} icon={item.icon} buttonText={item.buttonText} />
-            {/each}
+    <div class="main-content">
+        <div class="container">
+            <div class="columns is-mobile is-multiline content-wrapper">
+                <main class="column is-12-mobile is-8-tablet article-main">
+                    {#if htmlContent}
+                        <div class="html-content-container">
+                            <div class="html-content">{@html htmlContent}</div>
+                        </div>
+                    {/if}
+            
+                    <div class="articles-container">
+                        <div class="articles-grid">
+                            {#each items as item}
+                            <ArticleCard title={item.title} description={item.description} {theme} url={item.url} icon={item.icon} buttonText={item.buttonText} />
+                            {/each}
+                        </div>
+                    </div>
+                </main>
+                <aside class="column is-12-mobile is-4-tablet sidebar-column">
+                    <div class="sidebar-wrapper">
+                        <SideBar />
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
 </section>
@@ -68,6 +87,64 @@
         color: var(--neutral-dark);
     }
 
+    .main-content {
+        flex: 1;
+        display: flex;
+        background: linear-gradient(to right, var(--bg-primary) calc(100% - 300px), var(--bg-secondary) 300px);
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        display: flex;
+        flex: 1;
+    }
+
+    .content-wrapper {
+        position: relative;
+        margin: 0;
+        width: 100%;
+        display: flex;
+        flex: 1;
+    }
+
+    .article-main {
+        min-width: 0;
+        margin-top: 1rem;
+        padding-right: 2rem;
+        box-sizing: border-box;
+        flex: 1;
+        max-width: calc(100% - 300px);
+        background-color: var(--bg-primary);
+    }
+
+    .sidebar-column {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 0;
+        box-sizing: border-box;
+        width: 300px !important;
+        flex: none !important;
+        background-color: var(--bg-secondary);
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 200px);
+    }
+
+    .sidebar-wrapper {
+        width: 300px;
+        position: sticky;
+        top: 2rem;
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
     .articles-container {
         padding: 2rem;
     }
@@ -78,7 +155,37 @@
         gap: 2rem;
     }
 
+    .html-content-container {
+        padding: 0 3rem;
+        margin-bottom: 2rem;
+    }
+
     @media (max-width: 768px) {
+        .main-content {
+            background: var(--bg-primary);
+        }
+
+        .content-wrapper {
+            flex-direction: column;
+        }
+
+        .article-main {
+            padding-right: 0;
+            max-width: 100%;
+        }
+
+        .sidebar-column {
+            width: 100% !important;
+            background-color: var(--bg-secondary);
+            min-height: auto;
+        }
+
+        .sidebar-wrapper {
+            width: 100%;
+            position: static;
+            height: auto;
+        }
+
         .categories-header {
             padding: 2rem 1rem;
         }

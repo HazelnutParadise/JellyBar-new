@@ -89,6 +89,15 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 					ButtonText:  "test",
 				},
 			},
+			"htmlContent": `<h1>test</h1>
+			<p>test</p>
+			<li>test</li>
+			<style>
+				h1 {
+					color: red;
+				}
+			</style>
+			`,
 		})
 	})
 
