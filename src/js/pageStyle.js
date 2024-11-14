@@ -5,14 +5,14 @@ export default (()=>{
             header: 'var(--support-purple-light)',
             text: 'var(--theme-primary)',
             title: 'var(--support-purple-dark)',
-            theme: 'purple',
+            theme: 'sakura',
             icon: '📚'
         },
         author: {
-            header: 'var(--support-purple-dark)',
+            header: '#2c3e50',
             text: 'var(--neutral-light)',
             title: 'var(--interactive-light)',
-            theme: 'winter',
+            theme: 'midnight',
             icon: '👤'
         },
         search: {
