@@ -9,11 +9,11 @@ export default (()=>{
             icon: '📚'
         },
         author: {
-            header: 'var(--theme-primary)',
+            header: 'var(--support-purple-dark)',
             text: 'var(--neutral-light)',
-            title: 'var(--theme-subtle)',
-            theme: 'sage',
-            icon: '👤',
+            title: 'var(--support-purple-light)',
+            theme: 'twilight',
+            icon: '👤'
         },
         search: {
             header: 'var(--decorative-orange-medium)',
