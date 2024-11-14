@@ -18,8 +18,8 @@ export default (()=>{
         search: {
             header: 'var(--decorative-orange-medium)',
             text: 'var(--neutral-light)',
-            title: 'var(--decorative-orange-light)',
-            theme: 'orange',
+            title: 'var(--accent-soft)',
+            theme: 'desert',
             icon: '🔍'
         },
         category: {
