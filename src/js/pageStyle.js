@@ -23,17 +23,17 @@ export default (()=>{
             icon: '🗒️'
         },
         author: {
-            header: '#2c3e50',
-            text: 'var(--neutral-light)',
-            title: 'var(--interactive-light)',
-            theme: 'midnight',
-            icon: '👤'
-        },
-        search: {
             header: 'var(--decorative-orange-medium)',
             text: 'var(--neutral-light)',
             title: 'var(--accent-soft)',
             theme: 'desert',
+            icon: '👤'
+        },
+        search: {
+            header: '#2c3e50',
+            text: 'var(--neutral-light)',
+            title: 'var(--interactive-light)',
+            theme: 'default',
             icon: '🔍'
         }, 
     }

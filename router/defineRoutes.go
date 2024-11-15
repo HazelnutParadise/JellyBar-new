@@ -150,4 +150,22 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			},
 		})
 	})
+
+	r.GET("/search/:keyword", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+			"siteName": siteName,
+			"data": map[string]any{
+				"pageType": "search",
+				"title":    "搜尋結果",
+				"items": []obj.Article{
+					{
+						Title:       "test",
+						Description: "test",
+						Url:         "test",
+						ButtonText:  "test",
+					},
+				},
+			},
+		})
+	})
 }
