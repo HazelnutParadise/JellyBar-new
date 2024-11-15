@@ -105,7 +105,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 						ButtonText:  "test",
 					},
 				},
-				"htmlContent": md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
+				"htmlContent": md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
 			},
 		})
 	})
