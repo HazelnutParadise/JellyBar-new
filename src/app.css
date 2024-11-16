@@ -5,6 +5,7 @@
     --theme-tertiary: #d8ebc0;     /* 原 green-pale */
     --theme-accent: #7ea172;       /* 原 green-sage */
     --theme-subtle: #98ddca;       /* 原 green-mint */
+    --theme-text: #192a3d;
 
     /* 中性色系 */
     --neutral-light: #f2f5f7;      /* 原 gray-light */
@@ -107,3 +108,6 @@ h6 {
     font-weight: 600;
 }
 
+p {
+    font-size: 1.25rem;
+}

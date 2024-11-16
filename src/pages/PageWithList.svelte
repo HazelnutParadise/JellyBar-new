@@ -131,6 +131,7 @@
         flex: 1;
         max-width: calc(100% - 300px);
         background-color: var(--bg-primary);
+        color: var(--theme-text);
     }
 
     .sidebar-column {
