@@ -117,11 +117,11 @@
     }
 
     .article-content {
-        font-size: 1.1rem;
         line-height: 1.8;
         width: 100%;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        color: var(--theme-text);
     }
 
     .author-column {
