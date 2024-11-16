@@ -111,3 +111,11 @@ h6 {
 p {
     font-size: 1.25rem;
 }
+
+.button {
+    text-decoration: none;
+}
+
+.button:hover {
+    text-decoration: none;
+}
