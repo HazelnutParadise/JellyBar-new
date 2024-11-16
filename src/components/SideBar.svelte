@@ -8,9 +8,11 @@
     <div class="sidebar-section">
         <h3>分類</h3>
         <ul>
+            <!-- 列出10項 -->
             {#each categories as category}
-                <li><a href={`/categories/${category.id}`} >{category.title}</a></li>
+                <li><a href={`/category/${category.id}`}>{category.title}</a></li>
             {/each}
+            <li><a href={`/category`} ><strong>查看全部類別</strong></a></li>
         </ul>
     </div>
 
@@ -18,10 +20,12 @@
         <h3>最新文章</h3>
         <ul> 
             {#each latestArticles as article}
-                <li><a href={`/articles/${article.id}`} >{article.title}</a></li>
+                <li><a href={`/article/${article.id}`} >{article.title}</a></li>
             {/each}
+            <li><a href={`/article`} ><strong>查看全部文章</strong></a></li>
         </ul>
     </div>
+    <iframe title="hazelnut-paradise-navbar" id="navbar-placeholder" src="https://hazelnut-paradise.com/navBar" style="width: 100%;height: 330px;margin: 0;padding: 0;border:0;"></iframe>
 </aside>
 
 <style>
@@ -66,12 +70,13 @@
     .sidebar-section a {
         color: var(--interactive-dark);
         font-weight: 500;
-        font-size: 1.1rem;
+        font-size: 1.25rem;
         text-decoration: none;
         transition: color 0.2s;
     }
 
     .sidebar-section a:hover {
+        text-decoration: underline;
         color: var(--interactive-dark-hover);
     }
 
