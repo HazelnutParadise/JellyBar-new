@@ -77,9 +77,8 @@
 
     .categories-header {
         background-color: var(--header-bg);
-        padding: 4rem;
-        padding-top: 4rem;
-        margin-bottom: 2rem;
+        padding: 5rem 6rem 3rem 6rem;
+        margin-bottom: 1rem;
     }
 
     .title {
@@ -125,21 +124,19 @@
 
     .article-main {
         min-width: 0;
-        margin-top: 1rem;
-        padding-right: 2rem;
+        padding-right: 1rem;
         box-sizing: border-box;
         flex: 1;
-        max-width: calc(100% - 300px);
+        max-width: calc(100% - 350px);
         background-color: var(--bg-primary);
         color: var(--theme-text);
     }
 
     .sidebar-column {
-        margin-top: 2rem;
         margin-bottom: 2rem;
         padding: 0;
         box-sizing: border-box;
-        width: 300px !important;
+        width: 350px !important;
         flex: none !important;
         background-color: var(--bg-secondary);
         display: flex;
@@ -148,7 +145,7 @@
     }
 
     .sidebar-wrapper {
-        width: 300px;
+        width: 100%;
         position: sticky;
         top: 2rem;
         padding: 1rem;
