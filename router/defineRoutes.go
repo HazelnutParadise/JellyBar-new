@@ -58,7 +58,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"siteName": siteName,
 			"article": obj.Article{
 				Title:       "testjkjkknknknknkmnmknkmnmnjmnmnmnmnmnmnmnjbhjbjefbcjebnfjebnfjewnejcejcnjencnjencjencejjncnecejcnejnncejncjncjenej",
-				Description: "testDescriptionlłlll	lłll	llllllllllllllknkjnknknknknknknknknkn",
+				Description: "testDescriptionlłlll	lłll	llllllllllllllknkjnknknknknknknknknknkn",
 				PublishDate: time.Now().Format(time.DateOnly),
 				UpdateDate:  time.Now().Format(time.DateOnly),
 				Content:     md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
@@ -105,7 +105,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 						ButtonText:  "test",
 					},
 				},
-				"htmlContent": md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
+				"htmlContent": md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
 			},
 		})
 	})
@@ -159,6 +159,29 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 					},
 				},
 			},
+		})
+	})
+
+	r.GET("/admin", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Admin", map[string]any{
+			"siteName": "後台管理",
+			"title":    "文章管理",
+		})
+	})
+
+	r.GET("/admin/new", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEdit", map[string]any{
+			"siteName": "後台管理",
+			"title":    "新增文章",
+		})
+	})
+
+	r.GET("/admin/edit/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEdit", map[string]any{
+			"siteName": "後台管理",
+			"title":    "編輯文章",
+			"id":       id,
 		})
 	})
 }
