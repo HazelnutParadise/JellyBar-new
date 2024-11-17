@@ -164,22 +164,22 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 
 	r.GET("/admin", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Admin", map[string]any{
-			"siteName": "後台管理",
+			"siteName": siteName,
 			"title":    "文章管理",
 		})
 	})
 
-	r.GET("/admin/new", func(ctx *gin.Context) {
+	r.GET("/admin/article/new", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
-			"siteName": "後台管理",
+			"siteName": siteName,
 			"title":    "新增文章",
 		})
 	})
 
-	r.GET("/admin/edit/:id", func(ctx *gin.Context) {
+	r.GET("/admin/article/edit/:id", func(ctx *gin.Context) {
 		id := ctx.Param("id")
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEdit", map[string]any{
-			"siteName": "後台管理",
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
+			"siteName": siteName,
 			"title":    "編輯文章",
 			"id":       id,
 		})
