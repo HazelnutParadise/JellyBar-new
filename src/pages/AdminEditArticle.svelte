@@ -2,6 +2,7 @@
   import '../app.css'
   import Navbar from '../components/Navbar.svelte';
   import Footer from '../components/Footer.svelte';
+  import VditorEditor from '../components/VditorEditor.svelte';
   import { onMount } from 'svelte';
   
   export let siteName;
@@ -16,137 +17,25 @@
     status: 'draft'
   };
   
-  let vditor;
-  
-  // 定義繁體中文語言包
-  const zhHant = {
-    toolbar: {
-      emoji: '表情',
-      headings: '標題',
-      bold: '粗體',
-      italic: '斜體',
-      strike: '刪除線',
-      line: '分隔線',
-      quote: '引用',
-      list: '無序列表',
-      'ordered-list': '有序列表',
-      check: '待辦事項',
-      code: '程式碼區塊',
-      'inline-code': '行內程式碼',
-      upload: '上傳',
-      link: '連結',
-      table: '表格',
-      preview: '預覽',
-      fullscreen: '全螢幕',
-      outline: '大綱',
-      help: '幫助',
-    },
-    hint: {
-      emoji: '表情',
-      placeholder: {
-        emoji: '搜尋表情...',
-        loading: '載入中...',
-      }
-    },
-    preview: {
-      mode: {
-        editor: '編輯',
-        preview: '預覽',
-        both: '分欄'
-      }
-    },
-    upload: {
-      max: '文件大小不能超過',
-      upload: '上傳',
-      tip: '點擊或拖曳上傳',
-      error: '上傳失敗',
-      loading: '上傳中...'
-    },
-    dialog: {
-      cancel: '取消',
-      ok: '確定'
-    },
-    codeTheme: {
-      github: 'GitHub',
-      dark: '深色',
-    }
-  };
+  let editor;
   
   onMount(() => {
-    // 初始化 Vditor 編輯器
-    vditor = new window.Vditor('vditor', {
-      height: 500,
-      mode: 'ir',
-      lang: 'zh_TW', // 使用繁體中文語言包
-      toolbar: [
-        'emoji',
-        'headings',
-        'bold',
-        'italic',
-        'strike',
-        '|',
-        'line',
-        'quote',
-        'list',
-        'ordered-list',
-        'check',
-        'code',
-        'inline-code',
-        '|',
-        'upload',
-        'link',
-        'table',
-        '|',
-        'preview',
-        'fullscreen',
-        'outline',
-        'help'
-      ],
-      placeholder: '請輸入文章內容...',
-      theme: 'classic',
-      cache: {
-        enable: false
-      },
-      preview: {
-        theme: {
-          current: 'light'
-        },
-        hljs: {
-          style: 'github'
-        }
-      },
-      counter: {
-        enable: true,
-        type: 'text',
-      },
-      hint: {
-        emoji: {
-          '+1': '👍',
-          '-1': '👎',
-          'smile': '😄',
-          'heart': '❤️',
-          'star': '⭐',
-        }
-      },
-      after: () => {
-        if (article.content) {
-          vditor.setValue(article.content);
-        }
-      }
-    });
+    // 禁用頁面上的 highlight.js
+    if (window.hljs) {
+      window.hljs.configure({ ignoreUnescapedHTML: true });
+      window.hljs.highlightAll = () => {}; // 覆蓋 highlightAll 方法
+    }
   });
+  
+  function handleEditorChange(event) {
+    article.content = event.detail;
+  }
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    article.content = vditor.getValue();
     console.log('儲存文章:', article);
   };
 </script>
-
-<svelte:head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vditor/dist/index.css" />
-  <script src="https://cdn.jsdelivr.net/npm/vditor/dist/index.min.js"></script>
-</svelte:head>
 
 <Navbar {siteName}/>
 <div class="page-wrapper">
@@ -160,7 +49,11 @@
           bind:value={article.title}
           required
         >
-        <div id="vditor" class="vditor"></div>
+        <VditorEditor
+          bind:this={editor}
+          content={article.content}
+          on:change={handleEditorChange}
+        />
       </div>
     </div>
     
@@ -204,6 +97,7 @@
 </div>
 
 <Footer {siteName}/>
+
 <style>
   .page-wrapper {
     padding-top: 80px;
@@ -306,11 +200,8 @@
     border: 1px solid #ddd;
     border-radius: 4px;
   }
-  
-  :global(.vditor) {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
+
+
   
   @media (max-width: 768px) {
     .admin-layout {
