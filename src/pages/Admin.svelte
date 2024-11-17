@@ -166,64 +166,6 @@
     return d.toISOString().split('T')[0];
   };
 
-  // 處理日期輸入
-  const handleDateInput = (e, type) => {
-    const input = e.target;
-    
-    // 只處理手動輸入
-    if (e.inputType === 'insertText') {
-      const curValue = input.value.replace(/-/g, ''); // 移除所有橫線
-      
-      // 如果輸入的是數字
-      if (/^\d+$/.test(curValue)) {
-        // 如果剛好輸入到4位數
-        if (curValue.length === 4) {
-          e.preventDefault();
-          input.value = curValue + '-';
-          input.setSelectionRange(5, 5);
-        }
-        // 如果剛好輸入到6位數
-        else if (curValue.length === 6) {
-          const year = curValue.substring(0, 4);
-          const month = curValue.substring(4, 6);
-          input.value = `${year}-${month}-`;
-          input.setSelectionRange(8, 8);
-        }
-        // 如果輸入到8位數
-        else if (curValue.length === 8) {
-          const year = curValue.substring(0, 4);
-          const month = curValue.substring(4, 6);
-          const day = curValue.substring(6, 8);
-          input.value = `${year}-${month}-${day}`;
-        }
-        // 如果超過8位數，截斷
-        else if (curValue.length > 8) {
-          const year = curValue.substring(0, 4);
-          const month = curValue.substring(4, 6);
-          const day = curValue.substring(6, 8);
-          input.value = `${year}-${month}-${day}`;
-          return;
-        }
-      }
-    }
-
-    const formattedDate = formatDate(input.value);
-    
-    if (type === 'from') {
-      dateFilter.from = formattedDate;
-      if (dateFilter.to && new Date(dateFilter.to) < new Date(formattedDate)) {
-        dateFilter.to = formattedDate;
-      }
-    } else {
-      dateFilter.to = formattedDate;
-      if (dateFilter.from && new Date(dateFilter.from) > new Date(formattedDate)) {
-        dateFilter.from = formattedDate;
-      }
-    }
-    
-    dateFilter = { ...dateFilter };
-  };
-
   onMount(() => {
     updateCategoryCount();
   });
@@ -304,7 +246,7 @@
                     bind:value={dateFilter.from}
                     max={dateFilter.to || undefined}
                   >
-                  <label class="floating-label">開始日期</label>
+                  <label class="floating-label" for="startDate">開始日期</label>
                 </div>
               </div>
               
@@ -731,7 +673,7 @@
   }
 
   input[type="date"] {
-    min-width: 200px;
+    min-width: 100px;
     height: 2.5em;
     padding-top: 0;
     padding-bottom: 0;
