@@ -148,9 +148,8 @@
   <script src="https://cdn.jsdelivr.net/npm/vditor/dist/index.min.js"></script>
 </svelte:head>
 
+<Navbar {siteName}/>
 <div class="page-wrapper">
-  <Navbar {siteName}/>
-
   <div class="admin-layout">
     <div class="main-content">
       <div class="editor-container">
@@ -204,8 +203,11 @@
   </div>
 </div>
 
+<Footer {siteName}/>
 <style>
   .page-wrapper {
+    padding-top: 80px;
+    padding-bottom: 20px;
     min-height: 100vh;
     background-color: #f0f0f1;
   }
