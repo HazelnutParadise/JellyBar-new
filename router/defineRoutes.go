@@ -170,7 +170,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 	})
 
 	r.GET("/admin/new", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEdit", map[string]any{
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
 			"siteName": "後台管理",
 			"title":    "新增文章",
 		})
