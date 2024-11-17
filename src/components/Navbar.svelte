@@ -5,7 +5,7 @@
 <nav class="navbar is-fixed-top">
     <div class="navbar-brand">
         <a class="navbar-item brand-logo" href="/">
-            <img src="/logo.png" alt="Logo" height="28">
+            <img src="/assets/logo.png" alt="Logo" height="28" style="margin-right: -0.5rem;">
             <span class="ml-2 has-text-weight-bold">{siteName}</span>
         </a>
     </div>
