@@ -186,43 +186,67 @@
         <h3>分類設定</h3>
         <div class="category-select">
           <div class="select-container">
-            <select 
-              bind:value={article.category}
-              class="category-dropdown"
-            >
-              <option value="">選擇分類</option>
-              {#each categories as category}
-                <option value={category}>{category}</option>
-              {/each}
-            </select>
-            <div class="select-icon">
-              <i class="fas fa-chevron-down"></i>
-            </div>
-          </div>
-          
-          <div class="new-category-input" style="margin-top: 10px;">
             <input 
               type="text"
-              class="input"
-              placeholder="或輸入新分類名稱..."
+              class="input search-input"
+              placeholder="搜尋或輸入新分類..."
               bind:value={searchTerm}
+              on:focus={() => showDropdown = true}
+              on:input={() => {
+                showDropdown = true;
+                if (!searchTerm) {
+                  article.category = '';
+                }
+              }}
             />
-            {#if searchTerm && !categories.includes(searchTerm)}
-              <button 
-                class="button is-small add-category-btn"
-                on:click={() => {
-                  if (searchTerm.trim()) {
-                    categories = [...categories, searchTerm.trim()];
-                    article.category = searchTerm.trim();
-                    searchTerm = '';
-                  }
-                }}
-              >
-                <i class="fas fa-plus"></i>
-                <span>新增分類</span>
-              </button>
-            {/if}
+            <button 
+              type="button"
+              class="toggle-button"
+              on:click|stopPropagation={() => showDropdown = !showDropdown}
+            >
+              <i class="fas fa-chevron-down"></i>
+            </button>
           </div>
+
+          {#if showDropdown}
+            <ul class="dropdown-list">
+              {#each filteredCategories as category}
+                <li>
+                  <button 
+                    class="dropdown-item"
+                    class:active={category === article.category}
+                    on:click|stopPropagation={() => {
+                      article.category = category;
+                      searchTerm = category;
+                      showDropdown = false;
+                    }}
+                  >
+                    <i class="fas fa-tag"></i>
+                    {category}
+                  </button>
+                </li>
+              {/each}
+              
+              {#if searchTerm && !categories.includes(searchTerm)}
+                <li>
+                  <button 
+                    class="dropdown-item new-item"
+                    on:click|stopPropagation={() => {
+                      const newCategory = searchTerm.trim();
+                      if (newCategory) {
+                        categories = [...categories, newCategory];
+                        article.category = newCategory;
+                        showDropdown = false;
+                      }
+                    }}
+                  >
+                    <i class="fas fa-plus"></i>
+                    新增 "{searchTerm}"
+                  </button>
+                </li>
+              {/if}
+            </ul>
+          {/if}
         </div>
       </div>
       
@@ -444,64 +468,75 @@
   
   .select-container {
     position: relative;
+    margin-bottom: 4px;
+  }
+  
+  .search-input {
     width: 100%;
+    padding-right: 35px;
   }
   
-  .category-dropdown {
-    width: 100%;
-    padding: 10px 32px 10px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--neutral-medium);
-    background-color: white;
-    font-family: inherit;
-    font-size: 0.95em;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-  }
-  
-  .category-dropdown:focus {
-    outline: none;
-    border-color: var(--theme-accent);
-  }
-  
-  .select-icon {
+  .toggle-button {
     position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--neutral-dark);
-  }
-  
-  .new-category-input {
-    position: relative;
-  }
-  
-  .add-category-btn {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: var(--theme-accent);
-    color: white;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 35px;
+    background: none;
     border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
+    color: var(--neutral-dark);
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.9em;
+    justify-content: center;
   }
   
-  .add-category-btn:hover {
-    background-color: var(--interactive-dark);
+  .dropdown-list {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid var(--neutral-medium);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
   }
   
-  .input {
-    padding-right: 100px;
+  .dropdown-item {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-family: inherit;
+    font-size: 0.95em;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .dropdown-item:hover {
+    background-color: var(--neutral-light);
+  }
+  
+  .dropdown-item.active {
+    background-color: var(--theme-accent);
+    color: white;
+  }
+  
+  .new-item {
+    color: var(--theme-accent);
+    font-weight: 500;
+  }
+  
+  .new-item:hover {
+    background-color: var(--theme-accent);
+    color: white;
   }
 </style> 
