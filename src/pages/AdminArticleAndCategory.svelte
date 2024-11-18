@@ -266,7 +266,7 @@
 
 <div class="admin-container">
   <div class="container">
-    <h1 class="title is-2 has-text-centered mb-6">{title}</h1>
+    <h1 class="title is-2 has-text-centered mb-6 mt-6">{title}</h1>
     
     <div class="section-tabs mb-6">
       <button 
@@ -310,11 +310,11 @@
             </div>
 
             <div class="filter-controls-right">
-              <div class="field-group">
-                <div class="select is-fullwidth">
+              <div class="select-field">
+                <label>類別</label>
+                <div class="select">
                   <select 
                     bind:value={selectedCategory}
-                    class="has-floating-label"
                   >
                     <option value={null} disabled selected={!selectedCategory}>
                       選擇類別
@@ -325,28 +325,31 @@
                       </option>
                     {/each}
                   </select>
-                  <label class="floating-label" for="category">類別</label>
                 </div>
               </div>
 
-              <div class="field has-floating-label">
-                開始日期
-                <input 
-                  type="date" 
-                  class="input" 
-                  bind:value={dateFilter.from}
-                  max={dateFilter.to || undefined}
-                >
-              </div>
-              
-              <div class="field has-floating-label">
-                結束日期
-                <input 
-                  type="date" 
-                  class="input" 
-                  bind:value={dateFilter.to}
-                  min={dateFilter.from || undefined}
-                >
+              <div class="date-field-group">
+                <div class="date-field">
+                  <label for="dateFilterFrom">開始日期</label>
+                  <input 
+                    id="dateFilterFrom"
+                    type="date" 
+                    class="input" 
+                    bind:value={dateFilter.from}
+                    max={dateFilter.to || undefined}
+                  >
+                </div>
+                
+                <div class="date-field">
+                  <label for="dateFilterTo">結束日期</label>
+                  <input 
+                    id="dateFilterTo"
+                    type="date" 
+                    class="input" 
+                    bind:value={dateFilter.to}
+                    min={dateFilter.from || undefined}
+                  >
+                </div>
               </div>
 
               <div class="field-group">
@@ -866,7 +869,7 @@
     margin: 0;
   }
 
-  /* 更新模態框相關樣式 */
+  /* 更模態框相關樣式 */
   :global(.modal) {
     z-index: 1000; /* 確保模態框在導航欄上方 */
   }
@@ -923,17 +926,12 @@
   }
 
   /* 更新浮動標籤樣式 */
-  .field.has-floating-label,
-  .select,
-  .control {
+  .field.has-floating-label {
     position: relative;
     margin-top: 1.5em;
   }
 
-  .floating-label,
-  .select label,
-  .control label,
-  .field.has-floating-label > :first-child:not(input):not(select) {
+  .field.has-floating-label .floating-label {
     position: absolute;
     top: -1.5em;
     left: 0;
@@ -943,27 +941,70 @@
     line-height: 1;
   }
 
-  /* 統一所有輸入框高度 */
-  .input,
-  .select select,
-  input[type="date"] {
+  /* 調整日期輸入框的樣式 */
+  .field.has-floating-label input[type="date"] {
+    width: 150px; /* 調整寬度以確保日期完整顯示 */
+    padding: 0.5em;
+  }
+
+  /* 確保標籤不會被其他元素覆蓋 */
+  .field.has-floating-label {
+    z-index: 1;
+  }
+
+  .field.has-floating-label .floating-label {
+    z-index: 2;
+  }
+
+  .date-field-group {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .date-field label {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .date-field input {
+    width: 150px;
     height: 2.5em;
   }
 
-  /* 日期輸入框寬度 */
-  input[type="date"] {
-    width: 120px;
-  }
-
-  /* 確保所有控制項底部對齊 */
-  .filter-controls,
-  .filter-controls-right {
+  /* 修改類別選擇器樣式 */
+  .select-field {
     display: flex;
-    gap: 1rem;
-    align-items: flex-end;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
-  .filter-controls-right {
-    margin-left: auto;
+  .select-field label {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .select-field .select {
+    min-width: 150px;
+    position: relative;
+  }
+
+  .select-field .select select {
+    height: 2.5em;
+    padding-right: 2.5em;
+    width: 100%;
+  }
+
+  .select-field .select::after {
+    border-color: #666;
+    right: 0.75em;
+    z-index: 4;
+    border-width: 2px;
+    margin-top: -0.375em;
   }
 </style> 
