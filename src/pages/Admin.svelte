@@ -1,7 +1,7 @@
 <script>
   import "../app.css"
   import { onMount } from 'svelte'
-  import Navbar from '../components/Navbar.svelte'
+  import AdminNavbar from '../components/AdminNavbar.svelte'
   import Footer from '../components/Footer.svelte'
   import setTitle from '../js/setTitle'
 
@@ -171,7 +171,7 @@
   });
 </script>
 
-<Navbar siteName={siteName} />
+<AdminNavbar siteName={siteName} />
 
 <div class="admin-container">
   <div class="container">

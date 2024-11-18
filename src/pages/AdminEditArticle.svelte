@@ -1,6 +1,6 @@
 <script>
   import '../app.css'
-  import Navbar from '../components/Navbar.svelte';
+  import AdminNavbar from '../components/AdminNavbar.svelte';
   import Footer from '../components/Footer.svelte';
   import VditorEditor from '../components/VditorEditor.svelte';
   import { onMount } from 'svelte';
@@ -128,7 +128,7 @@
   };
 </script>
 
-<Navbar {siteName}/>
+<AdminNavbar {siteName}/>
 <div class="page-wrapper">
   <div class="admin-layout">
     <div class="main-content">
