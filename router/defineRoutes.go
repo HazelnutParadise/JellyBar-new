@@ -162,10 +162,10 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 		})
 	})
 
-	r.GET("/admin", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Admin", map[string]any{
+	r.GET("/admin/article", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminArticleAndCategory", map[string]any{
 			"siteName": siteName,
-			"title":    "文章管理",
+			"title":    "文章與類別",
 		})
 	})
 

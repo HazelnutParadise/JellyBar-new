@@ -4,6 +4,7 @@
   import AdminNavbar from '../components/AdminNavbar.svelte'
   import Footer from '../components/Footer.svelte'
   import setTitle from '../js/setTitle'
+  import VditorEditor from '../components/VditorEditor.svelte'
 
   export let title;
   export let siteName;
@@ -96,27 +97,56 @@
   // 新增搜尋關鍵字
   let searchKeyword = "";
 
-  // 更新篩選邏輯
-  $: filteredArticles = articles.filter(article => {
-    let matchCategory = selectedCategory 
-      ? article.category === selectedCategory.name
-      : true;
+  // 添加文章排序相關變量
+  let articleSort = "title"; // 'title' | 'date' | 'category'
+  let articleSortDirection = "asc"; // 'asc' | 'desc'
 
-    let matchDate = true;
-    if (dateFilter.from) {
-      matchDate = matchDate && new Date(article.created_at) >= new Date(dateFilter.from);
+  // 更新文章排序邏輯
+  const toggleArticleSort = (field) => {
+    if (articleSort === field) {
+      articleSortDirection = articleSortDirection === "asc" ? "desc" : "asc";
+    } else {
+      articleSort = field;
+      articleSortDirection = "asc";
     }
-    if (dateFilter.to) {
-      matchDate = matchDate && new Date(article.created_at) <= new Date(dateFilter.to);
-    }
+  };
 
-    let matchSearch = true;
-    if (searchKeyword.trim()) {
-      matchSearch = article.title.toLowerCase().includes(searchKeyword.toLowerCase());
-    }
+  // 更新篩選和排序邏輯
+  $: filteredArticles = articles
+    .filter(article => {
+      let matchCategory = selectedCategory 
+        ? article.category === selectedCategory.name
+        : true;
 
-    return matchCategory && matchDate && matchSearch;
-  });
+      let matchDate = true;
+      if (dateFilter.from) {
+        matchDate = matchDate && new Date(article.created_at) >= new Date(dateFilter.from);
+      }
+      if (dateFilter.to) {
+        matchDate = matchDate && new Date(article.created_at) <= new Date(dateFilter.to);
+      }
+
+      let matchSearch = true;
+      if (searchKeyword.trim()) {
+        matchSearch = article.title.toLowerCase().includes(searchKeyword.toLowerCase());
+      }
+
+      return matchCategory && matchDate && matchSearch;
+    })
+    .sort((a, b) => {
+      const direction = articleSortDirection === "asc" ? 1 : -1;
+      
+      switch (articleSort) {
+        case "title":
+          return direction * a.title.localeCompare(b.title);
+        case "date":
+          return direction * (new Date(a.created_at) - new Date(b.created_at));
+        case "category":
+          return direction * a.category.localeCompare(b.category);
+        default:
+          return 0;
+      }
+    });
 
   // 清除所有篩選
   const clearAllFilters = () => {
@@ -166,6 +196,67 @@
     return d.toISOString().split('T')[0];
   };
 
+  // 添加新的狀態變量
+  let editingCategoryPage = null;
+  let categoryPageContent = "";
+
+  // 簡化編輯類別頁面的處理函數
+  const handleEditCategoryPage = async (category) => {
+    editingCategoryPage = category;
+    // 這裡應該從後端獲取類別頁面內容
+    categoryPageContent = "";  // 暫時為空，實際應該從後端獲取
+  };
+
+  // 簡化保存函數
+  const handleSaveCategoryPage = async () => {
+    if (!editingCategoryPage) return;
+    
+    try {
+      // 這裡應該發送請求到後端保存類別頁面內容
+      console.log('Saving content:', categoryPageContent);
+      alert('類別頁面保存成功！');
+      editingCategoryPage = null;
+    } catch (error) {
+      alert('保存失敗：' + error.message);
+    }
+  };
+
+  // 簡化清理函數
+  const cleanupEditor = () => {
+    editingCategoryPage = null;
+    categoryPageContent = "";
+  };
+
+  // 添加類別篩選相關變量
+  let categorySearchKeyword = "";
+  let categorySort = "name"; // 'name' | 'count'
+  let categorySortDirection = "asc"; // 'asc' | 'desc'
+
+  // 篩選和排序類別的計算屬性
+  $: filteredCategories = categories
+    .filter(category => {
+      if (!categorySearchKeyword.trim()) return true;
+      return category.name.toLowerCase().includes(categorySearchKeyword.toLowerCase());
+    })
+    .sort((a, b) => {
+      const direction = categorySortDirection === "asc" ? 1 : -1;
+      if (categorySort === "name") {
+        return direction * a.name.localeCompare(b.name);
+      } else {
+        return direction * (a.articleCount - b.articleCount);
+      }
+    });
+
+  // 切換排序方向
+  const toggleSort = (field) => {
+    if (categorySort === field) {
+      categorySortDirection = categorySortDirection === "asc" ? "desc" : "asc";
+    } else {
+      categorySort = field;
+      categorySortDirection = "asc";
+    }
+  };
+
   onMount(() => {
     updateCategoryCount();
   });
@@ -175,7 +266,7 @@
 
 <div class="admin-container">
   <div class="container">
-    <h1 class="title is-2 has-text-centered mb-6">後台管理</h1>
+    <h1 class="title is-2 has-text-centered mb-6">{title}</h1>
     
     <div class="section-tabs mb-6">
       <button 
@@ -234,33 +325,28 @@
                       </option>
                     {/each}
                   </select>
-                  <label class="floating-label">類別</label>
+                  <label class="floating-label" for="category">類別</label>
                 </div>
               </div>
 
-              <div class="field-group">
-                <div class="field has-floating-label">
-                  <input 
-                    type="date" 
-                    class="input has-floating-label" 
-                    bind:value={dateFilter.from}
-                    max={dateFilter.to || undefined}
-                  >
-                  <label class="floating-label" for="startDate">開始日期</label>
-                </div>
+              <div class="field has-floating-label">
+                開始日期
+                <input 
+                  type="date" 
+                  class="input" 
+                  bind:value={dateFilter.from}
+                  max={dateFilter.to || undefined}
+                >
               </div>
               
-              <div class="field-group">
-                <div class="field has-floating-label">
-                  <input 
-                    type="date" 
-                    class="input has-floating-label" 
-                    min={dateFilter.from || undefined}
-                    bind:value={dateFilter.to}
-                    id="endDate"
-                  >
-                  <label class="floating-label" for="endDate">結束日期</label>
-                </div>
+              <div class="field has-floating-label">
+                結束日期
+                <input 
+                  type="date" 
+                  class="input" 
+                  bind:value={dateFilter.to}
+                  min={dateFilter.from || undefined}
+                >
               </div>
 
               <div class="field-group">
@@ -319,9 +405,45 @@
             <thead>
               <tr>
                 <th class="is-narrow">#</th>
-                <th>標題</th>
-                <th class="is-narrow">分類</th>
-                <th class="is-narrow">發布日期</th>
+                <th>
+                  <a href="javascript:void(0)" 
+                     class="sort-header"
+                     on:click={() => toggleArticleSort('title')}
+                  >
+                    標題
+                    {#if articleSort === 'title'}
+                      <span class="icon">
+                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
+                      </span>
+                    {/if}
+                  </a>
+                </th>
+                <th class="is-narrow">
+                  <a href="javascript:void(0)" 
+                     class="sort-header"
+                     on:click={() => toggleArticleSort('category')}
+                  >
+                    分類
+                    {#if articleSort === 'category'}
+                      <span class="icon">
+                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
+                      </span>
+                    {/if}
+                  </a>
+                </th>
+                <th class="is-narrow">
+                  <a href="javascript:void(0)" 
+                     class="sort-header"
+                     on:click={() => toggleArticleSort('date')}
+                  >
+                    發布日期
+                    {#if articleSort === 'date'}
+                      <span class="icon">
+                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
+                      </span>
+                    {/if}
+                  </a>
+                </th>
                 <th class="is-narrow has-text-centered">操作</th>
               </tr>
             </thead>
@@ -404,17 +526,60 @@
           </div>
         </div>
 
-        <div class="table-container mt-5">
+        <!-- 添加類別篩選區域 -->
+        <div class="filter-section mt-5 mb-4">
+          <div class="filter-controls">
+            <div class="field-group is-expanded">
+              <div class="control has-icons-left">
+                <input 
+                  type="text" 
+                  class="input" 
+                  placeholder="搜尋類別名稱..."
+                  bind:value={categorySearchKeyword}
+                >
+                <span class="icon is-left">
+                  <i class="fas fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
           <table class="table is-fullwidth">
             <thead>
               <tr>
-                <th>類別名稱</th>
-                <th>文章數量</th>
+                <th>
+                  <a href="javascript:void(0)" 
+                     class="sort-header"
+                     on:click={() => toggleSort('name')}
+                  >
+                    類別名稱
+                    {#if categorySort === 'name'}
+                      <span class="icon">
+                        <i class="fas fa-sort-{categorySortDirection === 'asc' ? 'up' : 'down'}"></i>
+                      </span>
+                    {/if}
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" 
+                     class="sort-header"
+                     on:click={() => toggleSort('count')}
+                  >
+                    文章數量
+                    {#if categorySort === 'count'}
+                      <span class="icon">
+                        <i class="fas fa-sort-{categorySortDirection === 'asc' ? 'up' : 'down'}"></i>
+                      </span>
+                    {/if}
+                  </a>
+                </th>
                 <th>操作</th>
               </tr>
             </thead>
             <tbody>
-              {#each categories as category}
+              {#each filteredCategories as category}
                 <tr>
                   <td>
                     {#if editingCategory?.id === category.id}
@@ -461,6 +626,12 @@
                         </button>
                       {/if}
                       <button 
+                        class="button is-primary is-small"
+                        on:click={() => handleEditCategoryPage(category)}
+                      >
+                        編輯類別頁面
+                      </button>
+                      <button 
                         class="button is-danger is-small"
                         class:is-light={category.articleCount > 0}
                         on:click={() => handleDeleteCategory(category.id)}
@@ -471,6 +642,17 @@
                   </td>
                 </tr>
               {/each}
+              {#if filteredCategories.length === 0}
+                <tr>
+                  <td colspan="3" class="has-text-centered py-6">
+                    <p class="has-text-grey">
+                      {categorySearchKeyword 
+                        ? '沒有符合搜尋條件的類別'
+                        : '目前沒有任何類別'}
+                    </p>
+                  </td>
+                </tr>
+              {/if}
             </tbody>
           </table>
         </div>
@@ -480,10 +662,50 @@
 </div>
 <Footer siteName={siteName} />
 
+<!-- 修改模態框的內容部分，使用 VditorEditor 組件 -->
+{#if editingCategoryPage}
+  <div class="modal is-active">
+    <div class="modal-background" on:click={cleanupEditor}></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">編輯「{editingCategoryPage.name}」類別頁面</p>
+        <button 
+          class="delete" 
+          aria-label="close"
+          on:click={cleanupEditor}
+        ></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <VditorEditor
+            bind:content={categoryPageContent}
+            height="70vh"
+            placeholder="請輸入類別頁面內容..."
+            on:change={(e) => categoryPageContent = e.detail}
+          />
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" on:click={handleSaveCategoryPage}>
+          儲存變更
+        </button>
+        <button class="button" on:click={cleanupEditor}>
+          取消
+        </button>
+      </footer>
+    </div>
+  </div>
+{/if}
+
 <style>
+  h1 {
+    padding: 20px;
+  }
+
   .admin-container {
     min-height: 100vh;
-    padding: 100px 20px;
+    padding: 2rem;
+    background-color: #f7f9fc;
   }
   
   .admin-actions {
@@ -608,129 +830,140 @@
   }
 
   .field-group {
+    position: relative;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 0.5rem;
   }
 
-  .gap-3 {
-    gap: 1rem;
-  }
-
-  .current-filters {
-    min-height: 2.5rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .current-filters .tags {
-    margin-bottom: 0;
-  }
-
-  .current-filters .tag {
-    margin-right: 0.5rem;
-  }
-
-  .field-group.is-expanded {
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .select select option[value="null"][disabled] {
-    color: #999;
-  }
-
-  /* 更新浮動標籤樣式 */
-  .has-floating-label {
-    position: relative;
-    height: 2.5em;
-  }
-
-  .floating-label {
-    position: absolute;
-    top: -0.6em;
-    left: 0.8em;
-    font-size: 0.75em;
-    padding: 0 0.3em;
-    background-color: white;
-    color: #666;
-    pointer-events: none;
-    z-index: 1;
-    line-height: 1;
-  }
-
-  /* 統一日期輸入框樣式 */
-  .field.has-floating-label {
-    position: relative;
-    margin: 0;
-    height: 2.5em;
-  }
-
-  .field.has-floating-label .input {
-    height: 2.5em;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  input[type="date"] {
-    min-width: 100px;
-    height: 2.5em;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  /* 確保所有輸入元素對齊 */
-  .field-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 2.5em;
-  }
-
-  /* 搜尋框樣式統一 */
-  .field-group.is-expanded .input {
-    height: 2.5em;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  /* 確保圖示垂直置中 */
-  .control.has-icons-left .icon {
-    height: 2.5em;
-  }
-
-  /* 更新篩選區域相關樣式 */
   .filter-controls {
     display: flex;
     gap: 1rem;
-    align-items: center;
+    align-items: flex-end;
   }
 
   .filter-controls-right {
     display: flex;
     gap: 1rem;
-    align-items: center;
+    align-items: flex-end;
     margin-left: auto;
   }
 
-  .field-group.is-expanded {
-    min-width: 200px;
-    max-width: 400px;
+  .modal-card {
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
   }
 
-  @media screen and (max-width: 1200px) {
-    .filter-controls {
-      flex-direction: column;
-      align-items: stretch;
-    }
+  .modal-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .filter-controls-right {
-      flex-wrap: wrap;
-      margin-left: 0;
-    }
+  .field {
+    height: 100%;
+    margin: 0;
+  }
 
-    .field-group.is-expanded {
-      max-width: none;
-    }
+  /* 更新模態框相關樣式 */
+  :global(.modal) {
+    z-index: 1000; /* 確保模態框在導航欄上方 */
+  }
+
+  :global(.modal-background) {
+    z-index: 1001;
+  }
+
+  :global(.modal-card) {
+    z-index: 1002;
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+  }
+
+  .modal-card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 防止內容溢出 */
+  }
+
+  .field {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* 防止內容溢出 */
+  }
+
+  /* 添加排序標題樣式 */
+  .sort-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .sort-header:hover {
+    color: var(--theme-primary);
+  }
+
+  .sort-header .icon {
+    font-size: 0.8em;
+    opacity: 0.7;
+  }
+
+  /* 調整表格標題樣式 */
+  .table th {
+    white-space: nowrap;
+  }
+
+  .table th a {
+    text-decoration: none;
+  }
+
+  /* 更新浮動標籤樣式 */
+  .field.has-floating-label,
+  .select,
+  .control {
+    position: relative;
+    margin-top: 1.5em;
+  }
+
+  .floating-label,
+  .select label,
+  .control label,
+  .field.has-floating-label > :first-child:not(input):not(select) {
+    position: absolute;
+    top: -1.5em;
+    left: 0;
+    font-size: 0.75em;
+    color: #666;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  /* 統一所有輸入框高度 */
+  .input,
+  .select select,
+  input[type="date"] {
+    height: 2.5em;
+  }
+
+  /* 日期輸入框寬度 */
+  input[type="date"] {
+    width: 120px;
+  }
+
+  /* 確保所有控制項底部對齊 */
+  .filter-controls,
+  .filter-controls-right {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+  }
+
+  .filter-controls-right {
+    margin-left: auto;
   }
 </style> 
