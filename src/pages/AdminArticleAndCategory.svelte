@@ -106,14 +106,16 @@
   let searchKeyword = "";
 
   // 修改文章排序相關變量
-  let articleSort = "title"; // 'title' | 'created' | 'updated' | 'category'
+  let articleSort = null; // 當前排序的欄位，null 表示未排序
   let articleSortDirection = "asc";
 
   // 修改文章排序相關函數
   const toggleArticleSort = (field) => {
     if (articleSort === field) {
+      // 如果點擊當前排序欄位，切換排序方向
       articleSortDirection = articleSortDirection === "asc" ? "desc" : "asc";
     } else {
+      // 如果點擊新欄位，設置為該欄位並重置為升序
       articleSort = field;
       articleSortDirection = "asc";
     }
@@ -265,14 +267,16 @@
 
   // 添加類別篩選相關變量
   let categorySearchKeyword = "";
-  let categorySort = "name"; // 'name' | 'count'
+  let categorySort = null; // 當前排序的欄位，null 表示未排序
   let categorySortDirection = "asc"; // 'asc' | 'desc'
 
   // 修改類別排序相關函數
   const toggleSort = (field) => {
     if (categorySort === field) {
+      // 如果點擊當前排序欄位，切換排序方向
       categorySortDirection = categorySortDirection === "asc" ? "desc" : "asc";
     } else {
+      // 如果點擊新欄位，設置為該欄位並重置為升序
       categorySort = field;
       categorySortDirection = "asc";
     }
@@ -492,11 +496,12 @@
                      on:click={() => toggleArticleSort('title')}
                   >
                     標題
-                    {#if articleSort === 'title'}
-                      <span class="icon">
-                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
-                      </span>
-                    {/if}
+                    <span class="icon">
+                      <i class="fas {articleSort === 'title' 
+                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
+                        : 'fa-sort'}">
+                      </i>
+                    </span>
                   </a>
                 </th>
                 <th class="is-narrow">
@@ -505,11 +510,12 @@
                      on:click={() => toggleArticleSort('category')}
                   >
                     分類
-                    {#if articleSort === 'category'}
-                      <span class="icon">
-                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
-                      </span>
-                    {/if}
+                    <span class="icon">
+                      <i class="fas {articleSort === 'category' 
+                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
+                        : 'fa-sort'}">
+                      </i>
+                    </span>
                   </a>
                 </th>
                 <th class="date-column">
@@ -518,11 +524,12 @@
                      on:click={() => toggleArticleSort('created')}
                   >
                     發布日期
-                    {#if articleSort === 'created'}
-                      <span class="icon">
-                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
-                      </span>
-                    {/if}
+                    <span class="icon">
+                      <i class="fas {articleSort === 'created' 
+                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
+                        : 'fa-sort'}">
+                      </i>
+                    </span>
                   </a>
                 </th>
                 <th class="date-column">
@@ -531,11 +538,12 @@
                      on:click={() => toggleArticleSort('updated')}
                   >
                     修改日期
-                    {#if articleSort === 'updated'}
-                      <span class="icon">
-                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
-                      </span>
-                    {/if}
+                    <span class="icon">
+                      <i class="fas {articleSort === 'updated' 
+                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
+                        : 'fa-sort'}">
+                      </i>
+                    </span>
                   </a>
                 </th>
                 <th class="is-narrow has-text-centered">操作</th>
@@ -652,11 +660,12 @@
                      on:click={() => toggleSort('name')}
                   >
                     類別名稱
-                    {#if categorySort === 'name'}
-                      <span class="icon">
-                        <i class="fas fa-sort-{categorySortDirection === 'asc' ? 'up' : 'down'}"></i>
-                      </span>
-                    {/if}
+                    <span class="icon">
+                      <i class="fas {categorySort === 'name' 
+                        ? `fa-sort-${categorySortDirection === 'asc' ? 'up' : 'down'}`
+                        : 'fa-sort'}">
+                      </i>
+                    </span>
                   </a>
                 </th>
                 <th>
@@ -665,11 +674,12 @@
                      on:click={() => toggleSort('count')}
                   >
                     文章數量
-                    {#if categorySort === 'count'}
-                      <span class="icon">
-                        <i class="fas fa-sort-{categorySortDirection === 'asc' ? 'up' : 'down'}"></i>
-                      </span>
-                    {/if}
+                    <span class="icon">
+                      <i class="fas {categorySort === 'count' 
+                        ? `fa-sort-${categorySortDirection === 'asc' ? 'up' : 'down'}`
+                        : 'fa-sort'}">
+                      </i>
+                    </span>
                   </a>
                 </th>
                 <th>操作</th>
@@ -999,6 +1009,7 @@
     gap: 0.5rem;
     color: inherit;
     cursor: pointer;
+    user-select: none;
   }
 
   .sort-header:hover {
@@ -1008,6 +1019,11 @@
   .sort-header .icon {
     font-size: 0.8em;
     opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .sort-header:hover .icon {
+    opacity: 1;
   }
 
   /* 調整表格標題樣式 */
