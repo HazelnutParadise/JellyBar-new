@@ -109,6 +109,16 @@
   let articleSort = "title"; // 'title' | 'created' | 'updated' | 'category'
   let articleSortDirection = "asc";
 
+  // 修改文章排序相關函數
+  const toggleArticleSort = (field) => {
+    if (articleSort === field) {
+      articleSortDirection = articleSortDirection === "asc" ? "desc" : "asc";
+    } else {
+      articleSort = field;
+      articleSortDirection = "asc";
+    }
+  };
+
   // 更新篩選和排序邏輯
   $: filteredArticles = articles
     .filter(article => {
@@ -149,13 +159,13 @@
       
       switch (articleSort) {
         case "title":
-          return direction * a.title.localeCompare(b.title);
+          return direction * a.title.localeCompare(b.title, 'zh-TW');
         case "created":
           return direction * (new Date(a.created_at) - new Date(b.created_at));
         case "updated":
           return direction * (new Date(a.updated_at) - new Date(b.updated_at));
         case "category":
-          return direction * a.category.localeCompare(b.category);
+          return direction * a.category.localeCompare(b.category, 'zh-TW');
         default:
           return 0;
       }
@@ -258,22 +268,7 @@
   let categorySort = "name"; // 'name' | 'count'
   let categorySortDirection = "asc"; // 'asc' | 'desc'
 
-  // 篩選和排序類別的計算屬性
-  $: filteredCategories = categories
-    .filter(category => {
-      if (!categorySearchKeyword.trim()) return true;
-      return category.name.toLowerCase().includes(categorySearchKeyword.toLowerCase());
-    })
-    .sort((a, b) => {
-      const direction = categorySortDirection === "asc" ? 1 : -1;
-      if (categorySort === "name") {
-        return direction * a.name.localeCompare(b.name);
-      } else {
-        return direction * (a.articleCount - b.articleCount);
-      }
-    });
-
-  // 切換排序方向
+  // 修改類別排序相關函數
   const toggleSort = (field) => {
     if (categorySort === field) {
       categorySortDirection = categorySortDirection === "asc" ? "desc" : "asc";
@@ -282,6 +277,21 @@
       categorySortDirection = "asc";
     }
   };
+
+  // 更新類別篩選和排序邏輯
+  $: filteredCategories = categories
+    .filter(category => {
+      if (!categorySearchKeyword.trim()) return true;
+      return category.name.toLowerCase().includes(categorySearchKeyword.toLowerCase());
+    })
+    .sort((a, b) => {
+      const direction = categorySortDirection === "asc" ? 1 : -1;
+      if (categorySort === "name") {
+        return direction * a.name.localeCompare(b.name, 'zh-TW');
+      } else {
+        return direction * (a.articleCount - b.articleCount);
+      }
+    });
 
   onMount(() => {
     updateCategoryCount();
