@@ -669,6 +669,7 @@
                 <th>
                   <a href="javascript:void(0)"
                      class="sort-header {categorySort === 'name' ? 'active' : ''}"
+                     data-sort="name"
                      on:click={() => toggleSort('name')}
                   >
                     類別名稱
@@ -1304,7 +1305,7 @@
     pointer-events: none !important;
   }
 
-  /* 添加活動狀態樣式 */
+  /* 添加活狀態樣式 */
   .sort-header.active {
     color: var(--theme-primary);
   }
@@ -1337,6 +1338,39 @@
 
   /* 降序狀態：顯示向下箭頭 */
   .sort-header.active[data-direction="desc"] .icon i.fa-sort-down {
+    display: inline-block;
+  }
+
+  /* 調整排序圖標相關樣式，確保圖標不會重疊或顯示不當 */
+  .sort-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sort-header .icon {
+    font-size: 0.8em;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .sort-header.active .icon {
+    opacity: 1;
+  }
+
+  .sort-header .icon i {
+    display: none;
+  }
+
+  .sort-header.active .icon i.fa-sort-up,
+  .sort-header.active .icon i.fa-sort-down {
+    display: inline-block;
+  }
+
+  .sort-header:not(.active) .icon i.fa-sort {
     display: inline-block;
   }
 </style> 
