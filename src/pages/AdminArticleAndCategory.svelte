@@ -17,12 +17,14 @@
       id: 1,
       title: "Rust繁中簡學！",
       created_at: "2024-03-20",
+      updated_at: "2024-05-21",
       category: "Rust"
     },
     {
       id: 2,
       title: "Web開發教學",
       created_at: "2024-03-21",
+      updated_at: "2024-03-21",
       category: "Web"
     }
   ];
@@ -88,28 +90,24 @@
 
   let showArticles = true;
 
-  // 新增日期篩選
+  // 修改日期篩選相關變數
   let dateFilter = {
-    from: null,
-    to: null
+    created: {
+      from: null,
+      to: null
+    },
+    updated: {
+      from: null, 
+      to: null
+    }
   };
 
   // 新增搜尋關鍵字
   let searchKeyword = "";
 
-  // 添加文章排序相關變量
-  let articleSort = "title"; // 'title' | 'date' | 'category'
-  let articleSortDirection = "asc"; // 'asc' | 'desc'
-
-  // 更新文章排序邏輯
-  const toggleArticleSort = (field) => {
-    if (articleSort === field) {
-      articleSortDirection = articleSortDirection === "asc" ? "desc" : "asc";
-    } else {
-      articleSort = field;
-      articleSortDirection = "asc";
-    }
-  };
+  // 修改文章排序相關變量
+  let articleSort = "title"; // 'title' | 'created' | 'updated' | 'category'
+  let articleSortDirection = "asc";
 
   // 更新篩選和排序邏輯
   $: filteredArticles = articles
@@ -119,11 +117,24 @@
         : true;
 
       let matchDate = true;
-      if (dateFilter.from) {
-        matchDate = matchDate && new Date(article.created_at) >= new Date(dateFilter.from);
+      // 檢查發布日期篩選
+      if (dateFilter.created.from || dateFilter.created.to) {
+        if (dateFilter.created.from) {
+          matchDate = matchDate && new Date(article.created_at) >= new Date(dateFilter.created.from);
+        }
+        if (dateFilter.created.to) {
+          matchDate = matchDate && new Date(article.created_at) <= new Date(dateFilter.created.to);
+        }
       }
-      if (dateFilter.to) {
-        matchDate = matchDate && new Date(article.created_at) <= new Date(dateFilter.to);
+      
+      // 檢查修改日期篩選
+      if (dateFilter.updated.from || dateFilter.updated.to) {
+        if (dateFilter.updated.from) {
+          matchDate = matchDate && new Date(article.updated_at) >= new Date(dateFilter.updated.from);
+        }
+        if (dateFilter.updated.to) {
+          matchDate = matchDate && new Date(article.updated_at) <= new Date(dateFilter.updated.to);
+        }
       }
 
       let matchSearch = true;
@@ -139,8 +150,10 @@
       switch (articleSort) {
         case "title":
           return direction * a.title.localeCompare(b.title);
-        case "date":
+        case "created":
           return direction * (new Date(a.created_at) - new Date(b.created_at));
+        case "updated":
+          return direction * (new Date(a.updated_at) - new Date(b.updated_at));
         case "category":
           return direction * a.category.localeCompare(b.category);
         default:
@@ -152,8 +165,14 @@
   const clearAllFilters = () => {
     selectedCategory = null;
     dateFilter = {
-      from: null,
-      to: null
+      created: {
+        from: null,
+        to: null
+      },
+      updated: {
+        from: null,
+        to: null
+      }
     };
     searchKeyword = "";
   };
@@ -181,10 +200,17 @@
     newCategory = "";
   };
 
-  // 新增日期驗證
-  $: if (dateFilter.from && dateFilter.to) {
-    if (new Date(dateFilter.to) < new Date(dateFilter.from)) {
-      dateFilter.to = dateFilter.from;
+  // 修改日期驗證
+  $: {
+    if (dateFilter.created.from && dateFilter.created.to) {
+      if (new Date(dateFilter.created.to) < new Date(dateFilter.created.from)) {
+        dateFilter.created.to = dateFilter.created.from;
+      }
+    }
+    if (dateFilter.updated.from && dateFilter.updated.to) {
+      if (new Date(dateFilter.updated.to) < new Date(dateFilter.updated.from)) {
+        dateFilter.updated.to = dateFilter.updated.from;
+      }
     }
   }
 
@@ -329,26 +355,56 @@
               </div>
 
               <div class="date-field-group">
-                <div class="date-field">
-                  <label for="dateFilterFrom">開始日期</label>
-                  <input 
-                    id="dateFilterFrom"
-                    type="date" 
-                    class="input" 
-                    bind:value={dateFilter.from}
-                    max={dateFilter.to || undefined}
-                  >
+                <div class="date-group">
+                  <div class="date-label">發布日期</div>
+                  <div class="date-inputs">
+                    <div class="date-field">
+                      <label for="createdDateFrom">從</label>
+                      <input 
+                        id="createdDateFrom"
+                        type="date" 
+                        class="input" 
+                        bind:value={dateFilter.created.from}
+                        max={dateFilter.created.to || undefined}
+                      >
+                    </div>
+                    <div class="date-field">
+                      <label for="createdDateTo">至</label>
+                      <input 
+                        id="createdDateTo"
+                        type="date" 
+                        class="input" 
+                        bind:value={dateFilter.created.to}
+                        min={dateFilter.created.from || undefined}
+                      >
+                    </div>
+                  </div>
                 </div>
-                
-                <div class="date-field">
-                  <label for="dateFilterTo">結束日期</label>
-                  <input 
-                    id="dateFilterTo"
-                    type="date" 
-                    class="input" 
-                    bind:value={dateFilter.to}
-                    min={dateFilter.from || undefined}
-                  >
+
+                <div class="date-group">
+                  <div class="date-label">修改日期</div>
+                  <div class="date-inputs">
+                    <div class="date-field">
+                      <label for="updatedDateFrom">從</label>
+                      <input 
+                        id="updatedDateFrom"
+                        type="date" 
+                        class="input" 
+                        bind:value={dateFilter.updated.from}
+                        max={dateFilter.updated.to || undefined}
+                      >
+                    </div>
+                    <div class="date-field">
+                      <label for="updatedDateTo">至</label>
+                      <input 
+                        id="updatedDateTo"
+                        type="date" 
+                        class="input" 
+                        bind:value={dateFilter.updated.to}
+                        min={dateFilter.updated.from || undefined}
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -364,7 +420,7 @@
           </div>
 
           <div class="filter-tags">
-            {#if selectedCategory || dateFilter.from || dateFilter.to || searchKeyword}
+            {#if selectedCategory || (dateFilter.created.from || dateFilter.created.to || dateFilter.updated.from || dateFilter.updated.to) || searchKeyword}
               <div class="tags">
                 {#if searchKeyword}
                   <span class="tag is-medium is-warning">
@@ -378,16 +434,28 @@
                     <button class="delete" on:click={() => selectedCategory = null}></button>
                   </span>
                 {/if}
-                {#if dateFilter.from}
+                {#if dateFilter.created.from}
                   <span class="tag is-medium is-success">
-                    從：{dateFilter.from}
-                    <button class="delete" on:click={() => dateFilter.from = null}></button>
+                    發布日期從：{dateFilter.created.from}
+                    <button class="delete" on:click={() => dateFilter.created.from = null}></button>
                   </span>
                 {/if}
-                {#if dateFilter.to}
+                {#if dateFilter.created.to}
                   <span class="tag is-medium is-success">
-                    至：{dateFilter.to}
-                    <button class="delete" on:click={() => dateFilter.to = null}></button>
+                    發布日期至：{dateFilter.created.to}
+                    <button class="delete" on:click={() => dateFilter.created.to = null}></button>
+                  </span>
+                {/if}
+                {#if dateFilter.updated.from}
+                  <span class="tag is-medium is-success">
+                    修改日期從：{dateFilter.updated.from}
+                    <button class="delete" on:click={() => dateFilter.updated.from = null}></button>
+                  </span>
+                {/if}
+                {#if dateFilter.updated.to}
+                  <span class="tag is-medium is-success">
+                    修改日期至：{dateFilter.updated.to}
+                    <button class="delete" on:click={() => dateFilter.updated.to = null}></button>
                   </span>
                 {/if}
                 <button 
@@ -434,13 +502,26 @@
                     {/if}
                   </a>
                 </th>
-                <th class="is-narrow">
+                <th class="date-column">
                   <a href="javascript:void(0)" 
                      class="sort-header"
-                     on:click={() => toggleArticleSort('date')}
+                     on:click={() => toggleArticleSort('created')}
                   >
                     發布日期
-                    {#if articleSort === 'date'}
+                    {#if articleSort === 'created'}
+                      <span class="icon">
+                        <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
+                      </span>
+                    {/if}
+                  </a>
+                </th>
+                <th class="date-column">
+                  <a href="javascript:void(0)" 
+                     class="sort-header"
+                     on:click={() => toggleArticleSort('updated')}
+                  >
+                    修改日期
+                    {#if articleSort === 'updated'}
                       <span class="icon">
                         <i class="fas fa-sort-{articleSortDirection === 'asc' ? 'up' : 'down'}"></i>
                       </span>
@@ -468,6 +549,9 @@
                   </td>
                   <td class="has-text-grey">
                     {article.created_at}
+                  </td>
+                  <td class="has-text-grey">
+                    {article.updated_at}
                   </td>
                   <td>
                     <div class="buttons is-centered are-small">
@@ -959,6 +1043,7 @@
   .date-field-group {
     display: flex;
     gap: 1rem;
+    align-items: flex-end;
   }
 
   .date-field {
@@ -1006,5 +1091,91 @@
     z-index: 4;
     border-width: 2px;
     margin-top: -0.375em;
+  }
+
+  .date-column {
+    min-width: 120px;
+    white-space: nowrap;
+  }
+
+  .date-field-group {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+  }
+
+  .date-type-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .date-type-select label {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .date-type-select .select {
+    min-width: 120px;
+  }
+
+  .date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .date-field label {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .date-field input {
+    width: 160px;
+    height: 2.5em;
+  }
+
+  .date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background: #fafafa;
+  }
+
+  .date-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+
+  .date-inputs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .date-field label {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  .date-field input {
+    width: 140px;
+    height: 2.25em;
+  }
+
+  /* 調整日期欄位寬度 */
+  .date-column {
+    min-width: 130px;
+    white-space: nowrap;
   }
 </style> 
