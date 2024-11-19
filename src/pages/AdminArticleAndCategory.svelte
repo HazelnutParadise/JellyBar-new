@@ -399,6 +399,10 @@
       categoryTable = null;
     }
   });
+
+  const handleCategoryClick = (category) => {
+    viewCategoryArticles(category);
+  };
 </script>
 
 <svelte:head>
@@ -737,7 +741,12 @@
                         </div>
                       </div>
                     {:else}
-                      {category.name}
+                      <button 
+                        class="category-link"
+                        on:click={() => handleCategoryClick(category)}
+                      >
+                        {category.name}
+                      </button>
                     {/if}
                   </td>
                   <td>
@@ -781,7 +790,7 @@
 </div>
 <Footer {siteName} />
 
-<!-- 修改模態���的內容部分���用 VditorEditor 組件 -->
+<!-- 修改模態的內容部分用 VditorEditor 組件 -->
 {#if editingCategoryPage}
   <div class="modal is-active">
     <div class="modal-background" on:click={cleanupEditor}></div>
@@ -1489,5 +1498,34 @@
   .buttons.is-centered {
     white-space: nowrap;
     min-width: 120px;
+  }
+
+  .category-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--theme-primary);
+    cursor: pointer;
+    font-size: 1em;
+    text-align: left;
+    transition: color 0.2s ease;
+  }
+
+  .category-link:hover {
+    color: var(--theme-secondary);
+    text-decoration: underline;
+  }
+
+  .category-link:focus {
+    outline: none;
+    color: var(--theme-secondary);
+  }
+
+  /* 確保按鈕在表格中對齊 */
+  .table td .category-link {
+    display: inline-block;
+    line-height: 1.5;
+    margin: -0.5em 0;
+    padding: 0.5em 0;
   }
 </style> 
