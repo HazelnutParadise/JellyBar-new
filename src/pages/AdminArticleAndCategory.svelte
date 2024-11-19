@@ -38,12 +38,12 @@
   let editingCategory = null;
   let editingCategoryName = "";
 
-  const handleEditCategory = (category) => {
+  const handleEditCategory = async (category) => {
     editingCategory = category;
     editingCategoryName = category.name;
   };
 
-  const handleSaveCategory = () => {
+  const handleSaveCategory = async () => {
     if (!editingCategoryName.trim()) {
       alert('類別名稱不能為空！');
       return;
@@ -54,14 +54,40 @@
       return;
     }
 
-    categories = categories.map(c =>
-      c.id === editingCategory.id
-        ? { ...c, name: editingCategoryName.trim() }
-        : c
-    );
+    try {
+      // 發送更新請求到後端 API
+      const response = await fetch(`/api/categories/${editingCategory.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: editingCategoryName.trim() }),
+      });
 
-    editingCategory = null;
-    editingCategoryName = "";
+      if (!response.ok) {
+        throw new Error('更新類別失敗');
+      }
+
+      categories = categories.map(c =>
+        c.id === editingCategory.id
+          ? { ...c, name: editingCategoryName.trim() }
+          : c
+      );
+
+      // 更新相關文章的類別名稱
+      articles = articles.map(article =>
+        article.category === editingCategory.name
+          ? { ...article, category: editingCategoryName.trim() }
+          : article
+      );
+
+      editingCategory = null;
+      editingCategoryName = "";
+      alert('類別更新成功！');
+    } catch (error) {
+      console.error('更新類別時發生錯誤:', error);
+      alert('更新類別失敗：' + error.message);
+    }
   };
 
   const handleDeleteCategory = async (id) => {
@@ -71,14 +97,28 @@
       const confirmMessage = `警告：「${category.name}」類別下還有 ${category.articleCount} 篇文章！\n確定要刪除嗎？`;
       if (!confirm(confirmMessage)) return;
 
-      // 二次確認
       const secondConfirm = `最後確認：刪除「${category.name}」類別將會影響 ${category.articleCount} 篇文章的分類。\n此操作無法復原，確定要繼續嗎？`;
       if (!confirm(secondConfirm)) return;
     } else {
       if (!confirm(`確定要刪除「${category.name}」類別嗎？`)) return;
     }
 
-    categories = categories.filter(category => category.id !== id);
+    try {
+      // 發送刪除請求到後端 API
+      const response = await fetch(`/api/categories/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('刪除類別失敗');
+      }
+
+      categories = categories.filter(category => category.id !== id);
+      alert('類別已成功刪除！');
+    } catch (error) {
+      console.error('刪除類別時發生錯誤:', error);
+      alert('刪除類別失敗：' + error.message);
+    }
   };
 
   let selectedCategory = null;
@@ -196,21 +236,6 @@
     }));
   };
 
-  const handleAddCategory = () => {
-    if (!newCategory.trim()) return;
-    if (categories.some(c => c.name === newCategory.trim())) {
-      alert('類別名稱已存在！');
-      return;
-    }
-
-    categories = [...categories, {
-      id: categories.length + 1,
-      name: newCategory.trim(),
-      articleCount: 0
-    }];
-    newCategory = "";
-  };
-
   // 修改日期驗證
   $: {
     if (dateFilter.created.from && dateFilter.created.to) {
@@ -229,29 +254,15 @@
   let editingCategoryPage = null;
   let categoryPageContent = "";
 
-  // 簡化編輯類別頁面的處理函數
-  const handleEditCategoryPage = async (category) => {
-    editingCategoryPage = category;
-    // 這裡應該從後端獲取類別頁面內容
-    categoryPageContent = "";  // 暫時為空，實際應該從後端獲取
-  };
-
-  // 簡化保存函數
-  const handleSaveCategoryPage = async () => {
-    if (!editingCategoryPage) return;
-
-    try {
-      // 這裡應該發送請求到後端保存類別頁面內容
-      console.log('Saving content:', categoryPageContent);
-      alert('類別頁面保存成功！');
-      editingCategoryPage = null;
-    } catch (error) {
-      alert('保存失敗：' + error.message);
+  // 修改 script 部分，添加或更新 cleanupEditor 函數
+  const cleanupEditor = async () => {
+    // 如果內容有變更，則顯示確認對話框
+    if (categoryPageContent.trim()) {
+      const confirmed = confirm('確定要離開嗎？未儲存的變更將會遺失。');
+      if (!confirmed) {
+        return;
+      }
     }
-  };
-
-  // 簡化清理函數
-  const cleanupEditor = () => {
     editingCategoryPage = null;
     categoryPageContent = "";
   };
@@ -294,14 +305,12 @@
 
   // 修改初始化表格的函數
   const initTables = async () => {
-    // 確保 jQuery 和 DataTables 已載入
     if (!window.jQuery?.fn?.DataTable) {
       console.error('DataTables 未載入');
       return;
     }
 
     try {
-      // 先清理現有表格
       if (articleTable) {
         articleTable.destroy();
         articleTable = null;
@@ -311,9 +320,9 @@
         categoryTable = null;
       }
 
-      // 等待 DOM 更新
       await new Promise(resolve => setTimeout(resolve, 0));
 
+      // 統一的 DataTable 配置
       const commonConfig = {
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
@@ -323,7 +332,28 @@
         dom: 'rtip',
         destroy: true,
         responsive: true,
-        autoWidth: false
+        autoWidth: false,
+        pagingType: 'simple_numbers',
+        // 添加以下設置來禁用懸停效果
+        rowCallback: function(row, data, index) {
+          jQuery(row).off('mouseenter mouseleave');
+        },
+        createdRow: function(row, data, dataIndex) {
+          jQuery(row).css('background-color', 'white');
+          jQuery(row).hover(
+            function() { jQuery(this).css('background-color', 'white'); },
+            function() { jQuery(this).css('background-color', 'white'); }
+          );
+        },
+        drawCallback: function() {
+          // 原有的代碼
+          jQuery('.paginate_button').addClass('button is-small');
+          jQuery('.paginate_button.current').addClass('is-primary');
+          jQuery('.dataTables_info').addClass('has-text-grey is-size-7');
+          
+          // 添加以下代碼來確保所有行的背景色
+          jQuery(this).find('tbody tr').css('background-color', 'white');
+        }
       };
 
       if (showArticles) {
@@ -371,7 +401,7 @@
     }
   }
 
-  // 修改切換函數
+  // ���改切換函數
   const handleTabChange = async (isArticles) => {
     showArticles = isArticles;
     // 使用 RAF 確保在瀏覽器重繪後執行
@@ -403,6 +433,134 @@
   const handleCategoryClick = (category) => {
     viewCategoryArticles(category);
   };
+
+  // 文章相關函數
+  const handleDelete = async (articleId) => {
+    if (!confirm('確定要刪除這篇文章嗎？此操作無法復原。')) {
+      return;
+    }
+
+    try {
+      // 發送刪除請求到後端 API
+      const response = await fetch(`/api/articles/${articleId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('刪除文章失敗');
+      }
+
+      // 從前端狀態中移除文章
+      articles = articles.filter(article => article.id !== articleId);
+      updateCategoryCount(); // 更新類別文章數
+      alert('文章已成功刪除！');
+    } catch (error) {
+      console.error('刪除文章時發生錯誤:', error);
+      alert('刪除文章失敗：' + error.message);
+    }
+  };
+
+  const handleAddCategory = async () => {
+    if (!newCategory.trim()) {
+      alert('類別名稱不能為空！');
+      return;
+    }
+
+    if (categories.some(c => c.name === newCategory.trim())) {
+      alert('類別名稱已存在！');
+      return;
+    }
+
+    try {
+      // 發送新增請求到後端 API
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: newCategory.trim() }),
+      });
+
+      if (!response.ok) {
+        throw new Error('新增類別失敗');
+      }
+
+      const newCategoryData = await response.json();
+      categories = [...categories, {
+        id: newCategoryData.id,
+        name: newCategory.trim(),
+        articleCount: 0
+      }];
+      newCategory = "";
+      alert('類別新增成功！');
+    } catch (error) {
+      console.error('新增類別時發生錯誤:', error);
+      alert('新增類別失敗：' + error.message);
+    }
+  };
+
+  const handleEditCategoryPage = async (category) => {
+    try {
+      // 從後端獲取類別頁面內容
+      const response = await fetch(`/api/categories/${category.id}/page`);
+      if (!response.ok) {
+        throw new Error('獲取類別頁面內容失敗');
+      }
+      const data = await response.json();
+      editingCategoryPage = category;
+      categoryPageContent = data.content || '';
+    } catch (error) {
+      console.error('獲取類別頁面內容時發生錯誤:', error);
+      alert('獲取類別頁面內容失敗：' + error.message);
+    }
+  };
+
+  const handleSaveCategoryPage = async () => {
+    if (!editingCategoryPage) return;
+
+    try {
+      // 發送請求到後端保存類別頁面內容
+      const response = await fetch(`/api/categories/${editingCategoryPage.id}/page`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: categoryPageContent }),
+      });
+
+      if (!response.ok) {
+        throw new Error('保存類別頁面失敗');
+      }
+
+      alert('類別頁面保存成功！');
+      editingCategoryPage = null;
+      categoryPageContent = "";
+    } catch (error) {
+      console.error('保存類別頁面時發生錯誤:', error);
+      alert('保存失敗：' + error.message);
+    }
+  };
+
+  // 初始化數據
+  onMount(async () => {
+    try {
+      // 獲取文章列表
+      const articlesResponse = await fetch('/api/articles');
+      if (!articlesResponse.ok) throw new Error('獲取文章列表失敗');
+      articles = await articlesResponse.json();
+
+      // 獲取類別列表
+      const categoriesResponse = await fetch('/api/categories');
+      if (!categoriesResponse.ok) throw new Error('獲取類別列表失敗');
+      categories = await categoriesResponse.json();
+
+      updateCategoryCount();
+      await initTables();
+    } catch (error) {
+      console.error('初始化數據時發生錯誤:', error);
+      alert('載入數據失敗：' + error.message);
+    }
+  });
 </script>
 
 <svelte:head>
@@ -660,7 +818,7 @@
                     <p class="has-text-grey">
                       {selectedCategory
                         ? `「${selectedCategory.name}」類別目前沒有文章`
-                        : '目前沒有任何文章'}
+                        : '前沒有任何文章'}
                     </p>
                   </td>
                 </tr>
@@ -790,10 +948,10 @@
 </div>
 <Footer {siteName} />
 
-<!-- 修改模態的內容部分用 VditorEditor 組件 -->
+<!-- 修改模態的部分 -->
 {#if editingCategoryPage}
   <div class="modal is-active">
-    <div class="modal-background" on:click={cleanupEditor}></div>
+    <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">編輯「{editingCategoryPage.name}」類別頁面</p>
@@ -858,6 +1016,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .article-title a {
+    color: var(--theme-primary);
+    text-decoration: none;
   }
 
   .article-title a:hover {
@@ -994,7 +1157,7 @@
     margin: 0;
   }
 
-  /* 更模態相關樣式 */
+  /* 更模態相關���式 */
   :global(.modal) {
     z-index: 1000; /* 確保模態框在導航欄上方 */
   }
@@ -1243,115 +1406,6 @@
   .sort-header .icon {
     font-size: 0.8em;
     opacity: 0.7;
-    transition: transform 0.2s ease;
-  }
-
-  .sort-header:hover .icon {
-    opacity: 1;
-  }
-
-  /* 新增這些樣式來控制圖標的旋轉 */
-  .sort-header .icon .fa-sort-up {
-    transform: translateY(2px);
-  }
-
-  .sort-header .icon .fa-sort-down {
-    transform: translateY(-2px);
-  }
-
-  .sort-header:hover .icon .fa-sort {
-    transform: scale(1.1);
-  }
-
-  .sort-header.active {
-    color: var(--theme-primary);
-    font-weight: 600;
-  }
-
-  .sort-header.active .icon {
-    opacity: 1;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .sort-header .icon {
-    position: relative;
-    width: 1em;
-    height: 1em;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .sort-header .icon i {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .hidden {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-
-  /* 添加活狀態樣式 */
-  .sort-header.active {
-    color: var(--theme-primary);
-  }
-
-  .sort-header.active .icon {
-    color: var(--theme-primary);
-  }
-
-  /* 新的圖標樣式 */
-  .sort-header .icon {
-    display: inline-block;
-    width: 1em;
-    margin-left: 0.5em;
-  }
-
-  /* 預設隱藏所有圖標 */
-  .sort-header .icon i {
-    display: none;
-  }
-
-  /* 未排序狀態：顯示預設圖標 */
-  .sort-header:not(.active) .icon i.fa-sort {
-    display: inline-block;
-  }
-
-  /* 升序狀態：顯示向上箭頭 */
-  .sort-header.active[data-direction="asc"] .icon i.fa-sort-up {
-    display: inline-block;
-  }
-
-  /* 降序狀態：顯示向下箭頭 */
-  .sort-header.active[data-direction="desc"] .icon i.fa-sort-down {
-    display: inline-block;
-  }
-
-  /* 調整排序圖標相關樣式，確保圖標不會重疊或顯示不當 */
-  .sort-header {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: inherit;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .sort-header .icon {
-    font-size: 0.8em;
-    opacity: 0.7;
     transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
@@ -1372,39 +1426,6 @@
     display: inline-block;
   }
 
-  /* 原有的樣式保持不變，添加 DataTables 相關樣式 */
-  :global(.dataTables_wrapper) {
-    padding: 0;  /* 移除預設內邊 */
-  }
-
-  :global(.dataTables_info) {
-    padding: 1rem 0;
-    color: #666;
-  }
-
-  :global(.dataTables_paginate) {
-    padding: 1rem 0;
-  }
-
-  :global(.dataTables_paginate .paginate_button) {
-    padding: 0.3em 0.8em;
-    margin: 0 0.2em;
-    border: 1px solid #dbdbdb;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  :global(.dataTables_paginate .paginate_button.current) {
-    background: var(--theme-primary);
-    color: white !important;
-    border-color: var(--theme-primary);
-  }
-
-  :global(.dataTables_paginate .paginate_button:hover) {
-    background: #f5f5f5;
-    color: var(--theme-primary) !important;
-  }
-
   /* 調整表格容器樣式 */
   .table-container {
     margin-bottom: 2rem;
@@ -1413,91 +1434,6 @@
   /* 確保操作按鈕列的寬度合適 */
   .table td:last-child {
     min-width: 300px;
-  }
-
-  /* 調整 DataTables 分頁樣式 */
-  :global(.dataTables_wrapper) {
-    padding: 0;
-  }
-
-  :global(.dataTables_info) {
-    padding: 1rem 0;
-    color: #666;
-  }
-
-  :global(.dataTables_paginate) {
-    padding: 1rem 0;
-  }
-
-  :global(.dataTables_paginate .paginate_button) {
-    padding: 0.3em 0.8em;
-    margin: 0 0.2em;
-    border: 1px solid #dbdbdb;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  :global(.dataTables_paginate .paginate_button.current) {
-    background: var(--theme-primary);
-    color: white !important;
-    border-color: var(--theme-primary);
-  }
-
-  :global(.dataTables_paginate .paginate_button:hover) {
-    background: #f5f5f5;
-    color: var(--theme-primary) !important;
-  }
-
-  /* 調整表格樣式 */
-  :global(.dataTables_wrapper) {
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  :global(table.dataTable) {
-    width: 100% !important;
-    margin: 0 !important;
-  }
-
-  :global(table.dataTable thead th) {
-    padding: 12px 8px;
-    white-space: nowrap;
-  }
-
-  :global(table.dataTable tbody td) {
-    padding: 12px 8px;
-  }
-
-  /* 確保表格容器不會溢出 */
-  .table-container {
-    width: 100%;
-    overflow-x: auto;
-    margin-bottom: 2rem;
-    background: white;
-    border-radius: 6px;
-    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1);
-  }
-
-  /* 調整分頁控制項樣式 */
-  :global(.dataTables_paginate) {
-    margin-top: 1rem !important;
-    padding: 0.5rem !important;
-  }
-
-  :global(.dataTables_info) {
-    margin-top: 1rem !important;
-    padding: 0.5rem !important;
-  }
-
-  /* 確保表格內容不會換行 */
-  .table td {
-    white-space: nowrap;
-  }
-
-  /* 調整操作按鈕列的寬度 */
-  .buttons.is-centered {
-    white-space: nowrap;
-    min-width: 120px;
   }
 
   .category-link {
@@ -1509,23 +1445,123 @@
     font-size: 1em;
     text-align: left;
     transition: color 0.2s ease;
+    text-decoration: none;
   }
 
   .category-link:hover {
-    color: var(--theme-secondary);
     text-decoration: underline;
   }
 
-  .category-link:focus {
-    outline: none;
-    color: var(--theme-secondary);
+  /* 移除表格行的懸停背景色變化 */
+  .table.is-hoverable tbody tr:hover {
+    background-color: transparent !important;
   }
 
-  /* 確保按鈕在表格中對齊 */
-  .table td .category-link {
-    display: inline-block;
-    line-height: 1.5;
-    margin: -0.5em 0;
-    padding: 0.5em 0;
+  /* 確保表格行的背景色始終保持白色 */
+  .table tbody tr {
+    background-color: white !important;
   }
+
+  /* 修改文章標題連結樣式 */
+  .article-title a {
+    color: var(--theme-primary);
+    transition: color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .article-title a:hover {
+    text-decoration: underline;
+  }
+
+  /* DataTable 相關樣式 */
+  :global(.dataTables_wrapper) {
+    padding: 1rem 0;
+  }
+
+  :global(.dataTables_info) {
+    padding: 0.5rem 0;
+    color: #666;
+    font-size: 0.875rem;
+  }
+
+  :global(.dataTables_paginate) {
+    padding: 0.5rem 0;
+  }
+
+  :global(.paginate_button) {
+    margin: 0 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  :global(.paginate_button.current) {
+    background-color: var(--theme-primary);
+    color: white;
+    border: none;
+  }
+
+  :global(.paginate_button:not(.current):hover) {
+    background-color: #f5f5f5;
+  }
+
+  :global(.dataTables_empty) {
+    padding: 2rem !important;
+    text-align: center;
+    color: #666;
+  }
+
+  /* 表格樣式統一 */
+  .table {
+    width: 100%;
+    margin-bottom: 0;
+    background-color: white;
+  }
+
+  .table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    padding: 0.75rem;
+  }
+
+  .table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+    background-color: white;
+  }
+
+  .table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table.is-hoverable tbody tr:hover {
+    background-color: transparent !important;
+  }
+
+  /* 確保表格容器樣式一致 */
+  .table-container {
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1);
+  }
+
+  /* 調整分頁控件的間距 */
+  :global(.dataTables_wrapper .dataTables_paginate) {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #dee2e6;
+  }
+
+  /* 調整信息顯示的間距 */
+  :global(.dataTables_wrapper .dataTables_info) {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+  }
+
 </style> 
