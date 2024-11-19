@@ -1,17 +1,17 @@
 <script>
-  import "../app.css"
-  import { onMount } from 'svelte'
-  import AdminNavbar from '../components/AdminNavbar.svelte'
-  import Footer from '../components/Footer.svelte'
-  import setTitle from '../js/setTitle'
-  import VditorEditor from '../components/VditorEditor.svelte'
+  import "../app.css";
+  import { onMount } from 'svelte';
+  import AdminNavbar from '../components/AdminNavbar.svelte';
+  import Footer from '../components/Footer.svelte';
+  import setTitle from '../js/setTitle';
+  import VditorEditor from '../components/VditorEditor.svelte';
 
   export let title;
   export let siteName;
-  setTitle(title, siteName)
+  setTitle(title, siteName);
 
   let newCategory = "";
-  
+
   let articles = [
     {
       id: 1,
@@ -37,7 +37,7 @@
 
   let editingCategory = null;
   let editingCategoryName = "";
-  
+
   const handleEditCategory = (category) => {
     editingCategory = category;
     editingCategoryName = category.name;
@@ -48,29 +48,29 @@
       alert('類別名稱不能為空！');
       return;
     }
-    
+
     if (categories.some(c => c.name === editingCategoryName.trim() && c.id !== editingCategory.id)) {
       alert('類別名稱已存在！');
       return;
     }
 
-    categories = categories.map(c => 
-      c.id === editingCategory.id 
+    categories = categories.map(c =>
+      c.id === editingCategory.id
         ? { ...c, name: editingCategoryName.trim() }
         : c
     );
-    
+
     editingCategory = null;
     editingCategoryName = "";
   };
 
   const handleDeleteCategory = async (id) => {
     const category = categories.find(c => c.id === id);
-    
+
     if (category.articleCount > 0) {
       const confirmMessage = `警告：「${category.name}」類別下還有 ${category.articleCount} 篇文章！\n確定要刪除嗎？`;
       if (!confirm(confirmMessage)) return;
-      
+
       // 二次確認
       const secondConfirm = `最後確認：刪除「${category.name}」類別將會影響 ${category.articleCount} 篇文章的分類。\n此操作無法復原，確定要繼續嗎？`;
       if (!confirm(secondConfirm)) return;
@@ -97,7 +97,7 @@
       to: null
     },
     updated: {
-      from: null, 
+      from: null,
       to: null
     }
   };
@@ -112,10 +112,8 @@
   // 修改文章排序相關函數
   const toggleArticleSort = (field) => {
     if (articleSort === field) {
-      // 如果點擊當前排序欄位，切換排序方向
       articleSortDirection = articleSortDirection === "asc" ? "desc" : "asc";
     } else {
-      // 如果點擊新欄位，設置為該欄位並重置為升序
       articleSort = field;
       articleSortDirection = "asc";
     }
@@ -124,7 +122,7 @@
   // 更新篩選和排序邏輯
   $: filteredArticles = articles
     .filter(article => {
-      let matchCategory = selectedCategory 
+      let matchCategory = selectedCategory
         ? article.category === selectedCategory.name
         : true;
 
@@ -138,7 +136,7 @@
           matchDate = matchDate && new Date(article.created_at) <= new Date(dateFilter.created.to);
         }
       }
-      
+
       // 檢查修改日期篩選
       if (dateFilter.updated.from || dateFilter.updated.to) {
         if (dateFilter.updated.from) {
@@ -157,8 +155,9 @@
       return matchCategory && matchDate && matchSearch;
     })
     .sort((a, b) => {
+      if (!articleSort) return 0; // 如果沒有選擇排序欄位，保持原順序
+
       const direction = articleSortDirection === "asc" ? 1 : -1;
-      
       switch (articleSort) {
         case "title":
           return direction * a.title.localeCompare(b.title, 'zh-TW');
@@ -203,7 +202,7 @@
       alert('類別名稱已存在！');
       return;
     }
-    
+
     categories = [...categories, {
       id: categories.length + 1,
       name: newCategory.trim(),
@@ -226,14 +225,6 @@
     }
   }
 
-  // 新增日期格式化函數
-  const formatDate = (date) => {
-    if (!date) return null;
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return null;
-    return d.toISOString().split('T')[0];
-  };
-
   // 添加新的狀態變量
   let editingCategoryPage = null;
   let categoryPageContent = "";
@@ -248,7 +239,7 @@
   // 簡化保存函數
   const handleSaveCategoryPage = async () => {
     if (!editingCategoryPage) return;
-    
+
     try {
       // 這裡應該發送請求到後端保存類別頁面內容
       console.log('Saving content:', categoryPageContent);
@@ -273,10 +264,8 @@
   // 修改類別排序相關函數
   const toggleSort = (field) => {
     if (categorySort === field) {
-      // 如果點擊當前排序欄位，切換排序方向
       categorySortDirection = categorySortDirection === "asc" ? "desc" : "asc";
     } else {
-      // 如果點擊新欄位，設置為該欄位並重置為升序
       categorySort = field;
       categorySortDirection = "asc";
     }
@@ -289,12 +278,15 @@
       return category.name.toLowerCase().includes(categorySearchKeyword.toLowerCase());
     })
     .sort((a, b) => {
+      if (!categorySort) return 0; // 如果沒有選擇排序欄位，保持原順序
+
       const direction = categorySortDirection === "asc" ? 1 : -1;
       if (categorySort === "name") {
         return direction * a.name.localeCompare(b.name, 'zh-TW');
-      } else {
+      } else if (categorySort === "count") {
         return direction * (a.articleCount - b.articleCount);
       }
+      return 0;
     });
 
   onMount(() => {
@@ -302,15 +294,15 @@
   });
 </script>
 
-<AdminNavbar siteName={siteName} />
+<AdminNavbar {siteName} />
 
 <div class="admin-container">
   <div class="container">
     <h1 class="title is-2 has-text-centered mb-6 mt-6">{title}</h1>
-    
+
     <div class="section-tabs mb-6">
-      <button 
-        class="section-tab" 
+      <button
+        class="section-tab"
         class:active={showArticles}
         on:click={() => showArticles = true}
       >
@@ -319,8 +311,8 @@
         </span>
         <span>文章管理</span>
       </button>
-      <button 
-        class="section-tab" 
+      <button
+        class="section-tab"
         class:active={!showArticles}
         on:click={() => showArticles = false}
       >
@@ -337,9 +329,9 @@
           <div class="filter-controls mb-3">
             <div class="field-group is-expanded">
               <div class="control has-icons-left">
-                <input 
-                  type="text" 
-                  class="input" 
+                <input
+                  type="text"
+                  class="input"
                   placeholder="搜尋文章標題..."
                   bind:value={searchKeyword}
                 >
@@ -353,7 +345,7 @@
               <div class="select-field">
                 <label>類別</label>
                 <div class="select">
-                  <select 
+                  <select
                     bind:value={selectedCategory}
                   >
                     <option value={null} disabled selected={!selectedCategory}>
@@ -374,20 +366,20 @@
                   <div class="date-inputs">
                     <div class="date-field">
                       <label for="createdDateFrom">從</label>
-                      <input 
+                      <input
                         id="createdDateFrom"
-                        type="date" 
-                        class="input" 
+                        type="date"
+                        class="input"
                         bind:value={dateFilter.created.from}
                         max={dateFilter.created.to || undefined}
                       >
                     </div>
                     <div class="date-field">
                       <label for="createdDateTo">至</label>
-                      <input 
+                      <input
                         id="createdDateTo"
-                        type="date" 
-                        class="input" 
+                        type="date"
+                        class="input"
                         bind:value={dateFilter.created.to}
                         min={dateFilter.created.from || undefined}
                       >
@@ -400,20 +392,20 @@
                   <div class="date-inputs">
                     <div class="date-field">
                       <label for="updatedDateFrom">從</label>
-                      <input 
+                      <input
                         id="updatedDateFrom"
-                        type="date" 
-                        class="input" 
+                        type="date"
+                        class="input"
                         bind:value={dateFilter.updated.from}
                         max={dateFilter.updated.to || undefined}
                       >
                     </div>
                     <div class="date-field">
                       <label for="updatedDateTo">至</label>
-                      <input 
+                      <input
                         id="updatedDateTo"
-                        type="date" 
-                        class="input" 
+                        type="date"
+                        class="input"
                         bind:value={dateFilter.updated.to}
                         min={dateFilter.updated.from || undefined}
                       >
@@ -472,7 +464,7 @@
                     <button class="delete" on:click={() => dateFilter.updated.to = null}></button>
                   </span>
                 {/if}
-                <button 
+                <button
                   class="button is-small is-light"
                   on:click={clearAllFilters}
                 >
@@ -491,58 +483,78 @@
               <tr>
                 <th class="is-narrow">#</th>
                 <th>
-                  <a href="javascript:void(0)" 
-                     class="sort-header"
+                  <a href="javascript:void(0)"
+                     class="sort-header {articleSort === 'title' ? 'active' : ''}"
                      on:click={() => toggleArticleSort('title')}
                   >
                     標題
                     <span class="icon">
-                      <i class="fas {articleSort === 'title' 
-                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
-                        : 'fa-sort'}">
-                      </i>
+                      {#if articleSort === 'title'}
+                        {#if articleSortDirection === 'asc'}
+                          <i class="fas fa-sort-up"></i>
+                        {:else}
+                          <i class="fas fa-sort-down"></i>
+                        {/if}
+                      {:else}
+                        <i class="fas fa-sort"></i>
+                      {/if}
                     </span>
                   </a>
                 </th>
                 <th class="is-narrow">
-                  <a href="javascript:void(0)" 
-                     class="sort-header"
+                  <a href="javascript:void(0)"
+                     class="sort-header {articleSort === 'category' ? 'active' : ''}"
                      on:click={() => toggleArticleSort('category')}
                   >
                     分類
                     <span class="icon">
-                      <i class="fas {articleSort === 'category' 
-                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
-                        : 'fa-sort'}">
-                      </i>
+                      {#if articleSort === 'category'}
+                        {#if articleSortDirection === 'asc'}
+                          <i class="fas fa-sort-up"></i>
+                        {:else}
+                          <i class="fas fa-sort-down"></i>
+                        {/if}
+                      {:else}
+                        <i class="fas fa-sort"></i>
+                      {/if}
                     </span>
                   </a>
                 </th>
                 <th class="date-column">
-                  <a href="javascript:void(0)" 
-                     class="sort-header"
+                  <a href="javascript:void(0)"
+                     class="sort-header {articleSort === 'created' ? 'active' : ''}"
                      on:click={() => toggleArticleSort('created')}
                   >
                     發布日期
                     <span class="icon">
-                      <i class="fas {articleSort === 'created' 
-                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
-                        : 'fa-sort'}">
-                      </i>
+                      {#if articleSort === 'created'}
+                        {#if articleSortDirection === 'asc'}
+                          <i class="fas fa-sort-up"></i>
+                        {:else}
+                          <i class="fas fa-sort-down"></i>
+                        {/if}
+                      {:else}
+                        <i class="fas fa-sort"></i>
+                      {/if}
                     </span>
                   </a>
                 </th>
                 <th class="date-column">
-                  <a href="javascript:void(0)" 
-                     class="sort-header"
+                  <a href="javascript:void(0)"
+                     class="sort-header {articleSort === 'updated' ? 'active' : ''}"
                      on:click={() => toggleArticleSort('updated')}
                   >
                     修改日期
                     <span class="icon">
-                      <i class="fas {articleSort === 'updated' 
-                        ? `fa-sort-${articleSortDirection === 'asc' ? 'up' : 'down'}`
-                        : 'fa-sort'}">
-                      </i>
+                      {#if articleSort === 'updated'}
+                        {#if articleSortDirection === 'asc'}
+                          <i class="fas fa-sort-up"></i>
+                        {:else}
+                          <i class="fas fa-sort-down"></i>
+                        {/if}
+                      {:else}
+                        <i class="fas fa-sort"></i>
+                      {/if}
                     </span>
                   </a>
                 </th>
@@ -573,8 +585,8 @@
                   </td>
                   <td>
                     <div class="buttons is-centered are-small">
-                      <a 
-                        href={`/admin/article/edit/${article.id}`} 
+                      <a
+                        href={`/admin/article/edit/${article.id}`}
                         class="button is-info is-outlined"
                         title="編輯文章"
                       >
@@ -582,7 +594,7 @@
                           <i class="fas fa-edit"></i>
                         </span>
                       </a>
-                      <button 
+                      <button
                         class="button is-danger is-outlined"
                         title="刪除文章"
                         on:click={() => handleDelete(article.id)}
@@ -597,9 +609,9 @@
               {/each}
               {#if filteredArticles.length === 0}
                 <tr>
-                  <td colspan="5" class="has-text-centered py-6">
+                  <td colspan="6" class="has-text-centered py-6">
                     <p class="has-text-grey">
-                      {selectedCategory 
+                      {selectedCategory
                         ? `「${selectedCategory.name}」類別目前沒有文章`
                         : '目前沒有任何文章'}
                     </p>
@@ -616,7 +628,7 @@
           <label class="label" for="newCategory">新增類別</label>
           <div class="field has-addons">
             <div class="control is-expanded">
-              <input 
+              <input
                 class="input"
                 type="text"
                 placeholder="輸入新類別名稱"
@@ -636,9 +648,9 @@
           <div class="filter-controls">
             <div class="field-group is-expanded">
               <div class="control has-icons-left">
-                <input 
-                  type="text" 
-                  class="input" 
+                <input
+                  type="text"
+                  class="input"
                   placeholder="搜尋類別名稱..."
                   bind:value={categorySearchKeyword}
                 >
@@ -655,30 +667,40 @@
             <thead>
               <tr>
                 <th>
-                  <a href="javascript:void(0)" 
-                     class="sort-header"
+                  <a href="javascript:void(0)"
+                     class="sort-header {categorySort === 'name' ? 'active' : ''}"
                      on:click={() => toggleSort('name')}
                   >
                     類別名稱
                     <span class="icon">
-                      <i class="fas {categorySort === 'name' 
-                        ? `fa-sort-${categorySortDirection === 'asc' ? 'up' : 'down'}`
-                        : 'fa-sort'}">
-                      </i>
+                      {#if categorySort === 'name'}
+                        {#if categorySortDirection === 'asc'}
+                          <i class="fas fa-sort-up"></i>
+                        {:else}
+                          <i class="fas fa-sort-down"></i>
+                        {/if}
+                      {:else}
+                        <i class="fas fa-sort"></i>
+                      {/if}
                     </span>
                   </a>
                 </th>
                 <th>
-                  <a href="javascript:void(0)" 
-                     class="sort-header"
+                  <a href="javascript:void(0)"
+                     class="sort-header {categorySort === 'count' ? 'active' : ''}"
                      on:click={() => toggleSort('count')}
                   >
                     文章數量
                     <span class="icon">
-                      <i class="fas {categorySort === 'count' 
-                        ? `fa-sort-${categorySortDirection === 'asc' ? 'up' : 'down'}`
-                        : 'fa-sort'}">
-                      </i>
+                      {#if categorySort === 'count'}
+                        {#if categorySortDirection === 'asc'}
+                          <i class="fas fa-sort-up"></i>
+                        {:else}
+                          <i class="fas fa-sort-down"></i>
+                        {/if}
+                      {:else}
+                        <i class="fas fa-sort"></i>
+                      {/if}
                     </span>
                   </a>
                 </th>
@@ -692,14 +714,14 @@
                     {#if editingCategory?.id === category.id}
                       <div class="field has-addons">
                         <div class="control">
-                          <input 
+                          <input
                             class="input is-small"
                             type="text"
                             bind:value={editingCategoryName}
                           >
                         </div>
                         <div class="control">
-                          <button 
+                          <button
                             class="button is-small is-success"
                             on:click={handleSaveCategory}
                           >
@@ -708,8 +730,8 @@
                         </div>
                       </div>
                     {:else}
-                      <a 
-                        href="javascript:void(0)" 
+                      <a
+                        href="javascript:void(0)"
                         class="has-text-link"
                         on:click={() => viewCategoryArticles(category)}
                       >
@@ -725,20 +747,20 @@
                   <td>
                     <div class="buttons are-small">
                       {#if editingCategory?.id !== category.id}
-                        <button 
+                        <button
                           class="button is-info is-small"
                           on:click={() => handleEditCategory(category)}
                         >
                           編輯類別名稱
                         </button>
                       {/if}
-                      <button 
+                      <button
                         class="button is-primary is-small"
                         on:click={() => handleEditCategoryPage(category)}
                       >
                         編輯類別頁面
                       </button>
-                      <button 
+                      <button
                         class="button is-danger is-small"
                         class:is-light={category.articleCount > 0}
                         on:click={() => handleDeleteCategory(category.id)}
@@ -753,7 +775,7 @@
                 <tr>
                   <td colspan="3" class="has-text-centered py-6">
                     <p class="has-text-grey">
-                      {categorySearchKeyword 
+                      {categorySearchKeyword
                         ? '沒有符合搜尋條件的類別'
                         : '目前沒有任何類別'}
                     </p>
@@ -767,17 +789,17 @@
     {/if}
   </div>
 </div>
-<Footer siteName={siteName} />
+<Footer {siteName} />
 
-<!-- 修改模態框的內容部分，使用 VditorEditor 組件 -->
+<!-- 修改模態框的內容部分使用 VditorEditor 組件 -->
 {#if editingCategoryPage}
   <div class="modal is-active">
     <div class="modal-background" on:click={cleanupEditor}></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">編輯「{editingCategoryPage.name}」類別頁面</p>
-        <button 
-          class="delete" 
+        <button
+          class="delete"
           aria-label="close"
           on:click={cleanupEditor}
         ></button>
@@ -973,7 +995,7 @@
     margin: 0;
   }
 
-  /* 更模態框相關樣式 */
+  /* 更模態相關樣式 */
   :global(.modal) {
     z-index: 1000; /* 確保模態框在導航欄上方 */
   }
@@ -999,10 +1021,10 @@
   .field {
     height: 100%;
     margin: 0;
-    overflow: hidden; /* 防止內容溢出 */
+    overflow: hidden; /* 止內容溢出 */
   }
 
-  /* 添加排序標題樣式 */
+  /* 加排序標題樣式 */
   .sort-header {
     display: inline-flex;
     align-items: center;
@@ -1203,5 +1225,118 @@
   .date-column {
     min-width: 130px;
     white-space: nowrap;
+  }
+
+  /* 修改排序圖標相關樣式 */
+  .sort-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sort-header:hover {
+    color: var(--theme-primary);
+  }
+
+  .sort-header .icon {
+    font-size: 0.8em;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .sort-header:hover .icon {
+    opacity: 1;
+  }
+
+  /* 新增這些樣式來控制圖標的旋轉 */
+  .sort-header .icon .fa-sort-up {
+    transform: translateY(2px);
+  }
+
+  .sort-header .icon .fa-sort-down {
+    transform: translateY(-2px);
+  }
+
+  .sort-header:hover .icon .fa-sort {
+    transform: scale(1.1);
+  }
+
+  .sort-header.active {
+    color: var(--theme-primary);
+    font-weight: 600;
+  }
+
+  .sort-header.active .icon {
+    opacity: 1;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .sort-header .icon {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .sort-header .icon i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* 添加活動狀態樣式 */
+  .sort-header.active {
+    color: var(--theme-primary);
+  }
+
+  .sort-header.active .icon {
+    color: var(--theme-primary);
+  }
+
+  /* 新的圖標樣式 */
+  .sort-header .icon {
+    display: inline-block;
+    width: 1em;
+    margin-left: 0.5em;
+  }
+
+  /* 預設隱藏所有圖標 */
+  .sort-header .icon i {
+    display: none;
+  }
+
+  /* 未排序狀態：顯示預設圖標 */
+  .sort-header:not(.active) .icon i.fa-sort {
+    display: inline-block;
+  }
+
+  /* 升序狀態：顯示向上箭頭 */
+  .sort-header.active[data-direction="asc"] .icon i.fa-sort-up {
+    display: inline-block;
+  }
+
+  /* 降序狀態：顯示向下箭頭 */
+  .sort-header.active[data-direction="desc"] .icon i.fa-sort-down {
+    display: inline-block;
   }
 </style> 
