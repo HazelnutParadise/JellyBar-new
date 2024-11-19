@@ -296,12 +296,8 @@
   const initTables = async () => {
     // 確保 jQuery 和 DataTables 已載入
     if (!window.jQuery?.fn?.DataTable) {
-      console.log('等待 DataTables 載入...');
-      await new Promise(resolve => setTimeout(resolve, 500));
-      if (!window.jQuery?.fn?.DataTable) {
-        console.error('DataTables 載入失敗');
-        return;
-      }
+      console.error('DataTables 未載入');
+      return;
     }
 
     try {
@@ -318,38 +314,45 @@
       // 等待 DOM 更新
       await new Promise(resolve => setTimeout(resolve, 0));
 
+      const commonConfig = {
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+        },
+        searching: false,
+        pageLength: 10,
+        dom: 'rtip',
+        destroy: true,
+        responsive: true,
+        autoWidth: false
+      };
+
       if (showArticles) {
         const table = document.getElementById('articleTable');
         if (table) {
           articleTable = window.jQuery(table).DataTable({
-            language: {
-              url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
-            },
-            searching: false,
-            pageLength: 10,
-            dom: 'rtip',
-            order: [[1, 'asc']], 
+            ...commonConfig,
+            order: [[1, 'asc']],
             columnDefs: [
-              { orderable: false, targets: [0, 5] }
-            ],
-            destroy: true // 允許重新初始化
+              { orderable: false, targets: [0, 5] },
+              { width: "50px", targets: 0 },
+              { width: "120px", targets: [3, 4] },
+              { width: "100px", targets: 2 },
+              { width: "150px", targets: 5 }
+            ]
           });
         }
       } else {
         const table = document.getElementById('categoryTable');
         if (table) {
           categoryTable = window.jQuery(table).DataTable({
-            language: {
-              url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
-            },
-            searching: false,
-            pageLength: 10,
-            dom: 'rtip',
+            ...commonConfig,
             order: [[0, 'asc']],
             columnDefs: [
-              { orderable: false, targets: [2] }
-            ],
-            destroy: true // 允許重新初始化
+              { orderable: false, targets: 2 },
+              { width: "60%", targets: 0 },
+              { width: "20%", targets: 1 },
+              { width: "20%", targets: 2 }
+            ]
           });
         }
       }
@@ -359,10 +362,23 @@
   };
 
   // 修改監聽方式
-  $: if (typeof window !== 'undefined' && showArticles !== undefined) {
-    // 使用 setTimeout 確保在 DOM 更新後再初始化
-    setTimeout(initTables, 100);
+  $: {
+    if (typeof window !== 'undefined' && showArticles !== undefined) {
+      // 使用 RAF 確保在瀏覽器重繪後執行
+      requestAnimationFrame(() => {
+        initTables();
+      });
+    }
   }
+
+  // 修改切換函數
+  const handleTabChange = async (isArticles) => {
+    showArticles = isArticles;
+    // 使用 RAF 確保在瀏覽器重繪後執行
+    requestAnimationFrame(() => {
+      initTables();
+    });
+  };
 
   // 修改 onMount
   onMount(async () => {
@@ -371,14 +387,6 @@
     await initTables();
     updateCategoryCount();
   });
-
-  // 修改切換函數
-  const handleTabChange = async (isArticles) => {
-    showArticles = isArticles;
-    // 等待 DOM 更新
-    await new Promise(resolve => setTimeout(resolve, 0));
-    await initTables();
-  };
 
   // 在組件銷毀時清理表格
   onDestroy(() => {
@@ -773,7 +781,7 @@
 </div>
 <Footer {siteName} />
 
-<!-- 修改模態框的內容部分使用 VditorEditor 組件 -->
+<!-- 修改模態���的內容部分���用 VditorEditor 組件 -->
 {#if editingCategoryPage}
   <div class="modal is-active">
     <div class="modal-background" on:click={cleanupEditor}></div>
@@ -1429,5 +1437,57 @@
   :global(.dataTables_paginate .paginate_button:hover) {
     background: #f5f5f5;
     color: var(--theme-primary) !important;
+  }
+
+  /* 調整表格樣式 */
+  :global(.dataTables_wrapper) {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  :global(table.dataTable) {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  :global(table.dataTable thead th) {
+    padding: 12px 8px;
+    white-space: nowrap;
+  }
+
+  :global(table.dataTable tbody td) {
+    padding: 12px 8px;
+  }
+
+  /* 確保表格容器不會溢出 */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1);
+  }
+
+  /* 調整分頁控制項樣式 */
+  :global(.dataTables_paginate) {
+    margin-top: 1rem !important;
+    padding: 0.5rem !important;
+  }
+
+  :global(.dataTables_info) {
+    margin-top: 1rem !important;
+    padding: 0.5rem !important;
+  }
+
+  /* 確保表格內容不會換行 */
+  .table td {
+    white-space: nowrap;
+  }
+
+  /* 調整操作按鈕列的寬度 */
+  .buttons.is-centered {
+    white-space: nowrap;
+    min-width: 120px;
   }
 </style> 
