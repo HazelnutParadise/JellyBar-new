@@ -1,6 +1,6 @@
 <script>
   import "../app.css";
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import AdminNavbar from '../components/AdminNavbar.svelte';
   import Footer from '../components/Footer.svelte';
   import setTitle from '../js/setTitle';
@@ -289,10 +289,117 @@
       return 0;
     });
 
-  onMount(() => {
+  let articleTable;
+  let categoryTable;
+
+  // 修改初始化表格的函數
+  const initTables = async () => {
+    // 確保 jQuery 和 DataTables 已載入
+    if (!window.jQuery?.fn?.DataTable) {
+      console.log('等待 DataTables 載入...');
+      await new Promise(resolve => setTimeout(resolve, 500));
+      if (!window.jQuery?.fn?.DataTable) {
+        console.error('DataTables 載入失敗');
+        return;
+      }
+    }
+
+    try {
+      // 先清理現有表格
+      if (articleTable) {
+        articleTable.destroy();
+        articleTable = null;
+      }
+      if (categoryTable) {
+        categoryTable.destroy();
+        categoryTable = null;
+      }
+
+      // 等待 DOM 更新
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      if (showArticles) {
+        const table = document.getElementById('articleTable');
+        if (table) {
+          articleTable = window.jQuery(table).DataTable({
+            language: {
+              url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+            },
+            searching: false,
+            pageLength: 10,
+            dom: 'rtip',
+            order: [[1, 'asc']], 
+            columnDefs: [
+              { orderable: false, targets: [0, 5] }
+            ],
+            destroy: true // 允許重新初始化
+          });
+        }
+      } else {
+        const table = document.getElementById('categoryTable');
+        if (table) {
+          categoryTable = window.jQuery(table).DataTable({
+            language: {
+              url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+            },
+            searching: false,
+            pageLength: 10,
+            dom: 'rtip',
+            order: [[0, 'asc']],
+            columnDefs: [
+              { orderable: false, targets: [2] }
+            ],
+            destroy: true // 允許重新初始化
+          });
+        }
+      }
+    } catch (error) {
+      console.error('初始化表格時發生錯誤:', error);
+    }
+  };
+
+  // 修改監聽方式
+  $: if (typeof window !== 'undefined' && showArticles !== undefined) {
+    // 使用 setTimeout 確保在 DOM 更新後再初始化
+    setTimeout(initTables, 100);
+  }
+
+  // 修改 onMount
+  onMount(async () => {
+    // 等待 scripts 載入完成
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await initTables();
     updateCategoryCount();
   });
+
+  // 修改切換函數
+  const handleTabChange = async (isArticles) => {
+    showArticles = isArticles;
+    // 等待 DOM 更新
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await initTables();
+  };
+
+  // 在組件銷毀時清理表格
+  onDestroy(() => {
+    if (articleTable) {
+      articleTable.destroy();
+      articleTable = null;
+    }
+    if (categoryTable) {
+      categoryTable.destroy();
+      categoryTable = null;
+    }
+  });
 </script>
+
+<svelte:head>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bulma.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bulma.min.js"></script>
+</svelte:head>
 
 <AdminNavbar {siteName} />
 
@@ -304,7 +411,7 @@
       <button
         class="section-tab"
         class:active={showArticles}
-        on:click={() => showArticles = true}
+        on:click={() => handleTabChange(true)}
       >
         <span class="icon">
           <i class="fas fa-file-alt"></i>
@@ -314,7 +421,7 @@
       <button
         class="section-tab"
         class:active={!showArticles}
-        on:click={() => showArticles = false}
+        on:click={() => handleTabChange(false)}
       >
         <span class="icon">
           <i class="fas fa-tags"></i>
@@ -478,86 +585,14 @@
         </div>
 
         <div class="table-container">
-          <table class="table is-fullwidth is-hoverable">
+          <table id="articleTable" class="table is-fullwidth is-hoverable">
             <thead>
               <tr>
                 <th class="is-narrow">#</th>
-                <th>
-                  <a href="javascript:void(0)"
-                     class="sort-header {articleSort === 'title' ? 'active' : ''}"
-                     on:click={() => toggleArticleSort('title')}
-                  >
-                    標題
-                    <span class="icon">
-                      {#if articleSort === 'title'}
-                        {#if articleSortDirection === 'asc'}
-                          <i class="fas fa-sort-up"></i>
-                        {:else}
-                          <i class="fas fa-sort-down"></i>
-                        {/if}
-                      {:else}
-                        <i class="fas fa-sort"></i>
-                      {/if}
-                    </span>
-                  </a>
-                </th>
-                <th class="is-narrow">
-                  <a href="javascript:void(0)"
-                     class="sort-header {articleSort === 'category' ? 'active' : ''}"
-                     on:click={() => toggleArticleSort('category')}
-                  >
-                    分類
-                    <span class="icon">
-                      {#if articleSort === 'category'}
-                        {#if articleSortDirection === 'asc'}
-                          <i class="fas fa-sort-up"></i>
-                        {:else}
-                          <i class="fas fa-sort-down"></i>
-                        {/if}
-                      {:else}
-                        <i class="fas fa-sort"></i>
-                      {/if}
-                    </span>
-                  </a>
-                </th>
-                <th class="date-column">
-                  <a href="javascript:void(0)"
-                     class="sort-header {articleSort === 'created' ? 'active' : ''}"
-                     on:click={() => toggleArticleSort('created')}
-                  >
-                    發布日期
-                    <span class="icon">
-                      {#if articleSort === 'created'}
-                        {#if articleSortDirection === 'asc'}
-                          <i class="fas fa-sort-up"></i>
-                        {:else}
-                          <i class="fas fa-sort-down"></i>
-                        {/if}
-                      {:else}
-                        <i class="fas fa-sort"></i>
-                      {/if}
-                    </span>
-                  </a>
-                </th>
-                <th class="date-column">
-                  <a href="javascript:void(0)"
-                     class="sort-header {articleSort === 'updated' ? 'active' : ''}"
-                     on:click={() => toggleArticleSort('updated')}
-                  >
-                    修改日期
-                    <span class="icon">
-                      {#if articleSort === 'updated'}
-                        {#if articleSortDirection === 'asc'}
-                          <i class="fas fa-sort-up"></i>
-                        {:else}
-                          <i class="fas fa-sort-down"></i>
-                        {/if}
-                      {:else}
-                        <i class="fas fa-sort"></i>
-                      {/if}
-                    </span>
-                  </a>
-                </th>
+                <th>標題</th>
+                <th class="is-narrow">分類</th>
+                <th class="date-column">發布日期</th>
+                <th class="date-column">修改日期</th>
                 <th class="is-narrow has-text-centered">操作</th>
               </tr>
             </thead>
@@ -663,49 +698,12 @@
         </div>
 
         <div class="table-container">
-          <table class="table is-fullwidth">
+          <table id="categoryTable" class="table is-fullwidth">
             <thead>
               <tr>
-                <th>
-                  <a href="javascript:void(0)"
-                     class="sort-header {categorySort === 'name' ? 'active' : ''}"
-                     data-sort="name"
-                     on:click={() => toggleSort('name')}
-                  >
-                    類別名稱
-                    <span class="icon">
-                      {#if categorySort === 'name'}
-                        {#if categorySortDirection === 'asc'}
-                          <i class="fas fa-sort-up"></i>
-                        {:else}
-                          <i class="fas fa-sort-down"></i>
-                        {/if}
-                      {:else}
-                        <i class="fas fa-sort"></i>
-                      {/if}
-                    </span>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)"
-                     class="sort-header {categorySort === 'count' ? 'active' : ''}"
-                     on:click={() => toggleSort('count')}
-                  >
-                    文章數量
-                    <span class="icon">
-                      {#if categorySort === 'count'}
-                        {#if categorySortDirection === 'asc'}
-                          <i class="fas fa-sort-up"></i>
-                        {:else}
-                          <i class="fas fa-sort-down"></i>
-                        {/if}
-                      {:else}
-                        <i class="fas fa-sort"></i>
-                      {/if}
-                    </span>
-                  </a>
-                </th>
-                <th>操作</th>
+                <th>類別名稱</th>
+                <th>文章數量</th>
+                <th class="is-narrow">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -731,13 +729,7 @@
                         </div>
                       </div>
                     {:else}
-                      <a
-                        href="javascript:void(0)"
-                        class="has-text-link"
-                        on:click={() => viewCategoryArticles(category)}
-                      >
-                        {category.name}
-                      </a>
+                      {category.name}
                     {/if}
                   </td>
                   <td>
@@ -772,17 +764,6 @@
                   </td>
                 </tr>
               {/each}
-              {#if filteredCategories.length === 0}
-                <tr>
-                  <td colspan="3" class="has-text-centered py-6">
-                    <p class="has-text-grey">
-                      {categorySearchKeyword
-                        ? '沒有符合搜尋條件的類別'
-                        : '目前沒有任何類別'}
-                    </p>
-                  </td>
-                </tr>
-              {/if}
             </tbody>
           </table>
         </div>
@@ -1372,5 +1353,81 @@
 
   .sort-header:not(.active) .icon i.fa-sort {
     display: inline-block;
+  }
+
+  /* 原有的樣式保持不變，添加 DataTables 相關樣式 */
+  :global(.dataTables_wrapper) {
+    padding: 0;  /* 移除預設內邊 */
+  }
+
+  :global(.dataTables_info) {
+    padding: 1rem 0;
+    color: #666;
+  }
+
+  :global(.dataTables_paginate) {
+    padding: 1rem 0;
+  }
+
+  :global(.dataTables_paginate .paginate_button) {
+    padding: 0.3em 0.8em;
+    margin: 0 0.2em;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  :global(.dataTables_paginate .paginate_button.current) {
+    background: var(--theme-primary);
+    color: white !important;
+    border-color: var(--theme-primary);
+  }
+
+  :global(.dataTables_paginate .paginate_button:hover) {
+    background: #f5f5f5;
+    color: var(--theme-primary) !important;
+  }
+
+  /* 調整表格容器樣式 */
+  .table-container {
+    margin-bottom: 2rem;
+  }
+
+  /* 確保操作按鈕列的寬度合適 */
+  .table td:last-child {
+    min-width: 300px;
+  }
+
+  /* 調整 DataTables 分頁樣式 */
+  :global(.dataTables_wrapper) {
+    padding: 0;
+  }
+
+  :global(.dataTables_info) {
+    padding: 1rem 0;
+    color: #666;
+  }
+
+  :global(.dataTables_paginate) {
+    padding: 1rem 0;
+  }
+
+  :global(.dataTables_paginate .paginate_button) {
+    padding: 0.3em 0.8em;
+    margin: 0 0.2em;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  :global(.dataTables_paginate .paginate_button.current) {
+    background: var(--theme-primary);
+    color: white !important;
+    border-color: var(--theme-primary);
+  }
+
+  :global(.dataTables_paginate .paginate_button:hover) {
+    background: #f5f5f5;
+    color: var(--theme-primary) !important;
   }
 </style> 
