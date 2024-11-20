@@ -756,7 +756,7 @@
         </div>
 
         <div class="table-container">
-          <table id="articleTable" class="table is-fullwidth is-hoverable">
+          <table id="articleTable" class="table is-fullwidth">
             <thead>
               <tr>
                 <th class="is-narrow">#</th>
@@ -1003,6 +1003,7 @@
   .table-container {
     box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1);
     border-radius: 6px;
+    padding: 0 20px;
     overflow: hidden;
   }
   
@@ -1111,10 +1112,6 @@
     background: white;
     border: 1px solid #eee;
     box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-  }
-
-  .table.is-hoverable tr:hover {
-    background-color: #f8faff !important;
   }
 
   .admin-container {
@@ -1453,11 +1450,6 @@
     text-decoration: underline;
   }
 
-  /* 移除表格行的懸停背景色變化 */
-  .table.is-hoverable tbody tr:hover {
-    background-color: transparent !important;
-  }
-
   /* 確保表格行的背景色始終保持白色 */
   .table tbody tr {
     background-color: white !important;
@@ -1537,10 +1529,6 @@
 
   .table tr:last-child td {
     border-bottom: none;
-  }
-
-  .table.is-hoverable tbody tr:hover {
-    background-color: transparent !important;
   }
 
   /* 確保表格容器樣式一致 */
