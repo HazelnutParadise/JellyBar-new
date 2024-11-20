@@ -8,7 +8,7 @@
   // 導航項目
   const navItems = [
     { label: '儀表板', icon: 'fa-chart-line', href: '/admin' },
-    { label: '文章與類別', icon: 'fa-file-alt', href: '/admin/article' },
+    { label: '文章與類別', icon: 'fa-file-alt', href: '/admin/articles' },
     { label: '用戶管理', icon: 'fa-users', href: '/admin/users' },
     { label: '設定', icon: 'fa-cog', href: '/admin/settings' }
   ];

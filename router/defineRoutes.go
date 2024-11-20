@@ -162,26 +162,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 		})
 	})
 
-	r.GET("/admin/article", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminArticleAndCategory", map[string]any{
-			"siteName": siteName,
-			"title":    "文章與類別",
-		})
-	})
+	admin := r.Group("/admin")
+	defineAdminPages(admin, siteName)
 
-	r.GET("/admin/article/new", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
-			"siteName": siteName,
-			"title":    "新增文章",
-		})
-	})
-
-	r.GET("/admin/article/edit/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
-			"siteName": siteName,
-			"title":    "編輯文章",
-			"id":       id,
-		})
-	})
 }
