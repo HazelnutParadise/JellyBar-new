@@ -10,7 +10,7 @@
         <ul>
             <!-- 列出10項 -->
             {#each categories as category}
-                <li><a href={`/category/${category.id}`}>{category.title}</a></li>
+                <li><a href={`/category/${category.id}`}>{category.name}</a></li>
             {/each}
             <li><a href={`/category`} ><strong>查看全部類別</strong></a></li>
         </ul>

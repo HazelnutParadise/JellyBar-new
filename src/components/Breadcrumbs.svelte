@@ -6,8 +6,8 @@
 <nav class="breadcrumbs">
     <a href="/" class="crumb">首頁</a>
     <span class="separator">/</span>
-    {#if category && category.title}
-        <a href="/categories/{category.id}" class="crumb category">{category.title}</a>
+    {#if category && category.name}
+        <a href="/category/{category.id}" class="crumb category">{category.name}</a>
         <span class="separator">/</span>
     {/if}
     {#if article && article.title}
