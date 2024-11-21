@@ -1,12 +1,14 @@
 package obj
 
 type Article struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	PublishDate string `json:"publishDate"`
-	UpdateDate  string `json:"updateDate"`
-	Content     string `json:"content"`
-	Category    string `json:"category"`
-	Author      string `json:"author"`
-	Icon        string `json:"icon"`
+	Id          int      `json:"id"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	PublishDate string   `json:"publishDate"`
+	UpdateDate  string   `json:"updateDate"`
+	Content     string   `json:"content"`
+	Media       []string `json:"media"`
+	Category    string   `json:"category"`
+	Author      string   `json:"author"`
+	Icon        string   `json:"icon"`
 }
