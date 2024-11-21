@@ -6,8 +6,6 @@ type Article struct {
 	PublishDate string `json:"publishDate"`
 	UpdateDate  string `json:"updateDate"`
 	Content     string `json:"content"`
-	Url         string `json:"url"`
-	ButtonText  string `json:"buttonText"`
 	Category    string `json:"category"`
 	Author      string `json:"author"`
 	Icon        string `json:"icon"`
