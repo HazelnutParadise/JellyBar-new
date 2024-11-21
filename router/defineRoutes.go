@@ -41,10 +41,11 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"data": map[string]any{
 				"pageType": "articles",
 				"title":    "文章列表",
-				"items": []obj.Article{
+				"items": []obj.ListItem{
 					{
 						Title:       "test",
 						Description: "test",
+						Icon:        "test",
 						Url:         "test",
 						ButtonText:  "test",
 					},
@@ -62,8 +63,6 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				PublishDate: time.Now().Format(time.DateOnly),
 				UpdateDate:  time.Now().Format(time.DateOnly),
 				Content:     md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
-				Url:         "test",
-				ButtonText:  "test",
 			},
 			"category": obj.Category{
 				Title: "testCategory",
@@ -91,12 +90,13 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 				"pageType":    "categories",
 				"title":       "類別列表",
 				"description": "test",
-				"items": []obj.Category{
+				"items": []obj.ListItem{
 					{
 						Title:       "test",
 						Description: "test",
 						Url:         "test",
 						ButtonText:  "test",
+						Icon:        "test",
 					},
 					{
 						Title:       "test2",
@@ -116,7 +116,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"data": map[string]any{
 				"pageType": "category",
 				"title":    "文章分類",
-				"items": []obj.Article{
+				"items": []obj.ListItem{
 					{
 						Title:       "test",
 						Description: "test",
@@ -150,7 +150,7 @@ func defineRoutes(r *gin.Engine, siteName string, assetsDir embed.FS) {
 			"data": map[string]any{
 				"pageType": "search",
 				"title":    "搜尋結果",
-				"items": []obj.Article{
+				"items": []obj.ListItem{
 					{
 						Title:       "test",
 						Description: "test",
