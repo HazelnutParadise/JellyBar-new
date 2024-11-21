@@ -1,7 +1,7 @@
 package obj
 
 type Article struct {
-	Id          int      `json:"id"`
+	Id          uint     `json:"id"`
 	Title       string   `json:"title"`
 	Description string   `json:"description"`
 	PublishDate string   `json:"publishDate"`
