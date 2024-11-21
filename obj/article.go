@@ -8,7 +8,7 @@ type Article struct {
 	UpdateDate  string   `json:"updateDate"`
 	Content     string   `json:"content"`
 	Media       []string `json:"media"`
-	Category    string   `json:"category"`
-	Author      string   `json:"author"`
+	CategoryID  uint     `json:"categoryId"`
+	AuthorID    uint     `json:"authorId"`
 	Icon        string   `json:"icon"`
 }
