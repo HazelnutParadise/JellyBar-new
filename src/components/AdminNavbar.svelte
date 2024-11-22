@@ -1,9 +1,9 @@
-<script>
-  import { onMount } from 'svelte';
-  export let siteName;
+<script lang="ts">
+  import { onMount } from 'svelte'
+  export let siteName: string
   
-  let isDropdownOpen = false;
-  let isMobileMenuOpen = false;
+  let isDropdownOpen = false
+  let isMobileMenuOpen = false
   
   // 導航項目
   const navItems = [
@@ -21,27 +21,27 @@
   ];
 
   function toggleDropdown() {
-    isDropdownOpen = !isDropdownOpen;
+    isDropdownOpen = !isDropdownOpen
   }
 
   function toggleMobileMenu() {
-    isMobileMenuOpen = !isMobileMenuOpen;
+    isMobileMenuOpen = !isMobileMenuOpen
   }
 
   // 點擊外部關閉下拉選單
   function handleClickOutside(event) {
-    const dropdown = document.querySelector('.user-dropdown');
+    const dropdown = document.querySelector('.user-dropdown')
     if (dropdown && !dropdown.contains(event.target)) {
-      isDropdownOpen = false;
+      isDropdownOpen = false
     }
   }
 
   onMount(() => {
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('click', handleClickOutside)
     return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  });
+      document.removeEventListener('click', handleClickOutside)
+    }
+  })
 </script>
 
 <nav class="admin-navbar">
