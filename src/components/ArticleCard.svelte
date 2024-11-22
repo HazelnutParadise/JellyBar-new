@@ -14,189 +14,159 @@
             borderColor: 'var(--theme-primary)',
             textColor: '#333',
             buttonTextColor: '#fff',
-            icon: '📄'
+            icon: '📄',
         },
         forest: {
             background: 'var(--theme-tertiary)',
             borderColor: 'var(--theme-accent)',
             textColor: '#2c3e50',
             buttonTextColor: '#fff',
-            icon: '🌲'
+            icon: '🌲',
         },
         ocean: {
             background: 'var(--interactive-light)',
             borderColor: 'var(--interactive-dark)',
             textColor: '#1a237e',
             buttonTextColor: '#fff',
-            icon: '🌊'
+            icon: '🌊',
         },
         sunset: {
             background: 'var(--decorative-orange-light)',
             borderColor: 'var(--decorative-orange-dark)',
             textColor: '#e65100',
             buttonTextColor: '#fff',
-            icon: '🌅'
+            icon: '🌅',
         },
         lavender: {
             background: 'var(--support-purple-light)',
             borderColor: 'var(--support-purple-dark)',
             textColor: '#4a148c',
             buttonTextColor: '#fff',
-            icon: '💜'
+            icon: '💜',
         },
         sakura: {
             background: 'var(--decorative-pink-light)',
             borderColor: 'var(--decorative-pink-dark)',
             textColor: '#880e4f',
             buttonTextColor: '#fff',
-            icon: '🌸'
+            icon: '🌸',
         },
         honey: {
             background: 'var(--accent-soft)',
             borderColor: 'var(--accent-dark)',
             textColor: '#f57f17',
             buttonTextColor: '#fff',
-            icon: '🍯'
+            icon: '🍯',
         },
         mint: {
             background: 'var(--theme-subtle)',
             borderColor: 'var(--theme-primary)',
             textColor: '#004d40',
             buttonTextColor: '#fff',
-            icon: '🌿'
+            icon: '🌿',
         },
         coral: {
             background: 'var(--state-error-light)',
             borderColor: 'var(--state-error-dark)',
             textColor: '#b71c1c',
             buttonTextColor: '#fff',
-            icon: '🐚'
+            icon: '🐚',
         },
         twilight: {
             background: 'var(--support-purple-muted)',
             borderColor: 'var(--support-purple-dark)',
             textColor: '#311b92',
             buttonTextColor: '#fff',
-            icon: '🌙'
+            icon: '🌙',
         },
         sunshine: {
             background: 'var(--accent-light)',
             borderColor: 'var(--accent-strong)',
             textColor: '#ff6f00',
             buttonTextColor: '#fff',
-            icon: '☀️'
+            icon: '☀️',
         },
         autumn: {
             background: 'var(--decorative-orange-medium)',
             borderColor: 'var(--decorative-orange-dark)',
             textColor: '#e65100',
             buttonTextColor: '#fff',
-            icon: '🍁'
+            icon: '🍁',
         },
         spring: {
             background: 'var(--theme-tertiary)',
             borderColor: 'var(--decorative-pink-medium)',
             textColor: '#2e7d32',
             buttonTextColor: '#fff',
-            icon: '🌺'
+            icon: '🌺',
         },
         winter: {
             background: 'var(--interactive-light)',
             borderColor: 'var(--support-purple-muted)',
             textColor: '#0d47a1',
             buttonTextColor: '#fff',
-            icon: '❄️'
+            icon: '❄️',
         },
         desert: {
             background: 'var(--accent-soft)',
             borderColor: 'var(--decorative-orange-dark)',
             textColor: '#bf360c',
             buttonTextColor: '#fff',
-            icon: '🏜️'
+            icon: '🏜️',
         },
         galaxy: {
             background: 'var(--support-purple-dark)',
             borderColor: 'var(--interactive-dark)',
             textColor: '#e0f7fa',
             buttonTextColor: '#fff',
-            icon: '🌌'
+            icon: '🌌',
         },
         rose: {
             background: 'var(--decorative-pink-light)',
             borderColor: 'var(--state-error-dark)',
             textColor: '#c2185b',
             buttonTextColor: '#fff',
-            icon: '🌹'
+            icon: '🌹',
         },
         emerald: {
             background: 'var(--theme-subtle)',
             borderColor: 'var(--theme-accent)',
             textColor: '#1b5e20',
             buttonTextColor: '#fff',
-            icon: '💎'
+            icon: '💎',
         },
         dawn: {
             background: 'var(--accent-soft)',
             borderColor: 'var(--decorative-pink-medium)',
             textColor: '#f06292',
             buttonTextColor: '#fff',
-            icon: '🌄'
+            icon: '🌄',
         },
         dusk: {
             background: 'var(--support-purple-muted)',
             borderColor: 'var(--interactive-dark)',
             textColor: '#ffffff',
             buttonTextColor: '#ffffff',
-            icon: '🌆'
+            icon: '🌆',
         },
         midnight: {
             background: '#2c3e50',
             borderColor: '#1c2833',
             textColor: '#ecf0f1',
             buttonTextColor: '#ecf0f1',
-            icon: '🌌'
+            icon: '🌌',
         },
         charcoal: {
             background: '#34495e',
             borderColor: '#2c3e50',
             textColor: '#bdc3c7',
             buttonTextColor: '#bdc3c7',
-            icon: '🌑'
-        }
+            icon: '🌑',
+        },
     }
 
     $: currentTheme = customTheme || themes[theme] || themes.default
 </script>
-
-<div 
-    class="article-card"
-    style="
-        background-color: {currentTheme.background};
-        border-left-color: {currentTheme.borderColor};
-        color: {currentTheme.textColor};
-    "
->
-    <div class="card-icon">
-        {icon || currentTheme.icon}
-    </div>
-    <div class="card-content">
-        <h2 class="card-title">{title || name}</h2>
-        <p class="description">
-            {description}
-        </p>
-        <div class="card-button">
-            <button 
-                class="button custom-button"
-                style="background-color: {currentTheme.borderColor}; color: {currentTheme.buttonTextColor}"
-                on:click={() => {
-                    window.location.href = url;
-                }}
-            >
-                {buttonText}
-            </button>
-        </div>
-    </div>
-</div>
 
 <style>
     .article-card {
@@ -242,7 +212,7 @@
     .card-button {
         margin-top: auto;
     }
- 
+
     .custom-button {
         margin-top: 0;
         width: 100%;
@@ -263,10 +233,20 @@
     }
 
     @keyframes bounceIn {
-        0% { transform: scale(0.3); opacity: 0; }
-        50% { transform: scale(1.05); }
-        70% { transform: scale(0.9); }
-        100% { transform: scale(1); opacity: 1; }
+        0% {
+            transform: scale(0.3);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 
     @media screen and (max-width: 768px) {
@@ -292,4 +272,34 @@
     .card-button {
         margin-top: auto;
     }
-</style> 
+</style>
+
+<div
+    class="article-card"
+    style="
+        background-color: {currentTheme.background};
+        border-left-color: {currentTheme.borderColor};
+        color: {currentTheme.textColor};
+    "
+>
+    <div class="card-icon">
+        {icon || currentTheme.icon}
+    </div>
+    <div class="card-content">
+        <h2 class="card-title">{title || name}</h2>
+        <p class="description">
+            {description}
+        </p>
+        <div class="card-button">
+            <button
+                class="button custom-button"
+                style="background-color: {currentTheme.borderColor}; color: {currentTheme.buttonTextColor}"
+                on:click={() => {
+                    window.location.href = url
+                }}
+            >
+                {buttonText}
+            </button>
+        </div>
+    </div>
+</div>

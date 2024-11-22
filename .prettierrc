@@ -1,0 +1,10 @@
+{
+    "semi": false,
+    "singleQuote": true,
+    "svelteSortOrder": "scripts-styles-markup",
+    "svelteStrictMode": false,
+    "svelteIndentScriptAndStyle": true,
+    "arrowParens": "always",
+    "tabWidth": 4
+}
+  

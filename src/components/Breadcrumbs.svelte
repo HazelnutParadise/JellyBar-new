@@ -1,19 +1,7 @@
 <script>
-    export let category = {};
-    export let article = {};
+    export let category = {}
+    export let article = {}
 </script>
-
-<nav class="breadcrumbs">
-    <a href="/" class="crumb">首頁</a>
-    <span class="separator">/</span>
-    {#if category && category.name}
-        <a href="/category/{category.id}" class="crumb category">{category.name}</a>
-        <span class="separator">/</span>
-    {/if}
-    {#if article && article.title}
-        <span class="crumb current">{article.title}</span>
-    {/if}
-</nav>
 
 <style>
     .breadcrumbs {
@@ -64,9 +52,23 @@
         .breadcrumbs {
             font-size: 0.8rem;
         }
-        
+
         .crumb {
             max-width: 200px;
         }
     }
-</style> 
+</style>
+
+<nav class="breadcrumbs">
+    <a href="/" class="crumb">首頁</a>
+    <span class="separator">/</span>
+    {#if category && category.name}
+        <a href="/category/{category.id}" class="crumb category"
+            >{category.name}</a
+        >
+        <span class="separator">/</span>
+    {/if}
+    {#if article && article.title}
+        <span class="crumb current">{article.title}</span>
+    {/if}
+</nav>

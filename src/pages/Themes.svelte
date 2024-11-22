@@ -1,37 +1,41 @@
 <script>
-    export let siteName;
-    export let title;
-    import '../app.css';
-    import ArticleGrid from '../components/ArticleGrid.svelte';
-    import Navbar from '../components/Navbar.svelte';
+    export let siteName
+    export let title
+    import '../app.css'
+    import ArticleGrid from '../components/ArticleGrid.svelte'
+    import Navbar from '../components/Navbar.svelte'
 
     const themes = [
-        'default', 'forest', 'ocean', 'sunset', 'lavender', 'sakura', 
-        'honey', 'mint', 'coral', 'twilight', 'sunshine', 'autumn', 
-        'spring', 'winter', 'desert', 'galaxy', 'rose', 'emerald', 
-        'dawn', 'dusk', 'midnight', 'charcoal'
-    ];
- 
-    const articles = themes.map(theme => ({
+        'default',
+        'forest',
+        'ocean',
+        'sunset',
+        'lavender',
+        'sakura',
+        'honey',
+        'mint',
+        'coral',
+        'twilight',
+        'sunshine',
+        'autumn',
+        'spring',
+        'winter',
+        'desert',
+        'galaxy',
+        'rose',
+        'emerald',
+        'dawn',
+        'dusk',
+        'midnight',
+        'charcoal',
+    ]
+
+    const articles = themes.map((theme) => ({
         title: `主題：${theme}`,
         description: `這是 ${theme} 主題的示例描述。`,
-        theme
-    }));
+        theme,
+    }))
 </script>
-
-<Navbar {siteName} />
-
-<section class="hero is-fullheight main-content">
-    <div class="hero-body">
-        <div class="container">
-            <h1 class="main-title has-text-centered mb-6">
-                主題展示
-            </h1>
-            
-            <ArticleGrid {articles} />
-        </div>
-    </div>
-</section>
 
 <style>
     .main-content {
@@ -48,8 +52,14 @@
     }
 
     @keyframes fadeInDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     @media screen and (max-width: 768px) {
@@ -59,3 +69,15 @@
         }
     }
 </style>
+
+<Navbar {siteName} />
+
+<section class="hero is-fullheight main-content">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="main-title has-text-centered mb-6">主題展示</h1>
+
+            <ArticleGrid {articles} />
+        </div>
+    </div>
+</section>

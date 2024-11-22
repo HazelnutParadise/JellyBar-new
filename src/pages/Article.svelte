@@ -16,48 +16,6 @@
     setTitle(article.title, siteName)
 </script>
 
-<Navbar {siteName} />
-<div class="article-page">
-    <header class="article-header">
-        <div class="header-content">
-            <div class="columns is-mobile is-multiline">
-                <div class="column is-12-mobile is-9-tablet">
-                    <Breadcrumbs {category} {article} />
-                    <h1 class="title">{article.title}</h1>
-                    <p class="description">{article.description}</p>
-                </div>
-                <div class="column is-12-mobile is-3-tablet author-column">
-                    <ArticleMeta {author} {article} />
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="main-content">
-        <div class="container">
-            <div class="columns is-mobile is-multiline content-wrapper">
-                <main class="column is-12-mobile is-8-tablet article-main">
-                    {#if article.coverImage}
-                        <div class="cover-image">
-                            <img src={article.coverImage} alt={article.title} />
-                        </div>
-                    {/if}
-
-                    <div class="article-content">
-                        {@html article.content}
-                    </div>
-                </main>
-                <aside class="column is-12-mobile is-4-tablet sidebar-column">
-                    <div class="sidebar-wrapper">
-                        <SideBar {categories} {latestArticles} />
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </div>
-</div>
-<Footer {siteName} />
-
 <style>
     .article-page {
         background-color: var(--bg-primary);
@@ -71,7 +29,11 @@
     .main-content {
         flex: 1;
         display: flex;
-        background: linear-gradient(to right, var(--bg-primary) calc(100% - 300px), var(--bg-secondary) 300px);
+        background: linear-gradient(
+            to right,
+            var(--bg-primary) calc(100% - 300px),
+            var(--bg-secondary) 300px
+        );
     }
 
     .container {
@@ -203,4 +165,46 @@
             padding-top: 60px;
         }
     }
-</style> 
+</style>
+
+<Navbar {siteName} />
+<div class="article-page">
+    <header class="article-header">
+        <div class="header-content">
+            <div class="columns is-mobile is-multiline">
+                <div class="column is-12-mobile is-9-tablet">
+                    <Breadcrumbs {category} {article} />
+                    <h1 class="title">{article.title}</h1>
+                    <p class="description">{article.description}</p>
+                </div>
+                <div class="column is-12-mobile is-3-tablet author-column">
+                    <ArticleMeta {author} {article} />
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="columns is-mobile is-multiline content-wrapper">
+                <main class="column is-12-mobile is-8-tablet article-main">
+                    {#if article.coverImage}
+                        <div class="cover-image">
+                            <img src={article.coverImage} alt={article.title} />
+                        </div>
+                    {/if}
+
+                    <div class="article-content">
+                        {@html article.content}
+                    </div>
+                </main>
+                <aside class="column is-12-mobile is-4-tablet sidebar-column">
+                    <div class="sidebar-wrapper">
+                        <SideBar {categories} {latestArticles} />
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+<Footer {siteName} />

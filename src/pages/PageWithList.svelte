@@ -6,10 +6,10 @@
     import setTitle from '../js/setTitle.js'
     import SideBar from '../components/SideBar.svelte'
     import pageConfigs from '../js/pageStyle.js'
-    
+
     export let siteName
     export let data = {}
-   
+
     let title = data.title
     let description = data.description
     let items = data.items
@@ -19,56 +19,11 @@
     let categories = data.categories
     let latestArticles = data.latestArticles
 
-    
     // 獲取當前主題配置
     $: currentTheme = pageConfigs[pageType] || pageConfigs.categories
 
     setTitle(title, siteName)
-</script> 
- 
-<section class="categories-page">
-    <Navbar {siteName} />
-    <header class="categories-header" 
-        style="--header-bg: {currentTheme.header}; 
-               --header-text: {currentTheme.text}; 
-               --header-title: {currentTheme.title}">
-        <h1 class="title">
-            {#if icon}
-                <span class="icon">{icon}</span>
-            {/if}
-            {title}
-        </h1>
-        <p class="description">{description}</p>
-    </header>
-
-    <div class="main-content">
-        <div class="container">
-            <div class="columns is-mobile is-multiline content-wrapper">
-                <main class="column is-12-mobile is-8-tablet article-main">
-                    {#if htmlContent}
-                        <div class="html-content-container">
-                            <div class="html-content">{@html htmlContent}</div>
-                        </div>
-                    {/if}
-            
-                    <div class="articles-container">
-                        <div class="articles-grid">
-                            {#each items as item}
-                                <ArticleCard title={item.title} description={item.description} theme={currentTheme.theme} url={item.url} icon={item.icon} buttonText={item.buttonText} name={item.name} />
-                            {/each}
-                        </div>
-                    </div>
-                </main>
-                <aside class="column is-12-mobile is-4-tablet sidebar-column">
-                    <div class="sidebar-wrapper">
-                        <SideBar {categories} {latestArticles} />
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </div>
-</section>
-<Footer {siteName} />
+</script>
 
 <style>
     .categories-page {
@@ -101,7 +56,11 @@
     .main-content {
         flex: 1;
         display: flex;
-        background: linear-gradient(to right, var(--bg-primary) calc(100% - 300px), var(--bg-secondary) 300px);
+        background: linear-gradient(
+            to right,
+            var(--bg-primary) calc(100% - 300px),
+            var(--bg-secondary) 300px
+        );
     }
 
     .container {
@@ -208,4 +167,58 @@
             text-align: center;
         }
     }
-</style> 
+</style>
+
+<section class="categories-page">
+    <Navbar {siteName} />
+    <header
+        class="categories-header"
+        style="--header-bg: {currentTheme.header}; 
+               --header-text: {currentTheme.text}; 
+               --header-title: {currentTheme.title}"
+    >
+        <h1 class="title">
+            {#if icon}
+                <span class="icon">{icon}</span>
+            {/if}
+            {title}
+        </h1>
+        <p class="description">{description}</p>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="columns is-mobile is-multiline content-wrapper">
+                <main class="column is-12-mobile is-8-tablet article-main">
+                    {#if htmlContent}
+                        <div class="html-content-container">
+                            <div class="html-content">{@html htmlContent}</div>
+                        </div>
+                    {/if}
+
+                    <div class="articles-container">
+                        <div class="articles-grid">
+                            {#each items as item}
+                                <ArticleCard
+                                    title={item.title}
+                                    description={item.description}
+                                    theme={currentTheme.theme}
+                                    url={item.url}
+                                    icon={item.icon}
+                                    buttonText={item.buttonText}
+                                    name={item.name}
+                                />
+                            {/each}
+                        </div>
+                    </div>
+                </main>
+                <aside class="column is-12-mobile is-4-tablet sidebar-column">
+                    <div class="sidebar-wrapper">
+                        <SideBar {categories} {latestArticles} />
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</section>
+<Footer {siteName} />
