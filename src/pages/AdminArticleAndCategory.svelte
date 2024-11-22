@@ -6,6 +6,7 @@
     import setTitle from '../js/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
     import type { Article } from '../types/article'
+    import type { Category } from '../types/category'
 
     export let title: string
     export let siteName: string
@@ -46,7 +47,7 @@
     let editingCategory = null
     let editingCategoryName = ''
 
-    const handleEditCategory = async (category) => {
+    const handleEditCategory = async (category: Category) => {
         editingCategory = category
         editingCategoryName = category.name
     }
@@ -471,7 +472,7 @@
     }
 
     // 改切換函數
-    const handleTabChange = async (isArticles) => {
+    const handleTabChange = async (isArticles: boolean) => {
         showArticles = isArticles
         // 使用 RAF 確保在瀏覽器重繪後執行
         requestAnimationFrame(() => {
