@@ -5,6 +5,7 @@
     import Footer from '../components/Footer.svelte'
     import setTitle from '../js/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
+    import type { Article } from '../types/article'
 
     export let title: string
     export let siteName: string
@@ -13,19 +14,19 @@
     let newCategory: string = ''
 
     // 假資料
-    let articles = [
+    let articles: Article[] = [
         {
             id: 1,
             title: 'Rust繁中簡學！',
-            created_at: '2024-03-20',
-            updated_at: '2024-05-21',
+            publishDate: '2024-03-20',
+            updateDate: '2024-05-21',
             category: 'Rust',
         },
         {
             id: 2,
             title: 'Web開發教學',
-            created_at: '2024-03-21',
-            updated_at: '2024-03-21',
+            publishDate: '2024-03-21',
+            updateDate: '2024-03-21',
             category: 'Web',
         },
     ]
@@ -183,13 +184,13 @@
                 if (dateFilter.created.from) {
                     matchDate =
                         matchDate &&
-                        new Date(article.created_at) >=
+                        new Date(article.publishDate) >=
                             new Date(dateFilter.created.from)
                 }
                 if (dateFilter.created.to) {
                     matchDate =
                         matchDate &&
-                        new Date(article.created_at) <=
+                        new Date(article.publishDate) <=
                             new Date(dateFilter.created.to)
                 }
             }
@@ -199,13 +200,13 @@
                 if (dateFilter.updated.from) {
                     matchDate =
                         matchDate &&
-                        new Date(article.updated_at) >=
+                        new Date(article.updateDate) >=
                             new Date(dateFilter.updated.from)
                 }
                 if (dateFilter.updated.to) {
                     matchDate =
                         matchDate &&
-                        new Date(article.updated_at) <=
+                        new Date(article.updateDate) <=
                             new Date(dateFilter.updated.to)
                 }
             }
@@ -229,14 +230,14 @@
                 case 'created':
                     return (
                         direction *
-                        (new Date(a.created_at).getTime() -
-                            new Date(b.created_at).getTime())
+                        (new Date(a.publishDate).getTime() -
+                            new Date(b.publishDate).getTime())
                     )
                 case 'updated':
                     return (
                         direction *
-                        (new Date(a.updated_at).getTime() -
-                            new Date(b.updated_at).getTime())
+                        (new Date(a.updateDate).getTime() -
+                            new Date(b.updateDate).getTime())
                     )
                 case 'category':
                     return (
@@ -1479,10 +1480,10 @@
                                         </span>
                                     </td>
                                     <td class="has-text-grey">
-                                        {article.created_at}
+                                        {article.publishDate}
                                     </td>
                                     <td class="has-text-grey">
-                                        {article.updated_at}
+                                        {article.updateDate}
                                     </td>
                                     <td>
                                         <div
