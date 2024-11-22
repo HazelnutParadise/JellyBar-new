@@ -20,14 +20,20 @@
             title: 'Rust繁中簡學！',
             publishDate: '2024-03-20',
             updateDate: '2024-05-21',
-            category: 'Rust',
+            category: {
+                id: 1,
+                name: 'Rust',
+            },
         },
         {
             id: 2,
             title: 'Web開發教學',
             publishDate: '2024-03-21',
             updateDate: '2024-03-21',
-            category: 'Web',
+            category: {
+                id: 2,
+                name: 'Web',
+            },
         },
     ]
 
@@ -87,8 +93,14 @@
 
             // 更新相關文章的類別名稱
             articles = articles.map((article) =>
-                article.category === editingCategory.name
-                    ? { ...article, category: editingCategoryName.trim() }
+                article.category.name === editingCategory.name
+                    ? {
+                          ...article,
+                          category: {
+                              ...article.category,
+                              name: editingCategoryName.trim(),
+                          },
+                      }
                     : article,
             )
 
@@ -242,7 +254,7 @@
                 case 'category':
                     return (
                         direction *
-                        a.category.localeCompare(b.category, 'zh-TW')
+                        a.category.name.localeCompare(b.category.name, 'zh-TW')
                     )
                 default:
                     return 0
@@ -270,7 +282,7 @@
         categories = categories.map((category) => ({
             ...category,
             articleCount: articles.filter(
-                (article) => article.category === category.name,
+                (article) => article.category.name === category.name,
             ).length,
         }))
     }
@@ -1476,7 +1488,7 @@
                                     </td>
                                     <td>
                                         <span class="tag is-info is-light">
-                                            {article.category}
+                                            {article.category.name}
                                         </span>
                                     </td>
                                     <td class="has-text-grey">
@@ -1522,7 +1534,7 @@
                                         <p class="has-text-grey">
                                             {selectedCategory
                                                 ? `「${selectedCategory.name}」類別目前沒有文章`
-                                                : '前沒有任何文章'}
+                                                : '目前沒有任何文章'}
                                         </p>
                                     </td>
                                 </tr>
