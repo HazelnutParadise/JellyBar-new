@@ -4,4 +4,8 @@ export type Article = {
     publishDate: string
     updateDate: string
     category: string
+    author?: string
+    description?: string
+    content?: string
+    media?: string[]
 }
