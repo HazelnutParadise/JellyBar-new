@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import '../app.css'
     import { onMount, onDestroy } from 'svelte'
     import AdminNavbar from '../components/AdminNavbar.svelte'
@@ -6,11 +6,11 @@
     import setTitle from '../js/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
 
-    export let title
-    export let siteName
+    export let title: string
+    export let siteName: string
     setTitle(title, siteName)
 
-    let newCategory = ''
+    let newCategory: string = ''
 
     // 假資料
     let articles = [
@@ -229,12 +229,14 @@
                 case 'created':
                     return (
                         direction *
-                        (new Date(a.created_at) - new Date(b.created_at))
+                        (new Date(a.created_at).getTime() -
+                            new Date(b.created_at).getTime())
                     )
                 case 'updated':
                     return (
                         direction *
-                        (new Date(a.updated_at) - new Date(b.updated_at))
+                        (new Date(a.updated_at).getTime() -
+                            new Date(b.updated_at).getTime())
                     )
                 case 'category':
                     return (
@@ -347,10 +349,11 @@
 
     let articleTable
     let categoryTable
-
+    
     // 修改初始化表格的函數
     const initTables = async () => {
-        if (!window.jQuery?.fn?.DataTable) {
+        const jQuery = (window as any).jQuery;
+        if (!jQuery?.fn?.DataTable) {
             console.error('DataTables 未載入')
             return
         }
@@ -412,7 +415,7 @@
             if (showArticles) {
                 const table = document.getElementById('articleTable')
                 if (table) {
-                    articleTable = window.jQuery(table).DataTable({
+                    articleTable = jQuery(table).DataTable({
                         ...commonConfig,
                         order: [[1, 'asc']],
                         columnDefs: [
@@ -427,7 +430,7 @@
             } else {
                 const table = document.getElementById('categoryTable')
                 if (table) {
-                    categoryTable = window.jQuery(table).DataTable({
+                    categoryTable = jQuery(table).DataTable({
                         ...commonConfig,
                         order: [[0, 'asc']],
                         columnDefs: [
@@ -454,7 +457,7 @@
         }
     }
 
-    // ���改切換函數
+    // 改切換函數
     const handleTabChange = async (isArticles) => {
         showArticles = isArticles
         // 使用 RAF 確保在瀏覽器重繪後執行
@@ -793,7 +796,7 @@
         margin: 0;
     }
 
-    /* 更模態相關���式 */
+    /* 更模態相關式 */
     :global(.modal) {
         z-index: 1000; /* 確保模態框在導航欄上方 */
     }
@@ -1683,7 +1686,7 @@
                 <div class="field">
                     <VditorEditor
                         bind:content={categoryPageContent}
-                        height="70vh"
+                        height={70}
                         placeholder="請輸入類別頁面內容..."
                         on:change={(e) => (categoryPageContent = e.detail)}
                     />
