@@ -7,6 +7,7 @@
     import VditorEditor from '../components/VditorEditor.svelte'
     import type { Article } from '../types/article'
     import type { Category } from '../types/category'
+    import DataTable from '../components/DataTable.svelte'
 
     export let title: string
     export let siteName: string
@@ -188,7 +189,7 @@
     $: filteredArticles = articles
         .filter((article) => {
             let matchCategory = selectedCategory
-                ? article.category === selectedCategory.name
+                ? article.category.id === selectedCategory.id
                 : true
 
             let matchDate = true
@@ -234,7 +235,7 @@
             return matchCategory && matchDate && matchSearch
         })
         .sort((a, b) => {
-            if (!articleSort) return 0 // 如果沒有選擇排序欄位，保持原順序
+            if (!articleSort) return 0
 
             const direction = articleSortDirection === 'asc' ? 1 : -1
             switch (articleSort) {
@@ -276,6 +277,8 @@
             },
         }
         searchKeyword = ''
+        articleSort = null
+        articleSortDirection = 'asc'
     }
 
     // 更新類別文章數量
@@ -361,151 +364,42 @@
             return 0
         })
 
-    let articleTable
-    let categoryTable
-    
-    // 修改初始化表格的函數
-    const initTables = async () => {
-        const jQuery = (window as any).jQuery;
-        if (!jQuery?.fn?.DataTable) {
-            console.error('DataTables 未載入')
-            return
-        }
-
-        try {
-            if (articleTable) {
-                articleTable.destroy()
-                articleTable = null
-            }
-            if (categoryTable) {
-                categoryTable.destroy()
-                categoryTable = null
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, 0))
-
-            // 統一的 DataTable 配置
-            const commonConfig = {
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json',
-                },
-                searching: false,
-                pageLength: 10,
-                dom: 'rtip',
-                destroy: true,
-                responsive: true,
-                autoWidth: false,
-                pagingType: 'simple_numbers',
-                // 添加以下設置來禁用懸停效果
-                rowCallback: function (row, data, index) {
-                    jQuery(row).off('mouseenter mouseleave')
-                },
-                createdRow: function (row, data, dataIndex) {
-                    jQuery(row).css('background-color', 'white')
-                    jQuery(row).hover(
-                        function () {
-                            jQuery(this).css('background-color', 'white')
-                        },
-                        function () {
-                            jQuery(this).css('background-color', 'white')
-                        },
-                    )
-                },
-                drawCallback: function () {
-                    // 原有的代碼
-                    jQuery('.paginate_button').addClass('button is-small')
-                    jQuery('.paginate_button.current').addClass('is-primary')
-                    jQuery('.dataTables_info').addClass(
-                        'has-text-grey is-size-7',
-                    )
-
-                    // 添加以下代碼來確保所有行的背景色
-                    jQuery(this)
-                        .find('tbody tr')
-                        .css('background-color', 'white')
-                },
-            }
-
-            if (showArticles) {
-                const table = document.getElementById('articleTable')
-                if (table) {
-                    articleTable = jQuery(table).DataTable({
-                        ...commonConfig,
-                        order: [[1, 'asc']],
-                        columnDefs: [
-                            { orderable: false, targets: [0, 5] },
-                            { width: '50px', targets: 0 },
-                            { width: '120px', targets: [3, 4] },
-                            { width: '100px', targets: 2 },
-                            { width: '150px', targets: 5 },
-                        ],
-                    })
-                }
-            } else {
-                const table = document.getElementById('categoryTable')
-                if (table) {
-                    categoryTable = jQuery(table).DataTable({
-                        ...commonConfig,
-                        order: [[0, 'asc']],
-                        columnDefs: [
-                            { orderable: false, targets: 2 },
-                            { width: '60%', targets: 0 },
-                            { width: '20%', targets: 1 },
-                            { width: '20%', targets: 2 },
-                        ],
-                    })
-                }
-            }
-        } catch (error) {
-            console.error('初始化表格時發生錯誤:', error)
-        }
+    // 定義表格配置
+    const articleTableConfig = {
+        order: [[1, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [0, 5] },
+            { width: '50px', targets: 0 },
+            { width: '120px', targets: [3, 4] },
+            { width: '100px', targets: 2 },
+            { width: '150px', targets: 5 },
+        ],
     }
 
-    // 修改監聽方式
-    $: {
-        if (typeof window !== 'undefined' && showArticles !== undefined) {
-            // 使用 RAF 確保在瀏覽器重繪後執行
-            requestAnimationFrame(() => {
-                initTables()
-            })
-        }
+    const categoryTableConfig = {
+        order: [[0, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: 2 },
+            { width: '60%', targets: 0 },
+            { width: '20%', targets: 1 },
+            { width: '20%', targets: 2 },
+        ],
     }
 
-    // 改切換函數
-    const handleTabChange = async (isArticles: boolean) => {
+    // 處理標籤切換
+    const handleTabChange = (isArticles: boolean) => {
         showArticles = isArticles
-        // 使用 RAF 確保在瀏覽器重繪後執行
-        requestAnimationFrame(() => {
-            initTables()
-        })
+        // 清除篩選
+        if (isArticles) {
+            searchKeyword = ''
+            selectedCategory = null
+        } else {
+            categorySearchKeyword = ''
+        }
     }
 
-    // 修改 onMount
-    onMount(async () => {
-        // 等待 scripts 載入完成
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        await initTables()
-        updateCategoryCount()
-    })
-
-    // 在組件銷毀時清理表格
-    onDestroy(() => {
-        if (articleTable) {
-            articleTable.destroy()
-            articleTable = null
-        }
-        if (categoryTable) {
-            categoryTable.destroy()
-            categoryTable = null
-        }
-    })
-
-    const handleCategoryClick = (category) => {
-        viewCategoryArticles(category)
-    }
-
-    // 文章相關函數
-    const handleDelete = async (articleId) => {
+    // 處理文章刪除
+    const handleDelete = async (articleId: number) => {
         if (!confirm('確定要刪除這篇文章嗎？此操作無法復原。')) {
             return
         }
@@ -530,6 +424,7 @@
         }
     }
 
+    // 處理新增類別
     const handleAddCategory = async () => {
         if (!newCategory.trim()) {
             alert('類別名稱不能為空！')
@@ -572,7 +467,14 @@
         }
     }
 
-    const handleEditCategoryPage = async (category) => {
+    // 處理類別點擊
+    const handleCategoryClick = (category: Category) => {
+        showArticles = true
+        selectedCategory = category
+    }
+
+    // 處理編輯類別頁面
+    const handleEditCategoryPage = async (category: Category) => {
         try {
             // 從後端獲取類別頁面內容
             const response = await fetch(`/api/categories/${category.id}/page`)
@@ -588,6 +490,7 @@
         }
     }
 
+    // 處理保存類別頁面
     const handleSaveCategoryPage = async () => {
         if (!editingCategoryPage) return
 
@@ -616,27 +519,6 @@
             alert('保存失敗：' + error.message)
         }
     }
-
-    // 初始化數據
-    onMount(async () => {
-        try {
-            // 獲取文章列表
-            const articlesResponse = await fetch('/api/articles')
-            if (!articlesResponse.ok) throw new Error('獲取文章列表失敗')
-            articles = await articlesResponse.json()
-
-            // 獲取類別列表
-            const categoriesResponse = await fetch('/api/categories')
-            if (!categoriesResponse.ok) throw new Error('獲取類別列表失敗')
-            categories = await categoriesResponse.json()
-
-            updateCategoryCount()
-            await initTables()
-        } catch (error) {
-            console.error('初始化數據時發生錯誤:', error)
-            alert('載入數據失敗：' + error.message)
-        }
-    })
 </script>
 
 <style>
@@ -1460,88 +1342,90 @@
                 </div>
 
                 <div class="table-container">
-                    <table id="articleTable" class="table is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th class="is-narrow">#</th>
-                                <th>標題</th>
-                                <th class="is-narrow">分類</th>
-                                <th class="date-column">發布日期</th>
-                                <th class="date-column">修改日期</th>
-                                <th class="is-narrow has-text-centered">操作</th
-                                >
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each filteredArticles as article, index}
+                    <DataTable id="articleTable" config={articleTableConfig}>
+                        <table id="articleTable" class="table is-fullwidth">
+                            <thead>
                                 <tr>
-                                    <td class="has-text-grey">{index + 1}</td>
-                                    <td>
-                                        <div class="article-title">
-                                            <a
-                                                href={`/article/${article.id}`}
-                                                target="_blank"
-                                                class="has-text-dark"
-                                            >
-                                                {article.title}
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="tag is-info is-light">
-                                            {article.category.name}
-                                        </span>
-                                    </td>
-                                    <td class="has-text-grey">
-                                        {article.publishDate}
-                                    </td>
-                                    <td class="has-text-grey">
-                                        {article.updateDate}
-                                    </td>
-                                    <td>
-                                        <div
-                                            class="buttons is-centered are-small"
-                                        >
-                                            <a
-                                                href={`/admin/article/edit/${article.id}`}
-                                                class="button is-info is-outlined"
-                                                title="編輯文章"
-                                            >
-                                                <span class="icon">
-                                                    <i class="fas fa-edit"></i>
-                                                </span>
-                                            </a>
-                                            <button
-                                                class="button is-danger is-outlined"
-                                                title="刪除文章"
-                                                on:click={() =>
-                                                    handleDelete(article.id)}
-                                            >
-                                                <span class="icon">
-                                                    <i class="fas fa-trash-alt"
-                                                    ></i>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {/each}
-                            {#if filteredArticles.length === 0}
-                                <tr>
-                                    <td
-                                        colspan="6"
-                                        class="has-text-centered py-6"
+                                    <th class="is-narrow">#</th>
+                                    <th>標題</th>
+                                    <th class="is-narrow">分類</th>
+                                    <th class="date-column">發布日期</th>
+                                    <th class="date-column">修改日期</th>
+                                    <th class="is-narrow has-text-centered">操作</th
                                     >
-                                        <p class="has-text-grey">
-                                            {selectedCategory
-                                                ? `「${selectedCategory.name}」類別目前沒有文章`
-                                                : '目前沒有任何文章'}
-                                        </p>
-                                    </td>
                                 </tr>
-                            {/if}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {#each filteredArticles as article, index}
+                                    <tr>
+                                        <td class="has-text-grey">{index + 1}</td>
+                                        <td>
+                                            <div class="article-title">
+                                                <a
+                                                    href={`/article/${article.id}`}
+                                                    target="_blank"
+                                                    class="has-text-dark"
+                                                >
+                                                    {article.title}
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="tag is-info is-light">
+                                                {article.category.name}
+                                            </span>
+                                        </td>
+                                        <td class="has-text-grey">
+                                            {article.publishDate}
+                                        </td>
+                                        <td class="has-text-grey">
+                                            {article.updateDate}
+                                        </td>
+                                        <td>
+                                            <div
+                                                class="buttons is-centered are-small"
+                                            >
+                                                <a
+                                                    href={`/admin/article/edit/${article.id}`}
+                                                    class="button is-info is-outlined"
+                                                    title="編輯文章"
+                                                >
+                                                    <span class="icon">
+                                                        <i class="fas fa-edit"></i>
+                                                    </span>
+                                                </a>
+                                                <button
+                                                    class="button is-danger is-outlined"
+                                                    title="刪除文章"
+                                                    on:click={() =>
+                                                        handleDelete(article.id)}
+                                                >
+                                                    <span class="icon">
+                                                        <i class="fas fa-trash-alt"
+                                                        ></i>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {/each}
+                                {#if filteredArticles.length === 0}
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="has-text-centered py-6"
+                                        >
+                                            <p class="has-text-grey">
+                                                {selectedCategory
+                                                    ? `「${selectedCategory.name}」類別目前沒有文章`
+                                                    : '目前沒有任何文章'}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                {/if}
+                            </tbody>
+                        </table>
+                    </DataTable>
                 </div>
             </div>
         {:else}
@@ -1588,92 +1472,94 @@
                 </div>
 
                 <div class="table-container">
-                    <table id="categoryTable" class="table is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th>類別名稱</th>
-                                <th>文章數量</th>
-                                <th class="is-narrow">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each filteredCategories as category}
+                    <DataTable id="categoryTable" config={categoryTableConfig}>
+                        <table id="categoryTable" class="table is-fullwidth">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        {#if editingCategory?.id === category.id}
-                                            <div class="field has-addons">
-                                                <div class="control">
-                                                    <input
-                                                        class="input is-small"
-                                                        type="text"
-                                                        bind:value={editingCategoryName}
-                                                    />
+                                    <th>類別名稱</th>
+                                    <th>文章數量</th>
+                                    <th class="is-narrow">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each filteredCategories as category}
+                                    <tr>
+                                        <td>
+                                            {#if editingCategory?.id === category.id}
+                                                <div class="field has-addons">
+                                                    <div class="control">
+                                                        <input
+                                                            class="input is-small"
+                                                            type="text"
+                                                            bind:value={editingCategoryName}
+                                                        />
+                                                    </div>
+                                                    <div class="control">
+                                                        <button
+                                                            class="button is-small is-success"
+                                                            on:click={handleSaveCategory}
+                                                        >
+                                                            儲存
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div class="control">
-                                                    <button
-                                                        class="button is-small is-success"
-                                                        on:click={handleSaveCategory}
-                                                    >
-                                                        儲存
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        {:else}
-                                            <button
-                                                class="category-link"
-                                                on:click={() =>
-                                                    handleCategoryClick(
-                                                        category,
-                                                    )}
-                                            >
-                                                {category.name}
-                                            </button>
-                                        {/if}
-                                    </td>
-                                    <td>
-                                        <span class="tag is-info is-light">
-                                            {category.articleCount} 篇
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="buttons are-small">
-                                            {#if editingCategory?.id !== category.id}
+                                            {:else}
                                                 <button
-                                                    class="button is-info is-small"
+                                                    class="category-link"
                                                     on:click={() =>
-                                                        handleEditCategory(
+                                                        handleCategoryClick(
                                                             category,
                                                         )}
                                                 >
-                                                    編輯類別名稱
+                                                    {category.name}
                                                 </button>
                                             {/if}
-                                            <button
-                                                class="button is-primary is-small"
-                                                on:click={() =>
-                                                    handleEditCategoryPage(
-                                                        category,
-                                                    )}
-                                            >
-                                                編輯類別頁面
-                                            </button>
-                                            <button
-                                                class="button is-danger is-small"
-                                                class:is-light={category.articleCount >
-                                                    0}
-                                                on:click={() =>
-                                                    handleDeleteCategory(
-                                                        category.id,
-                                                    )}
-                                            >
-                                                刪除
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {/each}
-                        </tbody>
-                    </table>
+                                        </td>
+                                        <td>
+                                            <span class="tag is-info is-light">
+                                                {category.articleCount} 篇
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="buttons are-small">
+                                                {#if editingCategory?.id !== category.id}
+                                                    <button
+                                                        class="button is-info is-small"
+                                                        on:click={() =>
+                                                            handleEditCategory(
+                                                                category,
+                                                            )}
+                                                    >
+                                                        編輯類別名稱
+                                                    </button>
+                                                {/if}
+                                                <button
+                                                    class="button is-primary is-small"
+                                                    on:click={() =>
+                                                        handleEditCategoryPage(
+                                                            category,
+                                                        )}
+                                                >
+                                                    編輯類別頁面
+                                                </button>
+                                                <button
+                                                    class="button is-danger is-small"
+                                                    class:is-light={category.articleCount >
+                                                        0}
+                                                    on:click={() =>
+                                                        handleDeleteCategory(
+                                                            category.id,
+                                                        )}
+                                                >
+                                                    刪除
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+                    </DataTable>
                 </div>
             </div>
         {/if}
