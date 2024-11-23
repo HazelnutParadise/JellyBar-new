@@ -22,7 +22,9 @@
     let article = {
         id: thisArticle?.id || null,
         title: thisArticle?.title || '',
-        content: thisArticle?.content || '# 歡迎使用編輯器\n\n這裡可以開始編寫您的文章...',
+        content:
+            thisArticle?.content ||
+            '# 歡迎使用編輯器\n\n這裡可以開始編寫您的文章...',
         category: thisArticle?.category?.name || '',
         description: thisArticle?.description || '',
         media: thisArticle?.media || '',
@@ -61,38 +63,39 @@
           )
         : categories
 
-    // 選擇分類
-    function selectCategory(category) {
-        article.category = category
-        searchTerm = category
-        showDropdown = false
-    }
-
-    // 新增分類
-    function addNewCategory() {
-        const newCategory = searchTerm.trim()
-        if (newCategory && !categories.includes(newCategory)) {
-            categories = [...categories, newCategory]
-            selectCategory(newCategory)
-        }
-    }
-
-    // 清除選擇的分類
-    function clearCategory() {
-        article.category = ''
-        searchTerm = ''
-        showDropdown = false
-    }
-
-    // 點擊外部時關閉下拉選單
-    function handleClickOutside(event) {
-        const searchContainer = document.querySelector('.search-container')
-        if (searchContainer && !searchContainer.contains(event.target)) {
+    onMount(() => {
+        // 選擇分類
+        function selectCategory(category) {
+            article.category = category
+            searchTerm = category
             showDropdown = false
         }
-    }
 
-    onMount(() => {
+        // 新增分類
+        function addNewCategory() {
+            const newCategory = searchTerm.trim()
+            if (newCategory && !categories.includes(newCategory)) {
+                categories = [...categories, newCategory]
+                selectCategory(newCategory)
+            }
+        }
+
+        // 清除選擇的分類
+        function clearCategory() {
+            article.category = ''
+            searchTerm = ''
+            showDropdown = false
+        }
+
+        // 點擊外部時關閉下拉選單
+        function handleClickOutside(event) {
+            const searchContainer = document.querySelector('.search-container')
+            if (searchContainer && !searchContainer.contains(event.target)) {
+                showDropdown = false
+            }
+        }
+
+        selectCategory(article.category)
         document.addEventListener('click', handleClickOutside)
         return () => {
             document.removeEventListener('click', handleClickOutside)
