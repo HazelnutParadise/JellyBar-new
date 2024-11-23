@@ -301,7 +301,7 @@
 
     .input {
         width: 100%;
-        padding: 10px;
+        padding: 0px 10px;
         border: 1px solid var(--neutral-medium);
         border-radius: 6px;
         font-family: inherit;
@@ -338,7 +338,12 @@
 
     .search-input {
         width: 100%;
-        padding-right: 35px;
+        height: 50px;
+        padding: 10px 35px 10px 12px; /* 修改 padding，確保左右都有足夠空間 */
+        line-height: 50px; /* 新增行高設定 */
+        overflow: hidden; /* 新增 */
+        text-overflow: ellipsis; /* 新增，當文字過長時顯示省略號 */
+        white-space: nowrap; /* 新增，防止文字換行 */
     }
 
     .toggle-button {
@@ -384,6 +389,9 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        overflow: hidden; /* 新增 */
+        text-overflow: ellipsis; /* 新增 */
+        white-space: nowrap; /* 新增 */
     }
 
     .dropdown-item:hover {
