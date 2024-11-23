@@ -1,7 +1,10 @@
 package router
 
 import (
+	"jellybar/obj"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nichady/golte"
@@ -28,10 +31,31 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 
 	r.GET("/article/edit/:id", func(ctx *gin.Context) {
 		id := ctx.Param("id")
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		thisArticle := obj.Article{
+			ID:          uint(idInt),
+			Title:       "Title",
+			Content:     "Content",
+			Description: "Description",
+			Status:      "draft",
+			PublishDate: time.Now(),
+			UpdateDate:  time.Now(),
+			Category: obj.Category{
+				ID:   0,
+				Name: "Category",
+			},
+			Media: []string{},
+		}
+
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
-			"siteName": siteName,
-			"title":    "編輯文章",
-			"id":       id,
+			"siteName":    siteName,
+			"title":       "編輯文章",
+			"thisArticle": thisArticle,
 		})
 	})
 }

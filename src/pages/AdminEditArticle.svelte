@@ -1,13 +1,15 @@
-<script>
+<script lang="ts">
     import '../app.css'
+    import '../js/declares'
     import AdminNavbar from '../components/AdminNavbar.svelte'
     import Footer from '../components/Footer.svelte'
     import VditorEditor from '../components/VditorEditor.svelte'
     import { onMount } from 'svelte'
+    import { Article } from '../types/article'
 
-    export let siteName
-    export let title
-    export let id = null
+    export let siteName: string
+    export let title: string
+    export let thisArticle: Article
 
     // 文章狀態選項
     const statusOptions = [
@@ -18,12 +20,14 @@
     ]
 
     let article = {
-        title: '',
-        content: '# 歡迎使用編輯器\n\n這裡可以開始編寫您的文章...',
-        category: '',
-        description: '',
-        status: 'draft',
-        tags: [],
+        id: thisArticle?.id || null,
+        title: thisArticle?.title || '',
+        content: thisArticle?.content || '# 歡迎使用編輯器\n\n這裡可以開始編寫您的文章...',
+        category: thisArticle?.category?.name || '',
+        description: thisArticle?.description || '',
+        media: thisArticle?.media || '',
+        status: thisArticle?.status || 'draft',
+        // tags: thisArticle?.tags || [],
     }
 
     // 預設分類列表
@@ -89,12 +93,6 @@
     }
 
     onMount(() => {
-        // 如果有 id，載入文章資料
-        if (id) {
-            // TODO: 從後端載入文章資料
-            console.log('載入文章:', id)
-        }
-
         document.addEventListener('click', handleClickOutside)
         return () => {
             document.removeEventListener('click', handleClickOutside)

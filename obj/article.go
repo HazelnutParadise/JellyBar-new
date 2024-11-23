@@ -8,6 +8,7 @@ type Article struct {
 	Description string    `json:"description"`
 	PublishDate time.Time `json:"publishDate"`
 	UpdateDate  time.Time `json:"updateDate"`
+	Status      string    `json:"status"`
 	Content     string    `json:"content"`
 	Media       []string  `json:"media" gorm:"type:json"`
 	CategoryID  uint

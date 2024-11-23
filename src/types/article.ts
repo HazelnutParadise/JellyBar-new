@@ -10,4 +10,5 @@ export type Article = {
     description?: string
     content?: string
     media?: string[]
+    status?: string
 }
