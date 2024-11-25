@@ -131,7 +131,7 @@
 
 <style>
     .page-wrapper {
-        padding-top: 80px;
+        padding-top: 20px;
         padding-bottom: 20px;
         min-height: 100vh;
         background-color: var(--neutral-light);
