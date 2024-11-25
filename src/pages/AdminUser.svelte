@@ -45,36 +45,8 @@
 
     const tableId = 'users-table';
 
-    onMount(async () => {
-        // 確保 jQuery 已載入
-        if (!(window as any).jQuery) {
-            const jqueryScript = document.createElement('script');
-            jqueryScript.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
-            document.head.appendChild(jqueryScript);
-            await new Promise(resolve => jqueryScript.onload = resolve);
-        }
-
-        // 載入 DataTables CSS
-        if (!document.querySelector('link[href*="datatables"]')) {
-            const dtCSS = document.createElement('link');
-            dtCSS.rel = 'stylesheet';
-            dtCSS.href = 'https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css';
-            document.head.appendChild(dtCSS);
-        }
-
-        // 載入 DataTables JS
-        if (!(window as any).jQuery?.fn?.DataTable) {
-            const dtScript = document.createElement('script');
-            dtScript.src = 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js';
-            document.head.appendChild(dtScript);
-            await new Promise(resolve => dtScript.onload = resolve);
-        }
-
-        isDataTablesLoaded = true;
-    });
-
-    // 修改 tableConfig，加入檢查
-    $: tableConfig = isDataTablesLoaded ? {
+    // 修改 tableConfig
+    $: tableConfig = {
         data: users,
         columns: [
             { 
@@ -99,17 +71,21 @@
         searching: true,
         ordering: true,
         paging: true,
-        drawCallback: function() {
-            const table = this;
-            table.find('.delete-user').on('click', function() {
-                const userId = this.getAttribute('data-id');
-                deleteUser(userId);
-            });
-        },
-        initComplete: function(settings, json) {
-            dataTableInstance = (window as any).jQuery(`#${tableId}`).DataTable();
+        language: {
+            "lengthMenu": "顯示 _MENU_ 條記錄",
+            "zeroRecords": "沒有找到記錄",
+            "info": "第 _PAGE_ 頁 ( 總共 _PAGES_ 頁 )",
+            "infoEmpty": "無記錄",
+            "infoFiltered": "(從 _MAX_ 條記錄過濾)",
+            "search": "搜尋:",
+            "paginate": {
+                "first": "首頁",
+                "last": "末頁",
+                "next": "下一頁",
+                "previous": "上一頁"
+            }
         }
-    } : null;
+    };
 
     async function addUser() {
         if (!newUsername.trim()) {
@@ -191,21 +167,31 @@
         <!-- 用戶列表 -->
         <div class="bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-xl font-semibold mb-4">用戶列表</h2>
-            {#if isDataTablesLoaded}
-                <table id={tableId}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>用戶名</th>
-                            <th>建立時間</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                </table>
-                <DataTable id={tableId} config={tableConfig} />
-            {:else}
-                <p>載入中...</p>
-            {/if}
+            <table id={tableId} class="display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用戶名</th>
+                        <th>建立時間</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each users as user}
+                    <tr>
+                        <td>{user.id}</td>
+                        <td>{user.username}</td>
+                        <td>{new Date(user.created_at).toLocaleString()}</td>
+                        <td>
+                            <button class="text-red-500 hover:text-red-700 delete-user" data-id={user.id}>
+                                刪除
+                            </button>
+                        </td>
+                    </tr>
+                    {/each}
+                </tbody>
+            </table>
+            <DataTable id={tableId} config={tableConfig} />
         </div>
     </main>
 

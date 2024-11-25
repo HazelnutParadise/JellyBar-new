@@ -1093,26 +1093,6 @@
     }
 </style>
 
-<svelte:head>
-    <link
-        rel="stylesheet"
-        type="text/css"
-        href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
-    />
-    <link
-        rel="stylesheet"
-        type="text/css"
-        href="https://cdn.datatables.net/1.13.7/css/dataTables.bulma.min.css"
-    />
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script
-        src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"
-    ></script>
-    <script
-        src="https://cdn.datatables.net/1.13.7/js/dataTables.bulma.min.js"
-    ></script>
-</svelte:head>
-
 <AdminNavbar {siteName} />
 
 <div class="admin-container">

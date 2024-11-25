@@ -5,9 +5,55 @@
     export let config: any = {}
     
     let table: any
+    let scriptsLoaded = false
+
+    // 載入必要的腳本和樣式
+    const loadDependencies = async () => {
+        if (scriptsLoaded) return
+
+        // 載入 jQuery
+        if (!(window as any).jQuery) {
+            const jqueryScript = document.createElement('script')
+            jqueryScript.src = 'https://code.jquery.com/jquery-3.7.0.min.js'
+            document.head.appendChild(jqueryScript)
+            await new Promise((resolve) => jqueryScript.onload = resolve)
+        }
+
+        // 載入 DataTables CSS
+        if (!document.querySelector('link[href*="datatables"]')) {
+            const datatablesCss = document.createElement('link')
+            datatablesCss.rel = 'stylesheet'
+            datatablesCss.type = 'text/css'
+            datatablesCss.href = 'https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css'
+            document.head.appendChild(datatablesCss)
+
+            const bulmaDataTablesCss = document.createElement('link')
+            bulmaDataTablesCss.rel = 'stylesheet'
+            bulmaDataTablesCss.type = 'text/css'
+            bulmaDataTablesCss.href = 'https://cdn.datatables.net/1.13.7/css/dataTables.bulma.min.css'
+            document.head.appendChild(bulmaDataTablesCss)
+        }
+
+        // 載入 DataTables JS
+        if (!(window as any).jQuery?.fn?.DataTable) {
+            const dataTablesScript = document.createElement('script')
+            dataTablesScript.src = 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'
+            document.head.appendChild(dataTablesScript)
+            await new Promise((resolve) => dataTablesScript.onload = resolve)
+
+            const bulmaDataTablesScript = document.createElement('script')
+            bulmaDataTablesScript.src = 'https://cdn.datatables.net/1.13.7/js/dataTables.bulma.min.js'
+            document.head.appendChild(bulmaDataTablesScript)
+            await new Promise((resolve) => bulmaDataTablesScript.onload = resolve)
+        }
+
+        scriptsLoaded = true
+    }
 
     // 初始化表格
     const initTable = async () => {
+        await loadDependencies()
+
         const jQuery = (window as any).jQuery
         if (!jQuery?.fn?.DataTable) {
             console.error('DataTables 未載入')
