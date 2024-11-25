@@ -68,17 +68,17 @@
                 <span class="ml-2 has-text-weight-bold">{siteName}</span>
             </a>
 
-            <a
-                role="button"
+            <button
                 class="navbar-burger"
                 aria-label="menu"
-                aria-expanded="false"
+                aria-expanded={isActive}
                 on:click={toggleMenu}
+                tabindex="0"
             >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
-            </a>
+            </button>
         </div>
 
         <div class="navbar-menu" class:is-active={isActive}>
