@@ -1,5 +1,10 @@
 <script>
     export let siteName
+    let isActive = false;
+    
+    const toggleMenu = () => {
+        isActive = !isActive;
+    }
 </script>
 
 <style>
@@ -34,6 +39,20 @@
         transform: translateY(-2px);
         text-decoration: none;
     }
+
+    .navbar-burger {
+        color: var(--theme-secondary);
+        border: none;
+    }
+
+    .navbar-burger:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar-menu.is-active {
+        background: rgba(53, 70, 73, 0.95);
+        backdrop-filter: blur(10px);
+    }
 </style>
 
 <div class="navbar-wrapper">
@@ -48,9 +67,21 @@
                 />
                 <span class="ml-2 has-text-weight-bold">{siteName}</span>
             </a>
+
+            <a
+                role="button"
+                class="navbar-burger"
+                aria-label="menu"
+                aria-expanded="false"
+                on:click={toggleMenu}
+            >
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
         </div>
 
-        <div class="navbar-menu">
+        <div class="navbar-menu" class:is-active={isActive}>
             <div class="navbar-end">
                 <a class="navbar-item" href="/">歡迎光臨 Jelly Bar！</a>
                 <a class="navbar-item" href="/article">所有文章</a>
