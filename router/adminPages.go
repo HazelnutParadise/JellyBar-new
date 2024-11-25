@@ -58,4 +58,11 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			"thisArticle": thisArticle,
 		})
 	})
+
+	r.GET("/users", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminUser", map[string]any{
+			"siteName": siteName,
+			"title":    "用戶管理",
+		})
+	})
 }
