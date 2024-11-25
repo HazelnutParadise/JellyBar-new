@@ -73,34 +73,20 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json',
                 },
-                searching: false,
+                searching: true,
                 pageLength: 10,
-                dom: 'rtip',
+                dom: '<"table-controls"lf>rtip',
                 destroy: true,
                 responsive: true,
                 autoWidth: false,
                 pagingType: 'simple_numbers',
-                rowCallback: function(row, data, index) {
-                    jQuery(row).off('mouseenter mouseleave')
-                },
-                createdRow: function(row, data, dataIndex) {
-                    jQuery(row).css('background-color', 'white')
-                    jQuery(row).hover(
-                        function() {
-                            jQuery(this).css('background-color', 'white')
-                        },
-                        function() {
-                            jQuery(this).css('background-color', 'white')
-                        }
-                    )
-                },
-                drawCallback: function() {
-                    jQuery('.paginate_button').addClass('button is-small')
-                    jQuery('.paginate_button.current').addClass('is-primary')
-                    jQuery('.dataTables_info').addClass('has-text-grey is-size-7')
-                    jQuery(this)
-                        .find('tbody tr')
-                        .css('background-color', 'white')
+                createdRow: null,
+                rowCallback: null,
+                drawCallback: function(settings) {
+                    const api = this.api();
+                    if (config.drawCallback) {
+                        config.drawCallback.call(this, settings);
+                    }
                 }
             }
 
@@ -130,54 +116,167 @@
 </script>
 
 <style>
-    /* DataTable 相關樣式 */
-    :global(.dataTables_wrapper) {
-        padding: 1rem 0;
+    /* 基礎表格樣式 */
+    :global(table.display) {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0;
+        background-color: white;
     }
 
-    :global(.dataTables_info) {
-        padding: 0.5rem 0;
-        color: #666;
-        font-size: 0.875rem;
+    /* 表格控制區域樣式 */
+    :global(.table-controls) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
     }
 
-    :global(.dataTables_paginate) {
-        padding: 0.5rem 0;
+    /* 表頭樣式 */
+    :global(table.display thead th) {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+        font-weight: 600 !important;
+        padding: 1rem !important;
+        text-align: left !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        white-space: nowrap;
     }
 
-    :global(.paginate_button) {
-        margin: 0 0.25rem;
-        padding: 0.25rem 0.75rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.2s ease;
+    /* 表格內容樣式 */
+    :global(table.display tbody td) {
+        padding: 1rem !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        color: #475569 !important;
+        background-color: white !important;
     }
 
-    :global(.paginate_button.current) {
-        background-color: var(--theme-primary);
-        color: white;
-        border: none;
+    /* 表格行樣式 */
+    :global(table.display tbody tr) {
+        background-color: white !important;
     }
 
-    :global(.paginate_button:not(.current):hover) {
-        background-color: #f5f5f5;
+    :global(table.display tbody tr:hover) {
+        background-color: #f8fafc !important;
     }
 
-    :global(.dataTables_empty) {
-        padding: 2rem !important;
-        text-align: center;
-        color: #666;
+    :global(table.display tbody tr:hover td) {
+        background-color: #f8fafc !important;
     }
 
+    /* 分頁控制樣式 */
     :global(.dataTables_wrapper .dataTables_paginate) {
-        margin-top: 1rem;
-        padding-top: 0.5rem;
-        border-top: 1px solid #dee2e6;
+        margin-top: 1rem !important;
+        padding: 1rem 0 !important;
     }
 
+    :global(.dataTables_wrapper .dataTables_paginate .paginate_button) {
+        padding: 0.5rem 1rem !important;
+        margin: 0 0.25rem !important;
+        border-radius: 0.375rem !important;
+        border: 1px solid #e2e8f0 !important;
+        background: white !important;
+        color: #475569 !important;
+        box-shadow: none !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_paginate .paginate_button:hover) {
+        background: #f1f5f9 !important;
+        color: #1e293b !important;
+        border-color: #e2e8f0 !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_paginate .paginate_button.current) {
+        background: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+        color: white !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover) {
+        background: #2563eb !important;
+        color: white !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_paginate .paginate_button.disabled) {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+        background: #f1f5f9 !important;
+    }
+
+    /* 搜尋框樣式 */
+    :global(.dataTables_wrapper .dataTables_filter) {
+        margin-bottom: 0 !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_filter input) {
+        padding: 0.5rem !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.375rem !important;
+        margin-left: 0.5rem !important;
+        outline: none !important;
+        min-width: 200px !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_filter input:focus) {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    /* 表格資訊樣式 */
     :global(.dataTables_wrapper .dataTables_info) {
-        margin-top: 1rem;
-        padding-top: 0.5rem;
+        padding: 1rem 0 !important;
+        color: #64748b !important;
+        clear: both !important;
+    }
+
+    /* 每頁顯示數量選擇器樣式 */
+    :global(.dataTables_wrapper .dataTables_length) {
+        margin-bottom: 0 !important;
+        white-space: nowrap !important;
+    }
+
+    :global(.dataTables_wrapper .dataTables_length select) {
+        padding: 0.5rem !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.375rem !important;
+        margin: 0 0.5rem !important;
+        outline: none !important;
+        background-color: white !important;
+        min-width: 70px !important;
+    }
+
+    /* 按鈕樣式覆蓋 */
+    :global(.edit-role-btn),
+    :global(.toggle-status-btn),
+    :global(.delete-user-btn) {
+        background: transparent !important;
+        border: none !important;
+        padding: 0.5rem !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    :global(.edit-role-btn:hover),
+    :global(.toggle-status-btn:hover),
+    :global(.delete-user-btn:hover) {
+        background: #f8fafc !important;
+        border-radius: 0.375rem !important;
+    }
+
+    /* 確保操作列的按鈕容器樣式 */
+    :global(.action-buttons) {
+        display: flex !important;
+        gap: 0.5rem !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* SVG 圖標樣式 */
+    :global(button svg) {
+        width: 20px !important;
+        height: 20px !important;
     }
 </style>
 
