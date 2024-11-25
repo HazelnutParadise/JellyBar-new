@@ -410,10 +410,9 @@
                 <DataTable id={tableId} config={tableConfig} />
             </div>
         </div>
-    </main>
-
-    <Footer {siteName} />
+    </main>  
 </div>
+<Footer {siteName} />
 
 <style>
     /* 更新樣式為 Bulma 兼容的樣式 */

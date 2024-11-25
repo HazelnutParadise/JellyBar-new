@@ -621,12 +621,17 @@
     .filter-section {
         display: flex;
         flex-direction: column;
+        overflow: hidden;
+        padding: 1rem;
+        overflow: auto;
     }
 
     .filter-controls {
         display: flex;
+        flex-wrap: wrap;
         gap: 1rem;
         align-items: center;
+        width: 100%;
     }
 
     .filter-controls-right {
@@ -634,13 +639,15 @@
         gap: 1rem;
         align-items: center;
         margin-left: auto;
-        flex-shrink: 0; /* 防止壓縮 */
+        flex-shrink: 0;
+        min-width: 0;
     }
 
     .filter-tags {
         min-height: 2.5rem;
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     .filter-tags .tags {
@@ -684,7 +691,7 @@
     }
 
     .modal-card-body {
-        padding: 1rem;
+            padding: 1rem;
         display: flex;
         flex-direction: column;
     }
@@ -1099,7 +1106,7 @@
 
 <div class="admin-container">
     <div class="container">
-        <h1 class="title is-2 has-text-centered mb-6 mt-6">{title}</h1>
+        <h1 class="title is-2 has-text-centered mb-6 mt-2">{title}</h1>
 
         <div class="section-tabs mb-6">
             <button
