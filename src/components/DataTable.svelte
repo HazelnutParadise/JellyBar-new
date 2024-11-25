@@ -3,7 +3,21 @@
 
     export let id: string
     export let config: any = {}
-    
+
+    config.language = {
+        lengthMenu: '每頁 _MENU_ 筆',
+        zeroRecords: '沒有找到符合的記錄',
+        info: '顯示第 _START_ 至 _END_ 筆記錄，共 _TOTAL_ 筆',
+        infoEmpty: '顯示第 0 至 0 筆記錄，共 0 筆',
+        infoFiltered: '(從 _MAX_ 筆記錄中過濾)',
+        search: '搜尋：',
+        paginate: {
+            first: '首頁',
+            last: '末頁',
+            next: '下一頁',
+            previous: '上一頁',
+        },
+    }
     let table: any
     let scriptsLoaded = false
 
@@ -16,7 +30,7 @@
             const jqueryScript = document.createElement('script')
             jqueryScript.src = 'https://code.jquery.com/jquery-3.7.0.min.js'
             document.head.appendChild(jqueryScript)
-            await new Promise((resolve) => jqueryScript.onload = resolve)
+            await new Promise((resolve) => (jqueryScript.onload = resolve))
         }
 
         // 載入 DataTables CSS
@@ -24,27 +38,33 @@
             const datatablesCss = document.createElement('link')
             datatablesCss.rel = 'stylesheet'
             datatablesCss.type = 'text/css'
-            datatablesCss.href = 'https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css'
+            datatablesCss.href =
+                'https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css'
             document.head.appendChild(datatablesCss)
 
             const bulmaDataTablesCss = document.createElement('link')
             bulmaDataTablesCss.rel = 'stylesheet'
             bulmaDataTablesCss.type = 'text/css'
-            bulmaDataTablesCss.href = 'https://cdn.datatables.net/1.13.7/css/dataTables.bulma.min.css'
+            bulmaDataTablesCss.href =
+                'https://cdn.datatables.net/1.13.7/css/dataTables.bulma.min.css'
             document.head.appendChild(bulmaDataTablesCss)
         }
 
         // 載入 DataTables JS
         if (!(window as any).jQuery?.fn?.DataTable) {
             const dataTablesScript = document.createElement('script')
-            dataTablesScript.src = 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'
+            dataTablesScript.src =
+                'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'
             document.head.appendChild(dataTablesScript)
-            await new Promise((resolve) => dataTablesScript.onload = resolve)
+            await new Promise((resolve) => (dataTablesScript.onload = resolve))
 
             const bulmaDataTablesScript = document.createElement('script')
-            bulmaDataTablesScript.src = 'https://cdn.datatables.net/1.13.7/js/dataTables.bulma.min.js'
+            bulmaDataTablesScript.src =
+                'https://cdn.datatables.net/1.13.7/js/dataTables.bulma.min.js'
             document.head.appendChild(bulmaDataTablesScript)
-            await new Promise((resolve) => bulmaDataTablesScript.onload = resolve)
+            await new Promise(
+                (resolve) => (bulmaDataTablesScript.onload = resolve),
+            )
         }
 
         scriptsLoaded = true
@@ -82,28 +102,30 @@
                 pagingType: 'simple_numbers',
                 createdRow: null,
                 rowCallback: null,
-                drawCallback: function(settings) {
-                    const api = this.api();
+                drawCallback: function (settings) {
+                    const api = this.api()
                     if (config.drawCallback) {
-                        config.drawCallback.call(this, settings);
+                        config.drawCallback.call(this, settings)
                     }
-                }
+                },
             }
 
             const tableElement = document.getElementById(id)
             if (tableElement) {
                 table = jQuery(tableElement).DataTable({
                     ...commonConfig,
-                    ...config
+                    ...config,
                 })
 
                 // 發出事件通知父組件 DataTable 實例已創建
-                window.dispatchEvent(new CustomEvent('datatableCreated', {
-                    detail: {
-                        id: id,
-                        instance: table
-                    }
-                }));
+                window.dispatchEvent(
+                    new CustomEvent('datatableCreated', {
+                        detail: {
+                            id: id,
+                            instance: table,
+                        },
+                    }),
+                )
             }
         } catch (error) {
             console.error('初始化表格時發生錯誤:', error)
@@ -200,12 +222,18 @@
         color: white !important;
     }
 
-    :global(.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover) {
+    :global(
+            .dataTables_wrapper
+                .dataTables_paginate
+                .paginate_button.current:hover
+        ) {
         background: #2563eb !important;
         color: white !important;
     }
 
-    :global(.dataTables_wrapper .dataTables_paginate .paginate_button.disabled) {
+    :global(
+            .dataTables_wrapper .dataTables_paginate .paginate_button.disabled
+        ) {
         opacity: 0.5 !important;
         cursor: not-allowed !important;
         background: #f1f5f9 !important;
@@ -288,4 +316,4 @@
     }
 </style>
 
-<slot /> 
+<slot />

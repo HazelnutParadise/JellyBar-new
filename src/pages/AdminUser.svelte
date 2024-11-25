@@ -323,20 +323,6 @@
         paging: true,
         pageLength: 10,
         lengthMenu: [5, 10, 25, 50],
-        language: {
-            "lengthMenu": "每頁 _MENU_ 筆",
-            "zeroRecords": "沒有找到符合的記錄",
-            "info": "顯示第 _START_ 至 _END_ 筆記錄，共 _TOTAL_ 筆",
-            "infoEmpty": "顯示第 0 至 0 筆記錄，共 0 筆",
-            "infoFiltered": "(從 _MAX_ 筆記錄中過濾)",
-            "search": "搜尋：",
-            "paginate": {
-                "first": "首頁",
-                "last": "末頁",
-                "next": "下一頁",
-                "previous": "上一頁"
-            }
-        },
         drawCallback: function(settings) {
             const table = document.getElementById(tableId);
             if (!table) return;

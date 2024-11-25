@@ -374,6 +374,7 @@
             { width: '100px', targets: 2 },
             { width: '150px', targets: 5 },
         ],
+        searching: false,
     }
 
     const categoryTableConfig = {
@@ -384,6 +385,7 @@
             { width: '20%', targets: 1 },
             { width: '20%', targets: 2 },
         ],
+        searching: false,
     }
 
     // 處理標籤切換
@@ -1367,7 +1369,7 @@
                                             >
                                                 <a
                                                     href={`/admin/article/edit/${article.id}`}
-                                                    class="button is-info is-outlined"
+                                                    class="button is-info"
                                                     title="編輯文章"
                                                 >
                                                     <span class="icon">
@@ -1375,7 +1377,7 @@
                                                     </span>
                                                 </a>
                                                 <button
-                                                    class="button is-danger is-outlined"
+                                                    class="button is-danger"
                                                     title="刪除文章"
                                                     on:click={() =>
                                                         handleDelete(article.id)}
