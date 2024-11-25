@@ -12,6 +12,7 @@
     let errorMessage = '';
     let successMessage = '';
     let dataTableInstance: any;
+    const tableId = 'users-table';
 
     // 定義用戶角色
     const roles = {
@@ -20,7 +21,7 @@
         USER: '一般用戶'
     };
 
-    // 擴展用戶數據結構
+    // 用戶數據
     let users = [
         {
             id: "1",
@@ -56,12 +57,202 @@
             role: "USER",
             status: "active",
             created_at: "2024-03-19T16:20:00Z"
+        },
+        {
+            id: "6",
+            username: "david_writer",
+            role: "EDITOR",
+            status: "active",
+            created_at: "2024-03-20T11:25:00Z"
+        },
+        {
+            id: "7",
+            username: "emma_user",
+            role: "USER",
+            status: "suspended",
+            created_at: "2024-03-21T13:40:00Z"
+        },
+        {
+            id: "8",
+            username: "frank_admin",
+            role: "ADMIN",
+            status: "active",
+            created_at: "2024-03-22T15:55:00Z"
+        },
+        {
+            id: "9",
+            username: "grace_editor",
+            role: "EDITOR",
+            status: "active",
+            created_at: "2024-03-23T08:10:00Z"
+        },
+        {
+            id: "10",
+            username: "henry_user",
+            role: "USER",
+            status: "active",
+            created_at: "2024-03-24T10:05:00Z"
         }
     ];
 
-    const tableId = 'users-table';
+    // API 處理函數 (與後端串接)
+    const apiCreateUser = async (username: string) => {
+        // TODO: 調用 API 創建用戶
+        console.log('API - Creating user:', username);
+        return true;
+    };
 
-    // 更新 tableConfig
+    const apiUpdateUserRole = async (userId: string, newRole: string) => {
+        // TODO: 調用 API 更新用戶角色
+        console.log('API - Updating user role:', userId, newRole);
+        return true;
+    };
+
+    const apiUpdateUserStatus = async (userId: string, newStatus: string) => {
+        // TODO: 調用 API 更新用戶狀態
+        console.log('API - Updating user status:', userId, newStatus);
+        return true;
+    };
+
+    const apiDeleteUser = async (userId: string) => {
+        // TODO: 調用 API 刪除用戶
+        console.log('API - Deleting user:', userId);
+        return true;
+    };
+
+    // UI 處理函數
+    const uiHandleAddUser = async () => {
+        if (!newUsername.trim()) {
+            alert('請輸入用戶名');
+            return;
+        }
+
+        try {
+            const success = await apiCreateUser(newUsername);
+            if (success) {
+                const newUser = {
+                    id: (users.length + 1).toString(),
+                    username: newUsername,
+                    role: 'USER',
+                    status: 'active',
+                    created_at: new Date().toISOString()
+                };
+
+                users = [...users, newUser];
+                updateTable();
+                alert('用戶新增成功');
+                newUsername = '';
+            }
+        } catch (error) {
+            alert('新增用戶失敗');
+            console.error(error);
+        }
+    };
+
+    const uiHandleEditRole = async (userId: string) => {
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+
+        const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/USER):', user.role);
+        if (!newRole || !roles[newRole.toUpperCase()]) {
+            alert('無效的角色！');
+            return;
+        }
+
+        try {
+            const success = await apiUpdateUserRole(userId, newRole.toUpperCase());
+            if (success) {
+                users = users.map(u => 
+                    u.id === userId 
+                        ? {...u, role: newRole.toUpperCase()}
+                        : u
+                );
+                updateTable();
+                alert('用戶角色更新成功');
+            }
+        } catch (error) {
+            alert('更新角色失敗');
+            console.error(error);
+        }
+    };
+
+    const uiHandleToggleStatus = async (userId: string) => {
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+
+        const newStatus = user.status === 'active' ? 'suspended' : 'active';
+        const confirmMessage = newStatus === 'suspended' ? 
+            '確定要停權此用戶嗎？' : 
+            '確定要解除此用戶的停權狀態嗎？';
+
+        if (!confirm(confirmMessage)) return;
+
+        try {
+            const success = await apiUpdateUserStatus(userId, newStatus);
+            if (success) {
+                users = users.map(u => 
+                    u.id === userId 
+                        ? {...u, status: newStatus}
+                        : u
+                );
+                updateTable();
+                alert(`用戶已${newStatus === 'active' ? '解除停權' : '停權'}`);
+            }
+        } catch (error) {
+            alert('更新狀態失敗');
+            console.error(error);
+        }
+    };
+
+    const uiHandleDeleteUser = async (userId: string) => {
+        if (!confirm('確定要刪除此用戶嗎？')) return;
+
+        try {
+            const success = await apiDeleteUser(userId);
+            if (success) {
+                users = users.filter(user => user.id !== userId);
+                updateTable();
+                alert('用戶刪除成功');
+            }
+        } catch (error) {
+            alert('刪除用戶失敗');
+            console.error(error);
+        }
+    };
+
+    // 表格事件處理
+    const uiHandleTableAction = (e: Event) => {
+        const target = (e.target as HTMLElement).closest('button');
+        if (!target) return;
+
+        e.preventDefault();
+        const userId = target.dataset.id;
+        if (!userId) return;
+
+        if (target.classList.contains('edit-role-btn')) {
+            uiHandleEditRole(userId);
+        } else if (target.classList.contains('toggle-status-btn')) {
+            uiHandleToggleStatus(userId);
+        } else if (target.classList.contains('delete-user-btn')) {
+            uiHandleDeleteUser(userId);
+        }
+    };
+
+    // 更新表格的工具函數
+    const updateTable = () => {
+        if (!dataTableInstance) return;
+        
+        try {
+            dataTableInstance.clear();
+            dataTableInstance.rows.add(users);
+            dataTableInstance.draw();
+            console.log('Table updated successfully');
+        } catch (error) {
+            console.error('Error updating table:', error);
+        }
+    };
+
+    // 表格配置
     $: tableConfig = {
         data: users,
         columns: [
@@ -101,6 +292,7 @@
                 data: null,
                 title: '操作',
                 width: '20%',
+                orderable: false,
                 className: 'text-center',
                 render: (data) => `
                     <div class="flex justify-center gap-2">
@@ -146,137 +338,28 @@
                 "previous": "上一頁"
             }
         },
-        drawCallback: function() {
-            // 移除所有現有的事件監聽器
-            document.querySelectorAll('.edit-role-btn, .toggle-status-btn, .delete-user-btn').forEach(btn => {
-                const newBtn = btn.cloneNode(true);
-                btn.parentNode.replaceChild(newBtn, btn);
-            });
-
-            // 移除舊的事件監聽器（如果存在）
+        drawCallback: function(settings) {
             const table = document.getElementById(tableId);
-            const oldHandler = table['_buttonHandler'];
-            if (oldHandler) {
-                table.removeEventListener('click', oldHandler);
-            }
-
-            // 創建新的事件處理函數
-            const buttonHandler = (e) => {
-                const target = (e.target as HTMLElement).closest('button');
-                if (!target) return;
-
-                e.preventDefault();
-                const userId = target.dataset.id;
-                if (!userId) return;
-
-                if (target.classList.contains('edit-role-btn')) {
-                    editUserRole(userId);
-                } else if (target.classList.contains('toggle-status-btn')) {
-                    toggleUserStatus(userId);
-                } else if (target.classList.contains('delete-user-btn')) {
-                    deleteUser(userId);
-                }
-            };
-
-            // 保存事件處理函數的引用
-            table['_buttonHandler'] = buttonHandler;
-
+            if (!table) return;
+            
+            // 移除所有現有的事件監聽器
+            table.removeEventListener('click', uiHandleTableAction);
+            
             // 添加新的事件監聽器
-            table.addEventListener('click', buttonHandler);
-
-            console.log('Event delegation setup completed');
+            table.addEventListener('click', uiHandleTableAction);
+            
+            console.log('Table redrawn, events reattached');
         }
     };
 
-    async function addUser() {
-        if (!newUsername.trim()) {
-            errorMessage = '請輸入用戶名';
-            return;
-        }
-
-        const newUser = {
-            id: (users.length + 1).toString(),
-            username: newUsername,
-            role: 'USER',
-            status: 'active',
-            created_at: new Date().toISOString()
-        };
-
-        users = [...users, newUser];
-        if (dataTableInstance) {
-            dataTableInstance.clear().rows.add(users).draw();
-        }
-
-        showSuccess('用戶新增成功');
-        newUsername = '';
-    }
-
-    async function editUserRole(userId: string) {
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-
-        const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/USER):', user.role);
-        if (!newRole || !roles[newRole.toUpperCase()]) {
-            alert('無效的角色！');
-            return;
-        }
-
-        users = users.map(u => 
-            u.id === userId 
-                ? {...u, role: newRole.toUpperCase()}
-                : u
-        );
-
-        if (dataTableInstance) {
-            dataTableInstance.clear().rows.add(users).draw(false);
-        }
-
-        showSuccess('用戶角色更新成功');
-    }
-
-    async function toggleUserStatus(userId: string) {
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-
-        const newStatus = user.status === 'active' ? 'suspended' : 'active';
-        const confirmMessage = newStatus === 'suspended' ? 
-            '確定要停權此用戶嗎？' : 
-            '確定要解除此用戶的停權狀態嗎？';
-
-        if (!confirm(confirmMessage)) return;
-
-        // 更新用戶狀態
-        users = users.map(u => 
-            u.id === userId 
-                ? {...u, status: newStatus}
-                : u
-        );
-
-        // 重新渲染表格
-        if (dataTableInstance) {
-            dataTableInstance.clear().rows.add(users).draw();
-        }
-
-        showSuccess(`用戶已${newStatus === 'active' ? '解除停權' : '停權'}`);
-    }
-
-    async function deleteUser(userId: string) {
-        if (!confirm('確定要刪除此用戶嗎？')) return;
-
-        users = users.filter(user => user.id !== userId);
-        if (dataTableInstance) {
-            dataTableInstance.clear().rows.add(users).draw(false);
-        }
-
-        showSuccess('用戶刪除成功');
-    }
-
-    function showSuccess(message: string) {
-        successMessage = message;
-        setTimeout(() => {
-            successMessage = '';
-        }, 3000);
-    }
+    onMount(() => {
+        // 監聽 DataTable 實例創建完成的事件
+        window.addEventListener('datatableCreated', (e: CustomEvent) => {
+            if (e.detail.id === tableId) {
+                dataTableInstance = e.detail.instance;
+            }
+        });
+    });
 </script>
 
 <div class="min-h-screen flex flex-col bg-gray-50">
@@ -292,15 +375,21 @@
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">新增用戶</h2>
             <div class="flex gap-4">
-                <input
-                    type="text"
-                    bind:value={newUsername}
-                    placeholder="輸入用戶名"
-                    class="flex-grow p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                />
+                <div class="flex-grow relative">
+                    <input
+                        type="text"
+                        bind:value={newUsername}
+                        placeholder="輸入用戶名"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-gray-700 placeholder-gray-400"
+                    />
+                    {#if errorMessage}
+                        <p class="absolute -bottom-6 left-0 text-sm text-red-500">{errorMessage}</p>
+                    {/if}
+                </div>
                 <button
-                    on:click={addUser}
-                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                    on:click={uiHandleAddUser}
+                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2 hover:shadow-lg active:transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!newUsername.trim()}
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -439,5 +528,26 @@
         white-space: nowrap;
         z-index: 10;
         margin-bottom: 0.25rem;
+    }
+
+    /* 搜尋框樣式 */
+    :global(input[type="search"]) {
+        background-color: white !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.375rem !important;
+        padding: 0.5rem !important;
+        margin-left: 0.5rem !important;
+        outline: none !important;
+        transition: all 0.2s !important;
+    }
+
+    :global(input[type="search"]:focus) {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    /* 調整搜尋框容器的樣式 */
+    :global(.dataTables_wrapper .dataTables_filter) {
+        margin-bottom: 1rem;
     }
 </style>

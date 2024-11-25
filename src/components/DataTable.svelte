@@ -50,7 +50,7 @@
         scriptsLoaded = true
     }
 
-    // 初始化表格
+    // 修改初始化表格的函數
     const initTable = async () => {
         await loadDependencies()
 
@@ -96,6 +96,14 @@
                     ...commonConfig,
                     ...config
                 })
+
+                // 發出事件通知父組件 DataTable 實例已創建
+                window.dispatchEvent(new CustomEvent('datatableCreated', {
+                    detail: {
+                        id: id,
+                        instance: table
+                    }
+                }));
             }
         } catch (error) {
             console.error('初始化表格時發生錯誤:', error)
