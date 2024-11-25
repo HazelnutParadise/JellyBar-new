@@ -43,11 +43,6 @@
 </script>
 
 <style>
-    /* 主要內容區域 */
-    .main-content {
-        padding-top: 4rem;
-    }
-
     .main-title {
         font-size: 3rem;
         font-weight: 800;

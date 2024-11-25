@@ -217,57 +217,70 @@
             margin-left: auto;
         }
     }
+
+    /* 新增一個包裝元素的樣式 */
+    .navbar-wrapper {
+        width: 100%;
+    }
+
+    .navbar-spacer {
+        height: 60px; /* 與導航欄高度相同 */
+        width: 100%;
+    }
 </style>
 
-<nav class="admin-navbar">
-    <div class="navbar-container">
-        <!-- Logo 區域 -->
-        <div class="navbar-brand">
-            <a href="/admin" class="logo">
-                <img src="/assets/logo.png" alt="Logo" class="logo-image" />
-                <span>{siteName} 後台</span>
-            </a>
-            <button class="mobile-toggle" on:click={toggleMobileMenu}>
-                <i class="fas {isMobileMenuOpen ? 'fa-times' : 'fa-bars'}"></i>
-            </button>
-        </div>
+<div class="navbar-wrapper">
+    <nav class="admin-navbar">
+        <div class="navbar-container">
+            <!-- Logo 區域 -->
+            <div class="navbar-brand">
+                <a href="/admin" class="logo">
+                    <img src="/assets/logo.png" alt="Logo" class="logo-image" />
+                    <span>{siteName} 後台</span>
+                </a>
+                <button class="mobile-toggle" on:click={toggleMobileMenu}>
+                    <i class="fas {isMobileMenuOpen ? 'fa-times' : 'fa-bars'}"></i>
+                </button>
+            </div>
 
-        <!-- 主導航區域 -->
-        <div class="navbar-main" class:active={isMobileMenuOpen}>
-            <ul class="nav-items">
-                {#each navItems as item}
-                    <li>
-                        <a href={item.href} class="nav-item">
-                            <i class="fas {item.icon}"></i>
-                            <span>{item.label}</span>
-                        </a>
-                    </li>
-                {/each}
-            </ul>
-        </div>
-
-        <!-- 用戶區域 -->
-        <div class="navbar-user">
-            <button class="user-button" on:click={toggleDropdown}>
-                <img
-                    src="https://via.placeholder.com/32"
-                    alt="用戶頭像"
-                    class="user-avatar"
-                />
-                <span class="user-name">管理員</span>
-                <i class="fas fa-chevron-down"></i>
-            </button>
-
-            {#if isDropdownOpen}
-                <div class="user-dropdown">
-                    {#each userMenuItems as item}
-                        <a href={item.href} class="dropdown-item">
-                            <i class="fas {item.icon}"></i>
-                            <span>{item.label}</span>
-                        </a>
+            <!-- 主導航區域 -->
+            <div class="navbar-main" class:active={isMobileMenuOpen}>
+                <ul class="nav-items">
+                    {#each navItems as item}
+                        <li>
+                            <a href={item.href} class="nav-item">
+                                <i class="fas {item.icon}"></i>
+                                <span>{item.label}</span>
+                            </a>
+                        </li>
                     {/each}
-                </div>
-            {/if}
+                </ul>
+            </div>
+
+            <!-- 用戶區域 -->
+            <div class="navbar-user">
+                <button class="user-button" on:click={toggleDropdown}>
+                    <img
+                        src="https://via.placeholder.com/32"
+                        alt="用戶頭像"
+                        class="user-avatar"
+                    />
+                    <span class="user-name">管理員</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+
+                {#if isDropdownOpen}
+                    <div class="user-dropdown">
+                        {#each userMenuItems as item}
+                            <a href={item.href} class="dropdown-item">
+                                <i class="fas {item.icon}"></i>
+                                <span>{item.label}</span>
+                            </a>
+                        {/each}
+                    </div>
+                {/if}
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
+    <div class="navbar-spacer"></div>
+</div>

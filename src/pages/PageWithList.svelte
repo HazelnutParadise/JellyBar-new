@@ -26,10 +26,6 @@
 </script>
 
 <style>
-    .categories-page {
-        padding-top: 2rem;
-    }
-
     .categories-header {
         background-color: var(--header-bg);
         padding: 5rem 6rem 3rem 6rem;
