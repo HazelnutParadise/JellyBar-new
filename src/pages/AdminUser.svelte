@@ -361,70 +361,55 @@
     });
 </script>
 
-<div class="min-h-screen flex flex-col bg-gray-50">
+<div class="container">
     <AdminNavbar {siteName} />
     
-    <main class="flex-grow container mx-auto px-4 py-8">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">用戶管理</h1>
-            <p class="text-gray-600 mt-2">管理系統用戶、權限和狀態</p>
+    <main class="section">
+        <div class="content">
+            <h1 class="title is-3">用戶管理</h1>
+            <p class="subtitle is-size-8">管理系統用戶、權限和狀態</p>
         </div>
 
         <!-- 新增用戶表單 -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <div class="box mb-6">
             <div class="mb-4">
-                <h2 class="title is-4 mb-2">新增用戶</h2>
+                <h2 class="title is-4">新增用戶</h2>
             </div>
             
             <div class="field is-grouped">
-                <div class="control is-expanded has-icons-left">
+                <div class="control is-expanded">
                     <input
                         type="text"
                         bind:value={newUsername}
                         placeholder="輸入用戶名稱"
                         class="input"
                     />
-                    <span class="icon is-small is-left">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                    </span>
                 </div>
                 <div class="control">
                     <button
                         on:click={uiHandleAddUser}
-                        class="button is-primary is-dark"
+                        class="button is-primary"
                         disabled={!newUsername.trim()}
                     >
-                        <span class="icon is-small">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
+                        <span class="icon">
+                            <i class="fas fa-plus"></i>
                         </span>
                         <span>新增用戶</span>
                     </button>
                 </div>
             </div>
+            
             {#if errorMessage}
-                <p class="help is-danger mt-2 is-flex is-align-items-center has-text-weight-medium is-size-6">
-                    <span class="icon is-small mr-1">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </span>
-                    {errorMessage}
-                </p>
+                <p class="help is-danger">{errorMessage}</p>
             {/if}
-            <p class="help has-text-grey mt-3 has-text-weight-medium is-size-6">
-                * 新增的用戶預設為一般用戶權限
-            </p>
+            <p class="help is-size-6">* 新增的用戶預設為一般用戶權限</p>
         </div>
 
         <!-- 用戶列表 -->
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold mb-6 text-gray-800">用戶列表</h2>
-            <div class="overflow-hidden">
-                <table id={tableId} class="display w-full">
+        <div class="box">
+            <h2 class="title is-4 mb-4">用戶列表</h2>
+            <div class="table-container">
+                <table id={tableId} class="table is-fullwidth is-striped">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -445,130 +430,55 @@
 </div>
 
 <style>
-    /* 角色標籤樣式 */
+    /* 更新樣式為 Bulma 兼容的樣式 */
     :global(.role-badge) {
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.875rem;
+        display: inline-block;
+        padding: 0.25em 0.75em;
+        border-radius: 290486px;
+        font-size: 0.875em;
         font-weight: 500;
     }
 
     :global(.role-badge.admin) {
-        background-color: #818cf8;
+        background-color: hsl(217, 71%, 53%);
         color: white;
     }
 
     :global(.role-badge.editor) {
-        background-color: #34d399;
+        background-color: hsl(141, 71%, 48%);
         color: white;
     }
 
     :global(.role-badge.user) {
-        background-color: #94a3b8;
+        background-color: hsl(0, 0%, 71%);
         color: white;
     }
 
-    /* 狀態標籤樣式 */
     :global(.status-badge) {
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.875rem;
+        display: inline-block;
+        padding: 0.25em 0.75em;
+        border-radius: 290486px;
+        font-size: 0.875em;
         font-weight: 500;
     }
 
     :global(.status-badge.active) {
-        background-color: #86efac;
-        color: #166534;
+        background-color: hsl(141, 71%, 48%);
+        color: white;
     }
 
     :global(.status-badge.suspended) {
-        background-color: #fca5a5;
-        color: #991b1b;
-    }
-
-    /* 更新操作按鈕樣式 */
-    :global(.edit-role-btn) {
-        color: #3b82f6;
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        transition: all 0.2s;
-        border: none;
-        background: transparent;
-    }
-
-    :global(.edit-role-btn:hover) {
-        background-color: #eff6ff;
-    }
-
-    :global(.toggle-status-btn) {
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        transition: all 0.2s;
-        border: none;
-        background: transparent;
-    }
-
-    :global(.toggle-status-btn.suspend:hover) {
-        background-color: #fee2e2;
-    }
-
-    :global(.toggle-status-btn.activate:hover) {
-        background-color: #ecfdf5;
-    }
-
-    :global(.delete-user-btn) {
-        color: #ef4444;
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        transition: all 0.2s;
-        border: none;
-        background: transparent;
-    }
-
-    :global(.delete-user-btn:hover) {
-        background-color: #fee2e2;
-    }
-
-    /* 添加工具提示樣式 */
-    :global([title]) {
-        position: relative;
-        cursor: pointer;
-    }
-
-    :global([title]:hover::after) {
-        content: attr(title);
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 0.25rem 0.5rem;
-        background-color: #1e293b;
+        background-color: hsl(348, 100%, 61%);
         color: white;
-        font-size: 0.75rem;
-        border-radius: 0.25rem;
-        white-space: nowrap;
-        z-index: 10;
-        margin-bottom: 0.25rem;
     }
 
-    /* 搜尋框樣式 */
-    :global(input[type="search"]) {
-        background-color: white !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 0.375rem !important;
-        padding: 0.5rem !important;
-        margin-left: 0.5rem !important;
-        outline: none !important;
-        transition: all 0.2s !important;
+    :global(.button-group) {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
     }
 
-    :global(input[type="search"]:focus) {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
-    }
-
-    /* 調整搜尋框容器的樣式 */
-    :global(.dataTables_wrapper .dataTables_filter) {
-        margin-bottom: 1rem;
+    :global(.button-group .button) {
+        margin: 0;
     }
 </style>
