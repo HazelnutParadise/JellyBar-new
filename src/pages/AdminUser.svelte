@@ -10,7 +10,6 @@
     
     let newUsername = '';
     let errorMessage = '';
-    let successMessage = '';
     let dataTableInstance: any;
     const tableId = 'users-table';
 
@@ -372,31 +371,53 @@
         </div>
 
         <!-- 新增用戶表單 -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800">新增用戶</h2>
-            <div class="flex gap-4">
-                <div class="flex-grow relative">
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div class="mb-4">
+                <h2 class="title is-4 mb-2">新增用戶</h2>
+            </div>
+            
+            <div class="field is-grouped">
+                <div class="control is-expanded has-icons-left">
                     <input
                         type="text"
                         bind:value={newUsername}
-                        placeholder="輸入用戶名"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-gray-700 placeholder-gray-400"
+                        placeholder="輸入用戶名稱"
+                        class="input"
                     />
-                    {#if errorMessage}
-                        <p class="absolute -bottom-6 left-0 text-sm text-red-500">{errorMessage}</p>
-                    {/if}
+                    <span class="icon is-small is-left">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </span>
                 </div>
-                <button
-                    on:click={uiHandleAddUser}
-                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2 hover:shadow-lg active:transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!newUsername.trim()}
-                >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    新增用戶
-                </button>
+                <div class="control">
+                    <button
+                        on:click={uiHandleAddUser}
+                        class="button is-primary is-dark"
+                        disabled={!newUsername.trim()}
+                    >
+                        <span class="icon is-small">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                        </span>
+                        <span>新增用戶</span>
+                    </button>
+                </div>
             </div>
+            {#if errorMessage}
+                <p class="help is-danger mt-2 is-flex is-align-items-center has-text-weight-medium is-size-6">
+                    <span class="icon is-small mr-1">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </span>
+                    {errorMessage}
+                </p>
+            {/if}
+            <p class="help has-text-grey mt-3 has-text-weight-medium is-size-6">
+                * 新增的用戶預設為一般用戶權限
+            </p>
         </div>
 
         <!-- 用戶列表 -->
