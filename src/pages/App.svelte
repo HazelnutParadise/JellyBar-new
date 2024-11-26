@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import setTitle from '../js/setTitle.js'
     export let siteName
     export let title
@@ -40,6 +40,21 @@
             icon: '🍋',
         },
     ]
+
+    const moreLinks = [
+        {
+            icon: '💻',
+            title: 'Web Apps',
+            url: 'https://apps.hazelnut-paradise.com',
+            external: false,
+        },
+        {
+            icon: '🛒',
+            title: '榛划算二手商店',
+            url: 'https://shopee.tw/timlai0102?utm_content=39EGJW1Nt4ij7gVhGfwj4eZp4qK5',
+            external: true,
+        },
+    ]
 </script>
 
 <style>
@@ -74,10 +89,14 @@
         align-items: center;
         gap: 1rem;
         transition: transform 0.2s ease;
+        color: var(--theme-primary);
     }
 
     .feature-item:hover {
         transform: translateY(-3px);
+        text-decoration: none;
+        color: var(--theme-primary);
+        background-color: var(--theme-secondary);
     }
 
     .feature-item .icon {
@@ -141,25 +160,15 @@
             <div class="column is-8">
                 <div class="content">
                     <p class="is-size-5 has-text-centered mb-5">
-                        我們致力於提供高品質的技術文章，包括：
+                        我們還另外設有：
                     </p>
                     <div class="features-container">
-                        <div class="feature-item">
-                            <span class="icon">🦀</span>
-                            <span>Rust 程式語言教學</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="icon">💻</span>
-                            <span>Web 開發技術分享</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="icon">🔧</span>
-                            <span>系統設計與架構</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="icon">📚</span>
-                            <span>學習資源整理</span>
-                        </div>
+                        {#each moreLinks as link}
+                            <a href={link.url} class="feature-item" target={link.external ? '_blank' : '_self'}>
+                                <span class="icon">{link.icon}</span>
+                                <span>{link.title}{#if link.external}<i class="fas fa-external-link-alt" style="font-size: 0.8em;margin-left: 0.5em;"></i>{/if}</span>
+                            </a>
+                        {/each}
                     </div>
                 </div>
                 <div class="has-text-centered mt-6">
