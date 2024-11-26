@@ -6,7 +6,6 @@
     import ArticleGrid from '../components/ArticleGrid.svelte'
     import Navbar from '../components/Navbar.svelte'
     import Footer from '../components/Footer.svelte'
-    import Alert from '../components/Alert.svelte'
 
     setTitle(title, siteName)
 
@@ -175,11 +174,5 @@
         </div>
     </div>
 </section>
-
-{#if alert}
-    <Alert message={alert} />
-{/if}
-
-<slot />
 
 <Footer {siteName} />
