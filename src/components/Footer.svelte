@@ -1,5 +1,6 @@
-<script>
-    export let siteName
+<script lang="ts">
+    import BackToTop from './BackToTop.svelte'
+    export let siteName: string
 </script>
 
 <style>
@@ -23,3 +24,5 @@
         </p>
     </div>
 </footer>
+
+<BackToTop />
