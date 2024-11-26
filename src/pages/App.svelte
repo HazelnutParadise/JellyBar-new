@@ -40,8 +40,6 @@
             icon: '🍋',
         },
     ]
-
-    export let alert = undefined;
 </script>
 
 <style>
