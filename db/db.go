@@ -55,18 +55,34 @@ func ConnectDB() (*gorm.DB, error) {
 
 func InitDB() {
 	// 連接資料庫
-	db, err := ConnectDB()
-	if err != nil {
-		log.Fatalf("無法連接資料庫: %v", err)
+	var db *gorm.DB
+	var err error
+	for {
+		db, err = ConnectDB()
+		if err != nil {
+			log.Printf("無法連接資料庫: %v，將繼續重試...", err)
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		log.Println("資料庫連接成功！")
+		break
 	}
-	log.Println("資料庫連接成功！")
 
 	// 自動建立資料表
-	err = db.AutoMigrate(&obj.Article{}, &obj.Category{}, &obj.Author{})
-	if err != nil {
-		log.Fatalf("資料表初始化失敗: %v", err)
+	for {
+		err = db.AutoMigrate(&obj.Article{}, &obj.Category{}, &obj.Author{}, &obj.User{})
+		if err != nil {
+			log.Printf("資料表初始化失敗: %v，將繼續重試...", err)
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		log.Println("資料表初始化成功！")
+		break
 	}
-	log.Println("資料表初始化成功！")
 
 	database = db
+}
+
+func IsDBConnected() bool {
+	return database != nil
 }

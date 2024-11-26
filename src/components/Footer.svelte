@@ -4,6 +4,10 @@
 
 <style>
     .footer {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         background-color: var(--theme-primary);
         color: white;
         padding: 1rem 0;
