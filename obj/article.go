@@ -6,8 +6,8 @@ type Article struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
-	PublishDate time.Time `json:"publishDate"`
-	UpdateDate  time.Time `json:"updateDate"`
+	PublishAt   time.Time `json:"publishDate"`
+	UpdateAt    time.Time `json:"updateDate"`
 	Status      string    `json:"status"`
 	Content     string    `json:"content"`
 	Media       []string  `json:"media" gorm:"type:json"`

@@ -43,8 +43,8 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			Content:     "Content",
 			Description: "Description",
 			Status:      "draft",
-			PublishDate: time.Now(),
-			UpdateDate:  time.Now(),
+			PublishAt:   time.Now(),
+			UpdateAt:    time.Now(),
 			Category: obj.Category{
 				ID:   0,
 				Name: "Category",
