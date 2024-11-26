@@ -63,10 +63,14 @@ func GinRouter(siteName string, assetsDir embed.FS) http.Handler {
 }
 
 func checkDBConnection(siteName string, logo []byte) gin.HandlerFunc {
-	if db.IsDBConnected() {
-		return nil
-	}
 	return func(ctx *gin.Context) {
+		if db.IsDBConnected() {
+			// 數據庫已連接，繼續下一個處理器
+			ctx.Next()
+			return
+		}
+
+		// 數據庫未連接，顯示錯誤頁面
 		data := map[string]any{
 			"siteName":            siteName,
 			"announcementTitle":   "無法連接資料庫",
@@ -74,7 +78,6 @@ func checkDBConnection(siteName string, logo []byte) gin.HandlerFunc {
 			"announcementType":    "error",
 		}
 
-		// 只有在 logo 存在時才加入 base64 編碼的圖片
 		if logo != nil {
 			data["siteLogo_base64"] = base64.StdEncoding.EncodeToString(logo)
 		}
