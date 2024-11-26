@@ -12,24 +12,25 @@ import (
 	"github.com/nichady/golte"
 )
 
-func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
+func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, mode int) {
 	r.StaticFS("/assets", http.FS(assets))
 
-	r.GET("/", func(ctx *gin.Context) {
+	pages := r.Group("/", alertDevMode(mode))
+	pages.GET("/", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/App", map[string]any{
 			"siteName": siteName,
 			"title":    "歡迎光臨 Jelly Bar",
 		})
 	})
 
-	r.GET("/themes", func(ctx *gin.Context) {
+	pages.GET("/themes", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Themes", map[string]any{
 			"siteName": siteName,
 			"title":    "主題展示",
 		})
 	})
 
-	r.GET("/article", func(ctx *gin.Context) {
+	pages.GET("/article", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
@@ -48,7 +49,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
-	r.GET("/article/:id", func(ctx *gin.Context) {
+	pages.GET("/article/:id", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
 			"siteName": siteName,
 			"article": obj.Article{
@@ -77,7 +78,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
-	r.GET("/category", func(ctx *gin.Context) {
+	pages.GET("/category", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
@@ -104,7 +105,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
-	r.GET("/category/:id", func(ctx *gin.Context) {
+	pages.GET("/category/:id", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
@@ -122,7 +123,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
-	r.GET("/author", func(ctx *gin.Context) {
+	pages.GET("/author", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
@@ -138,7 +139,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
-	r.GET("/search/:keyword", func(ctx *gin.Context) {
+	pages.GET("/search/:keyword", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
@@ -156,7 +157,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
-	admin := r.Group("/admin")
+	admin := r.Group("/admin", alertDevMode(mode))
 	defineAdminPages(admin, siteName)
 
 }

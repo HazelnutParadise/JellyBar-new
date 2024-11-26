@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"jellybar/obj"
 	"log"
+	"os"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -32,13 +33,13 @@ var devConfig = DBConfig{
 }
 
 var prodConfig = DBConfig{
-	DB_HOST:     "192.168.1.101",
-	DB_PORT:     "5432",
-	DB_NAME:     "database",
-	DB_USER:     "user",
-	DB_PASSWORD: "password",
-	DB_SSLMODE:  "disable",
-	DB_TIMEZONE: "Asia/Taipei",
+	DB_HOST:     os.Getenv("DB_HOST"),
+	DB_PORT:     os.Getenv("DB_PORT"),
+	DB_NAME:     os.Getenv("DB_NAME"),
+	DB_USER:     os.Getenv("DB_USER"),
+	DB_PASSWORD: os.Getenv("DB_PASSWORD"),
+	DB_SSLMODE:  os.Getenv("DB_SSLMODE"),
+	DB_TIMEZONE: os.Getenv("DB_TIMEZONE"),
 }
 
 var database *gorm.DB
@@ -51,6 +52,10 @@ func ConnectDB(mode int) (*gorm.DB, error) {
 		config = devConfig
 	case PROD:
 		config = prodConfig
+		// 檢查環境變數是否設定
+		if config.DB_HOST == "" || config.DB_PORT == "" || config.DB_NAME == "" || config.DB_USER == "" || config.DB_PASSWORD == "" || config.DB_SSLMODE == "" || config.DB_TIMEZONE == "" {
+			return nil, fmt.Errorf("未設定環境變數")
+		}
 	default:
 		return nil, fmt.Errorf("無效的資料庫模式")
 	}

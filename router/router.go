@@ -14,7 +14,7 @@ import (
 	"github.com/nichady/golte"
 )
 
-func GinRouter(siteName string, assetsDir embed.FS) http.Handler {
+func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	// Gin doesn't have a function to wrap middleware, so define our own
 	wrapMiddleware := func(middleware func(http.Handler) http.Handler) func(ctx *gin.Context) {
 		return func(ctx *gin.Context) {
@@ -57,7 +57,7 @@ func GinRouter(siteName string, assetsDir embed.FS) http.Handler {
 	r.Use(checkDBConnection(siteName, logo))
 
 	// 使用 subAssetsDir 而不是 assetsDir
-	defineRoutes(r, siteName, subAssetsDir)
+	defineRoutes(r, siteName, subAssetsDir, mode)
 
 	return r
 }
@@ -84,5 +84,17 @@ func checkDBConnection(siteName string, logo []byte) gin.HandlerFunc {
 
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 		ctx.Abort()
+	}
+}
+
+func alertDevMode(mode int) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		//如果非ajax，則顯示開發模式警告
+		if mode == db.DEV && ctx.Request.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+			ctx.Writer.Write([]byte(`<div style='position: fixed; top: 0; left: 0; width: 100%; height: 10px; background-color: yellow; display: flex; justify-content: center; align-items: center; z-index: 9999;'>
+未偵測到環境變數，正在使用開發模式
+</div>`))
+		}
+		ctx.Next()
 	}
 }

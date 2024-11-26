@@ -6,6 +6,7 @@ import (
 	"jellybar/db"
 	"jellybar/router"
 	"net/http"
+	"os"
 )
 
 //go:embed src/assets/*
@@ -14,8 +15,13 @@ var assetsDir embed.FS
 const siteName = "繽果吉樂 BAR"
 
 func main() {
-	go db.InitDB(db.DEV)
-	r := router.GinRouter(siteName, assetsDir)
+	modeEnv := os.Getenv("MODE")
+	mode := db.DEV
+	if modeEnv == "PROD" {
+		mode = db.PROD
+	}
+	go db.InitDB(mode)
+	r := router.GinRouter(siteName, assetsDir, mode)
 
 	fmt.Println("Serving on :8000")
 	http.ListenAndServe(":8000", r)
