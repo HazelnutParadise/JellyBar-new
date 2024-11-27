@@ -1,6 +1,7 @@
 <script lang="ts">
     import "../app.css"
     import Footer from "../components/Footer.svelte"
+    import Navbar from "../components/Navbar.svelte"
     import setTitle from "../js/setTitle"
     export let siteName: string
     export let siteLogo_base64: string
@@ -20,6 +21,10 @@
         align-items: center;
         padding: 40px 20px;
         gap: 40px;
+    }
+
+    .with-navbar {
+        min-height: calc(100vh - 152px);
     }
 
     .site-header {
@@ -116,7 +121,10 @@
     }
 </style>
 
-<div class="announcement-page">
+{#if announcementType === "info"}
+    <Navbar {siteName} />
+{/if}
+<div class="announcement-page {announcementType === 'info' ? 'with-navbar' : ''}">
     <div class="site-header">
         <img src="data:image/png;base64,{siteLogo_base64}" alt="網站 Logo" class="site-logo">
         <h2 class="site-name">{siteName}</h2>

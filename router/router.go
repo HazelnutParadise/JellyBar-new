@@ -56,6 +56,9 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 
 	r.Use(checkDBConnection(siteName, logo))
 
+	// 設定404頁面
+	r.NoRoute(handle404(siteName, logo))
+
 	// 使用 subAssetsDir 而不是 assetsDir
 	defineRoutes(r, siteName, subAssetsDir, mode)
 
@@ -84,6 +87,21 @@ func checkDBConnection(siteName string, logo []byte) gin.HandlerFunc {
 
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 		ctx.Abort()
+	}
+}
+
+func handle404(siteName string, logo []byte) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		data := map[string]any{
+			"siteName":            siteName,
+			"announcementTitle":   "404 Not Found 頁面不存在",
+			"announcementContent": "怎麼了？你消失了？！我們找不到您試圖前往的頁面，請檢查網址是否正確。",
+			"announcementType":    "info",
+		}
+		if logo != nil {
+			data["siteLogo_base64"] = base64.StdEncoding.EncodeToString(logo)
+		}
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 	}
 }
 
