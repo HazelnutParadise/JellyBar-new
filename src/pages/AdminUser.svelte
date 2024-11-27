@@ -21,78 +21,7 @@
     }
 
     // 用戶數據
-    export let users = [
-        {
-            id: '1',
-            username: 'admin',
-            role: 'ADMIN',
-            status: 'active',
-            created_at: '2024-03-15T08:00:00Z',
-        },
-        {
-            id: '2',
-            username: 'editor01',
-            role: 'EDITOR',
-            status: 'active',
-            created_at: '2024-03-16T10:30:00Z',
-        },
-        {
-            id: '3',
-            username: 'writer_alice',
-            role: 'EDITOR',
-            status: 'suspended',
-            created_at: '2024-03-17T14:15:00Z',
-        },
-        {
-            id: '4',
-            username: 'moderator_bob',
-            role: 'EDITOR',
-            status: 'active',
-            created_at: '2024-03-18T09:45:00Z',
-        },
-        {
-            id: '5',
-            username: 'user_carol',
-            role: 'USER',
-            status: 'active',
-            created_at: '2024-03-19T16:20:00Z',
-        },
-        {
-            id: '6',
-            username: 'david_writer',
-            role: 'EDITOR',
-            status: 'active',
-            created_at: '2024-03-20T11:25:00Z',
-        },
-        {
-            id: '7',
-            username: 'emma_user',
-            role: 'USER',
-            status: 'suspended',
-            created_at: '2024-03-21T13:40:00Z',
-        },
-        {
-            id: '8',
-            username: 'frank_admin',
-            role: 'ADMIN',
-            status: 'active',
-            created_at: '2024-03-22T15:55:00Z',
-        },
-        {
-            id: '9',
-            username: 'grace_editor',
-            role: 'EDITOR',
-            status: 'active',
-            created_at: '2024-03-23T08:10:00Z',
-        },
-        {
-            id: '10',
-            username: 'henry_user',
-            role: 'USER',
-            status: 'active',
-            created_at: '2024-03-24T10:05:00Z',
-        },
-    ]
+    export let users: any[] = []
 
     // API 處理函數 (與後端串接)
     const apiCreateUser = async (username: string): Promise<[boolean, any]> => {

@@ -90,9 +90,6 @@
 
             // 統一的 DataTable 配置
             const commonConfig = {
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json',
-                },
                 searching: true,
                 pageLength: 10,
                 dom: '<"table-controls"lf>rtip',
@@ -102,6 +99,22 @@
                 pagingType: 'simple_numbers',
                 createdRow: null,
                 rowCallback: null,
+                language: {
+                    lengthMenu: '每頁 _MENU_ 筆',
+                    zeroRecords: '沒有找到符合的記錄',
+                    info: '顯示第 _START_ 至 _END_ 筆記錄，共 _TOTAL_ 筆',
+                    infoEmpty: '顯示第 0 至 0 筆記錄，共 0 筆',
+                    infoFiltered: '(從 _MAX_ 筆記錄中過濾)',
+                    search: '搜尋：',
+                    paginate: {
+                        first: '首頁',
+                        last: '末頁',
+                        next: '下一頁',
+                        previous: '上一頁',
+                    },
+                    emptyTable: '表格中沒有資料',
+                    processing: '處理中...',
+                },
                 drawCallback: function (settings) {
                     const api = this.api()
                     if (config.drawCallback) {
@@ -112,10 +125,13 @@
 
             const tableElement = document.getElementById(id)
             if (tableElement) {
+                const { language, ...restConfig } = config
+                
                 table = jQuery(tableElement).DataTable({
                     ...commonConfig,
-                    ...config,
+                    ...restConfig,
                 })
+                console.log('Language settings:', table.settings()[0].oLanguage)
 
                 // 發出事件通知父組件 DataTable 實例已創建
                 window.dispatchEvent(
