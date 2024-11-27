@@ -23,4 +23,4 @@ func DeleteUser(user obj.User) {
 	database.Delete(&user)
 }
 
-// TODO: 跟會員系統資料庫同步
+// TODO: 跟會員系統資料庫同步，可做在該帳號每次登入時同步
