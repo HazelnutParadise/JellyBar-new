@@ -96,14 +96,15 @@
 
     // API 處理函數 (與後端串接)
     const apiCreateUser = async (username: string) => {
-        // TODO: 調用 API 創建用戶
         console.log('API - Creating user:', username);
         const result = await fetch(`/api/user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username }),
+            body: JSON.stringify({ 
+                username,
+            }),
         });
         return result.ok;
     };
@@ -289,10 +290,31 @@
                 `
             },
             { 
-                data: 'created_at', 
+                data: 'create_at', 
                 title: '建立時間',
                 width: '20%',
-                render: (data) => new Date(data).toLocaleString()
+                render: (data) => {
+                    console.log('原始時間數據:', data);
+                    try {
+                        if (!data) return '-';
+                        const date = new Date(data);
+                        if (isNaN(date.getTime())) return '-';
+                        
+                        return new Intl.DateTimeFormat('zh-TW', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false,
+                            timeZone: 'Asia/Taipei'
+                        }).format(date);
+                    } catch (error) {
+                        console.error('時間格式化錯誤:', error, data);
+                        return '-';
+                    }
+                }
             },
             {
                 data: null,
