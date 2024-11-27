@@ -1,6 +1,8 @@
 package db
 
-import "jellybar/obj"
+import (
+	"jellybar/obj"
+)
 
 func GetUsers() []obj.User {
 	var users []obj.User
@@ -8,8 +10,9 @@ func GetUsers() []obj.User {
 	return users
 }
 
-func AddUser(user obj.User) {
-	database.Create(&user)
+func AddUser(user obj.User) error {
+	result := database.Create(&user)
+	return result.Error
 }
 
 func UpdateUser(user obj.User) {

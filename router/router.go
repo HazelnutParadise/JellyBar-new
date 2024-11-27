@@ -74,7 +74,7 @@ func checkDBConnection(siteName string, logo []byte) gin.HandlerFunc {
 		data := map[string]any{
 			"siteName":            siteName,
 			"announcementTitle":   "無法連接資料庫",
-			"announcementContent": "請稍後再試，或聯繫管理員。",
+			"announcementContent": "網站可能還在初始化，請稍後再試。若持續發生，請聯繫管理員。",
 			"announcementType":    "error",
 		}
 

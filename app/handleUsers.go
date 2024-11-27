@@ -73,6 +73,10 @@ func HandlePostUser(ctx *gin.Context) {
 		ctx.JSON(502, gin.H{"message": "無法連線到榛果繽紛樂會員系統"})
 		return
 	}
-	db.AddUser(user)
+	err := db.AddUser(user)
+	if err != nil {
+		ctx.JSON(500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
+		return
+	}
 	ctx.JSON(200, gin.H{"message": "用戶新增成功"})
 }

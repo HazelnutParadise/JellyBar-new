@@ -27,7 +27,7 @@
     const apiCreateUser = async (username: string): Promise<[boolean, any]> => {
         let resultJson = {}
         console.log('API - Creating user:', username)
-        const result = await fetch(`/api/user`, {
+        const result = await fetch(`/api/admin/user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -60,7 +60,7 @@
 
     const apiGetUsers = async (): Promise<[boolean, any]> => {
         try {
-            const response = await fetch('/api/users')
+            const response = await fetch('/api/admin/users')
             const data = await response.json()
             return [response.ok, data]
         } catch (error) {
