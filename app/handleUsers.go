@@ -29,10 +29,9 @@ func HandleGetUserList(ctx *gin.Context) {
 
 func HandlePostUser(ctx *gin.Context) {
 	var user = obj.User{
-		Username: "",
-		Uuid:     "",
-		Name:     "",
-
+		Username:       "",
+		Uuid:           "",
+		Name:           "",
 		Role:           "USER",
 		CreateAt:       time.Now(),
 		Status:         "active",
