@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 新增結構體定義
 type userAPIResponse struct {
 	Result []struct {
 		Username  string `json:"username"`
@@ -20,6 +19,11 @@ type userAPIResponse struct {
 		Firstname string `json:"firstname"`
 		Lastname  string `json:"lastname"`
 	} `json:"result"`
+}
+
+func HandleGetUserList(ctx *gin.Context) {
+	users := db.GetUsers()
+	ctx.JSON(200, gin.H{"users": users})
 }
 
 func HandlePostUser(ctx *gin.Context) {

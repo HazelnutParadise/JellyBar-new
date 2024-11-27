@@ -129,6 +129,17 @@
         return true
     }
 
+    const apiGetUsers = async (): Promise<[boolean, any]> => {
+        try {
+            const response = await fetch('/api/users')
+            const data = await response.json()
+            return [response.ok, data]
+        } catch (error) {
+            console.error('獲取用戶數據失敗:', error)
+            return [false, null]
+        }
+    }
+
     // UI 處理函數
     const uiHandleAddUser = async () => {
         if (!newUsername.trim()) {
@@ -139,19 +150,12 @@
         try {
             const [success, resultJson] = await apiCreateUser(newUsername)
             if (success) {
-                const newUser = {
-                    id: (users.length + 1).toString(),
-                    username: newUsername,
-                    role: 'USER',
-                    status: 'active',
-                    created_at: new Date().toISOString(),
-                }
-
-                users = [...users, newUser]
-                updateTable()
+                await updateTable()
                 newUsername = ''
+                alert(resultJson.message)
+            } else {
+                alert(resultJson.message || '新增用戶失敗')
             }
-            alert(resultJson.message)
         } catch (error) {
             alert('新增用戶失敗')
             console.error(error)
@@ -169,15 +173,9 @@
         }
 
         try {
-            const success = await apiUpdateUserRole(
-                userId,
-                newRole.toUpperCase(),
-            )
+            const success = await apiUpdateUserRole(userId, newRole.toUpperCase())
             if (success) {
-                users = users.map((u) =>
-                    u.id === userId ? { ...u, role: newRole.toUpperCase() } : u,
-                )
-                updateTable()
+                await updateTable()
                 alert('用戶角色更新成功')
             }
         } catch (error) {
@@ -201,10 +199,7 @@
         try {
             const success = await apiUpdateUserStatus(userId, newStatus)
             if (success) {
-                users = users.map((u) =>
-                    u.id === userId ? { ...u, status: newStatus } : u,
-                )
-                updateTable()
+                await updateTable()
                 alert(`用戶已${newStatus === 'active' ? '解除停權' : '停權'}`)
             }
         } catch (error) {
@@ -219,8 +214,7 @@
         try {
             const success = await apiDeleteUser(userId)
             if (success) {
-                users = users.filter((user) => user.id !== userId)
-                updateTable()
+                await updateTable()
                 alert('用戶刪除成功')
             }
         } catch (error) {
@@ -248,16 +242,22 @@
     }
 
     // 更新表格的工具函數
-    const updateTable = () => {
+    const updateTable = async () => {
         if (!dataTableInstance) return
 
         try {
-            dataTableInstance.clear()
-            dataTableInstance.rows.add(users)
-            dataTableInstance.draw()
-            console.log('Table updated successfully')
+            const [success, data] = await apiGetUsers()
+            if (success && data) {
+                users = data.users || []
+                dataTableInstance.clear()
+                dataTableInstance.rows.add(users)
+                dataTableInstance.draw()
+                console.log('表格更新成功')
+            } else {
+                console.error('獲取用戶數據失敗')
+            }
         } catch (error) {
-            console.error('Error updating table:', error)
+            console.error('更新表格錯誤:', error)
         }
     }
 
@@ -370,7 +370,13 @@
         },
     }
 
-    onMount(() => {
+    onMount(async () => {
+        // 首次載入時獲取用戶數據
+        const [success, data] = await apiGetUsers()
+        if (success && data) {
+            users = data.users || []
+        }
+
         // 監聽 DataTable 實例創建完成的事件
         window.addEventListener('datatableCreated', (e: CustomEvent) => {
             if (e.detail.id === tableId) {
