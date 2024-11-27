@@ -5,15 +5,25 @@ import (
 	"fmt"
 	"jellybar/db"
 	"jellybar/obj"
+	"jellybar/utils"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func defineApi(r *gin.RouterGroup) {
 	r.POST("/user", func(ctx *gin.Context) {
-		var user obj.User
+		var user = obj.User{
+			Username:       "",
+			Uuid:           "",
+			Name:           "",
+			Role:           "USER",
+			CreateAt:       time.Now(),
+			Status:         "active",
+			StatusUpdateAt: time.Now(),
+		}
 		ctx.BindJSON(&user)
 		condition := map[string]string{
 			"username": user.Username,
@@ -48,7 +58,11 @@ func defineApi(r *gin.RouterGroup) {
 			}
 
 			user.Uuid = resultMap2[0].(string)
-			user.Name = resultMap2[4].(string) + " " + resultMap2[5].(string)
+			if utils.IsASCII(resultMap2[4].(string)) {
+				user.Name = resultMap2[4].(string) + " " + resultMap2[5].(string)
+			} else {
+				user.Name = resultMap2[5].(string) + " " + resultMap2[4].(string)
+			}
 		} else {
 			ctx.JSON(500, gin.H{"message": "Internal server error"})
 			return
