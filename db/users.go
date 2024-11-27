@@ -22,3 +22,5 @@ func UpdateUser(user obj.User) {
 func DeleteUser(user obj.User) {
 	database.Delete(&user)
 }
+
+// TODO: 跟會員系統資料庫同步
