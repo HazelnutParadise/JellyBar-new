@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"jellybar/db"
 	"jellybar/obj"
 	"net/http"
@@ -27,16 +28,30 @@ func defineApi(r *gin.RouterGroup) {
 				ctx.JSON(409, gin.H{"message": "User not exist in the system"})
 				return
 			}
-
-			stringMap := []map[string]string{}
-			for _, v := range resultMap {
-				stringMap = append(stringMap, v.(map[string]string))
-			}
-
-			if stringMap[0]["username"] != user.Username {
+			// 將 resultMap["result"] 轉換為 []interface{}
+			results, ok := resultMap["result"].([]interface{})
+			if !ok || len(results) == 0 {
 				ctx.JSON(409, gin.H{"message": "User not exist in the system"})
 				return
 			}
+
+			// 將第一個元素轉換為 map[string]interface{}
+			resultMap2 := results[0].([]interface{})
+
+			fmt.Printf("%s", resultMap2)
+
+			// 確保 username 是 string 類型
+			username := resultMap2[1].(string)
+			if username != user.Username {
+				ctx.JSON(409, gin.H{"message": "User not exist in the system"})
+				return
+			}
+
+			user.Uuid = resultMap2[0].(string)
+			user.Name = resultMap2[4].(string) + " " + resultMap2[5].(string)
+		} else {
+			ctx.JSON(500, gin.H{"message": "Internal server error"})
+			return
 		}
 		db.AddUser(user)
 		ctx.JSON(200, gin.H{"message": "User created"})
