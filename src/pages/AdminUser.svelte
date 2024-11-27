@@ -447,6 +447,7 @@
         <div class="box mb-6">
             <div class="mb-4">
                 <h2 class="title is-4">新增用戶</h2>
+                <p class="subtitle is-size-6">從榛果繽紛樂會員系統新增用戶，以便管理其權限</p>
             </div>
 
             <div class="field is-grouped">
@@ -454,7 +455,7 @@
                     <input
                         type="text"
                         bind:value={newUsername}
-                        placeholder="輸入用戶名稱"
+                        placeholder="輸入用戶名稱（Username）"
                         class="input"
                     />
                 </div>
