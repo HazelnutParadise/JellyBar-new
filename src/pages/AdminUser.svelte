@@ -21,7 +21,7 @@
     };
 
     // 用戶數據
-    let users = [
+    export let users = [
         {
             id: "1",
             username: "admin",
@@ -98,7 +98,14 @@
     const apiCreateUser = async (username: string) => {
         // TODO: 調用 API 創建用戶
         console.log('API - Creating user:', username);
-        return true;
+        const result = await fetch(`/api/user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username }),
+        });
+        return result.ok;
     };
 
     const apiUpdateUserRole = async (userId: string, newRole: string) => {

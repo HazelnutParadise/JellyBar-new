@@ -1,6 +1,7 @@
 package router
 
 import (
+	"jellybar/db"
 	"jellybar/obj"
 	"net/http"
 	"strconv"
@@ -63,6 +64,7 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminUser", map[string]any{
 			"siteName": siteName,
 			"title":    "用戶管理",
+			"users":    db.GetUsers(),
 		})
 	})
 }

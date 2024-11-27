@@ -160,4 +160,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, mode int) {
 	admin := r.Group("/admin", alertDevMode(mode))
 	defineAdminPages(admin, siteName)
 
+	api := r.Group("/api")
+	defineApi(api)
+
 }
