@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"errors"
 	"jellybar/db"
 	"jellybar/obj"
 	"jellybar/utils"
@@ -41,42 +42,44 @@ func HandlePostUser(ctx *gin.Context) {
 	condition := map[string]string{
 		"username": user.Username,
 	}
-	conditionJson, _ := json.Marshal(condition)
-	resp, _ := http.Get("http://192.168.1.109:5004/DB/record?relation=users&return_as_dict=true&conditions=" + url.QueryEscape(string(conditionJson)))
-
-	// 使用新的結構體
-	var apiResponse userAPIResponse
-	if resp.StatusCode == 200 {
-		if err := json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
-			ctx.JSON(500, gin.H{"message": "解析回應資料時發生錯誤"})
-			return
-		}
-
-		if len(apiResponse.Result) == 0 {
-			ctx.JSON(409, gin.H{"message": "榛果繽紛樂會員系統無此用戶"})
-			return
-		}
-
-		userResult := apiResponse.Result[0]
-		if userResult.Username != user.Username {
-			ctx.JSON(409, gin.H{"message": "未知的資料不一致"})
-			return
-		}
-
-		user.Uuid = userResult.Uuid
-		if utils.IsASCII(userResult.Lastname) {
-			user.Name = userResult.Firstname + " " + userResult.Lastname
-		} else {
-			user.Name = userResult.Lastname + " " + userResult.Firstname
-		}
-	} else {
-		ctx.JSON(502, gin.H{"message": "無法連線到榛果繽紛樂會員系統"})
+	statusCode, err := getUserFromHazelnutParadiseDB(&user, condition)
+	if err != nil {
+		ctx.JSON(statusCode, gin.H{"message": err.Error()})
 		return
 	}
-	err := db.AddUser(user)
+
+	err = db.AddUser(user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
 		return
 	}
 	ctx.JSON(200, gin.H{"message": "用戶新增成功"})
+}
+
+func getUserFromHazelnutParadiseDB(user *obj.User, condition map[string]string) (int, error) {
+	conditionJson, _ := json.Marshal(condition)
+	resp, _ := http.Get("http://192.168.1.109:5004/DB/record?relation=users&return_as_dict=true&conditions=" + url.QueryEscape(string(conditionJson)))
+	// 使用新的結構體
+	var apiResponse userAPIResponse
+	if resp.StatusCode == 200 {
+		if err := json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
+			return 500, errors.New("解析回應資料時發生錯誤")
+		}
+		if len(apiResponse.Result) == 0 {
+			return 409, errors.New("榛果繽紛樂會員系統無此用戶")
+		}
+		userResult := apiResponse.Result[0]
+
+		var name string
+		if utils.IsASCII(userResult.Lastname) {
+			name = userResult.Firstname + " " + userResult.Lastname
+		} else {
+			name = userResult.Lastname + " " + userResult.Firstname
+		}
+		user.Uuid = userResult.Uuid
+		user.Username = userResult.Username
+		user.Name = name
+		return 200, nil
+	}
+	return 502, errors.New("無法連線到榛果繽紛樂會員系統")
 }
