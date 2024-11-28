@@ -15,12 +15,14 @@ func AddUser(user obj.User) error {
 	return result.Error
 }
 
-func UpdateUser(user obj.User) {
-	database.Save(&user)
+func UpdateUser(user obj.User) error {
+	result := database.Save(&user)
+	return result.Error
 }
 
-func DeleteUser(user obj.User) {
-	database.Delete(&user)
+func DeleteUser(user obj.User) error {
+	result := database.Delete(&user)
+	return result.Error
 }
 
 // TODO: 跟會員系統資料庫同步，可做在該帳號每次登入時同步
