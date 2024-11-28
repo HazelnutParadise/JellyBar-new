@@ -23,7 +23,11 @@ type userAPIResponse struct {
 }
 
 func HandleGetUserList(ctx *gin.Context) {
-	users := db.GetUsers()
+	users, err := db.GetUsers()
+	if err != nil {
+		ctx.JSON(500, gin.H{"message": "取得用戶列表失敗\n" + err.Error()})
+		return
+	}
 	ctx.JSON(200, gin.H{"users": users})
 }
 

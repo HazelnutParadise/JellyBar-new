@@ -61,10 +61,15 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 	})
 
 	r.GET("/users", func(ctx *gin.Context) {
+		users, err := db.GetUsers()
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminUser", map[string]any{
 			"siteName": siteName,
 			"title":    "用戶管理",
-			"users":    db.GetUsers(),
+			"users":    users,
 		})
 	})
 }

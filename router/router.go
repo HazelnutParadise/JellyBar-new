@@ -68,12 +68,13 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 func checkDBConnection(siteName string, logo []byte) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		if db.IsDBConnected() {
-			// 數據庫已連接，繼續下一個處理器
 			ctx.Next()
 			return
 		}
 
-		// 數據庫未連接，顯示錯誤頁面
+		// 先設置狀態碼
+		ctx.Status(http.StatusInternalServerError)
+
 		data := map[string]any{
 			"siteName":            siteName,
 			"announcementTitle":   "無法連接資料庫",

@@ -176,17 +176,17 @@
 
         try {
             const [success, data] = await apiGetUsers()
-            if (success && data) {
+            if (success) {
                 users = data.users || []
                 dataTableInstance.clear()
                 dataTableInstance.rows.add(users)
                 dataTableInstance.draw()
                 console.log('表格更新成功')
             } else {
-                console.error('獲取用戶數據失敗')
+                alert(data.message)
             }
         } catch (error) {
-            console.error('更新表格錯誤:', error)
+            alert('更新表格失敗\n' + error)
         }
     }
 
@@ -300,10 +300,16 @@
     }
 
     onMount(async () => {
-        // 首次載入時獲取用戶數據
-        const [success, data] = await apiGetUsers()
-        if (success && data) {
-            users = data.users || []
+        try {
+            // 首次載入時獲取用戶數據
+            const [success, data] = await apiGetUsers()
+            if (success) {
+                users = data.users || []
+            } else {
+                alert(data.message)
+            }
+        } catch (error) {
+            alert('更新表格失敗\n' + error)
         }
 
         // 監聽 DataTable 實例創建完成的事件
