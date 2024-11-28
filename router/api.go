@@ -14,4 +14,5 @@ func defineApi(r *gin.RouterGroup) {
 func defineAdminApi(r *gin.RouterGroup) {
 	r.GET("/users", app.HandleGetUserList)
 	r.POST("/user", app.HandlePostUser)
+	r.DELETE("/user", app.HandleDeleteUser)
 }

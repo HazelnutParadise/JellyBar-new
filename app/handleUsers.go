@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/HazelnutParadise/Go-Utils/conv"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,6 +41,7 @@ func HandlePostUser(ctx *gin.Context) {
 		CreateAt:       time.Now(),
 		Status:         "active",
 		StatusUpdateAt: time.Now(),
+		Author:         obj.Author{},
 	}
 	ctx.BindJSON(&user)
 	condition := map[string]string{
@@ -51,12 +53,26 @@ func HandlePostUser(ctx *gin.Context) {
 		return
 	}
 
+	user.Author.Name = user.Name
+
 	err = db.AddUser(user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
 		return
 	}
 	ctx.JSON(200, gin.H{"message": "用戶新增成功"})
+}
+
+func HandleDeleteUser(ctx *gin.Context) {
+	user := obj.User{
+		ID: uint(conv.ParseInt(ctx.Query("id"))),
+	}
+	err := db.DeleteUser(user)
+	if err != nil {
+		ctx.JSON(500, gin.H{"message": "用戶刪除失敗\n" + err.Error()})
+		return
+	}
+	ctx.JSON(200, gin.H{"message": "用戶刪除成功"})
 }
 
 func getUserFromHazelnutParadiseDB(user *obj.User, condition map[string]string) (int, error) {

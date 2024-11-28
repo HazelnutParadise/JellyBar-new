@@ -52,10 +52,14 @@
         return true
     }
 
-    const apiDeleteUser = async (userId: string) => {
+    const apiDeleteUser = async (userId: string): Promise<[boolean, any]> => {
         // TODO: 調用 API 刪除用戶
         console.log('API - Deleting user:', userId)
-        return true
+        const result = await fetch(`/api/admin/user?id=${userId}`, {
+            method: 'DELETE',
+        })
+        const resultJson = await result.json()
+        return [result.ok, resultJson]
     }
 
     const apiGetUsers = async (): Promise<[boolean, any]> => {
@@ -102,7 +106,10 @@
         }
 
         try {
-            const success = await apiUpdateUserRole(userId, newRole.toUpperCase())
+            const success = await apiUpdateUserRole(
+                userId,
+                newRole.toUpperCase(),
+            )
             if (success) {
                 await updateTable()
                 alert('用戶角色更新成功')
@@ -141,14 +148,13 @@
         if (!confirm('確定要刪除此用戶嗎？')) return
 
         try {
-            const success = await apiDeleteUser(userId)
+            const [success, resultJson] = await apiDeleteUser(userId)
             if (success) {
                 await updateTable()
-                alert('用戶刪除成功')
             }
+            alert(resultJson.message)
         } catch (error) {
-            alert('刪除用戶失敗')
-            console.error(error)
+            alert('刪除用戶失敗\n' + error)
         }
     }
 
@@ -388,7 +394,9 @@
         <div class="box mb-6">
             <div class="mb-4">
                 <h2 class="title is-4">新增用戶</h2>
-                <p class="subtitle is-size-6">從榛果繽紛樂會員系統新增用戶，以便管理其權限</p>
+                <p class="subtitle is-size-6">
+                    從榛果繽紛樂會員系統新增用戶，以便管理其權限
+                </p>
             </div>
 
             <div class="field is-grouped">

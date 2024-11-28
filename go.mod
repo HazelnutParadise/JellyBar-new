@@ -18,6 +18,7 @@ require (
 )
 
 require (
+	github.com/HazelnutParadise/Go-Utils v0.7.10
 	github.com/bytedance/sonic v1.12.4 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
