@@ -5,6 +5,7 @@ import (
 	"jellybar/obj"
 	"log"
 	"os"
+	"sync/atomic"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -42,7 +43,10 @@ var prodConfig = DBConfig{
 	DB_TIMEZONE: os.Getenv("DB_TIMEZONE"),
 }
 
-var database *gorm.DB
+var (
+	database       *gorm.DB
+	isReconnecting atomic.Bool
+)
 
 // ConnectDB 連接 PostgreSQL 資料庫
 func ConnectDB(mode int) (*gorm.DB, error) {
@@ -122,17 +126,47 @@ func InitDB(mode int) {
 	database = db
 }
 
-func IsDBConnected() bool {
+// 修改重連函數
+func reconnectDB(mode int) {
+	// 啟動重連
+	defer isReconnecting.Store(false) // 重連完成後重置狀態
+
+	var db *gorm.DB
+	var err error
+	for {
+		if db, err = ConnectDB(mode); err != nil {
+			log.Printf("自動重連失敗: %v，將在 5 秒後重試...", err)
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		break
+	}
+	database = db
+
+	log.Println("資料庫重新連接成功！")
+}
+
+// 修改 IsDBConnected 函數
+func IsDBConnected(mode int) bool {
 	if database == nil {
 		return false
 	}
 
-	// 額外檢查數據庫連接是否有效
 	sqlDB, err := database.DB()
 	if err != nil {
 		return false
 	}
 
 	err = sqlDB.Ping()
-	return err == nil
+	if err != nil {
+		// 如果已經在重連中，直接返回 false
+		if isReconnecting.Load() {
+			return false
+		}
+		// 設置重連狀態為 true
+		isReconnecting.Store(true)
+		go reconnectDB(mode)
+		return false
+	}
+	return true
 }
