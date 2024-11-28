@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type DBConfig struct {
+type dbConfig struct {
 	DB_HOST     string
 	DB_PORT     string
 	DB_NAME     string
@@ -23,7 +23,7 @@ type DBConfig struct {
 	DB_TIMEZONE string
 }
 
-var devConfig = DBConfig{
+var devConfig = dbConfig{
 	DB_HOST:     "192.168.1.164",
 	DB_PORT:     "5432",
 	DB_NAME:     "jellydev",
@@ -33,7 +33,7 @@ var devConfig = DBConfig{
 	DB_TIMEZONE: "Asia/Taipei",
 }
 
-var prodConfig = DBConfig{
+var prodConfig = dbConfig{
 	DB_HOST:     os.Getenv("DB_HOST"),
 	DB_PORT:     os.Getenv("DB_PORT"),
 	DB_NAME:     os.Getenv("DB_NAME"),
@@ -50,7 +50,7 @@ var (
 
 // ConnectDB 連接 PostgreSQL 資料庫
 func ConnectDB(mode int) (*gorm.DB, error) {
-	var config DBConfig
+	var config dbConfig
 	switch mode {
 	case DEV:
 		config = devConfig
