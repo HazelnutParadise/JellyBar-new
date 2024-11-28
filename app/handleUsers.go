@@ -23,13 +23,23 @@ type userAPIResponse struct {
 	} `json:"result"`
 }
 
+type userFrontend struct {
+	obj.User
+	Role string `json:"role"`
+}
+
 func HandleGetUserList(ctx *gin.Context) {
+	var result []userFrontend
 	users, err := db.GetUsers()
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "取得用戶列表失敗\n" + err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"users": users})
+	for _, user := range users {
+		role := convertUserRoleToString(user.Role)
+		result = append(result, userFrontend{User: user, Role: role})
+	}
+	ctx.JSON(200, gin.H{"users": result})
 }
 
 func HandlePostUser(ctx *gin.Context) {
@@ -37,11 +47,10 @@ func HandlePostUser(ctx *gin.Context) {
 		Username:       "",
 		Uuid:           "",
 		Name:           "",
-		Role:           "USER",
+		Role:           obj.UserRoleUser,
 		CreateAt:       time.Now(),
 		Status:         "active",
 		StatusUpdateAt: time.Now(),
-		Author:         obj.Author{},
 	}
 	ctx.BindJSON(&user)
 	condition := map[string]string{
@@ -52,13 +61,29 @@ func HandlePostUser(ctx *gin.Context) {
 		ctx.JSON(statusCode, gin.H{"message": err.Error()})
 		return
 	}
-	user.Author.UserID = user.ID
 	err = db.AddUser(&user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
 		return
 	}
 	ctx.JSON(200, gin.H{"message": "用戶新增成功"})
+}
+
+func HandleUpdateUser(ctx *gin.Context) {
+	var request userFrontend
+	ctx.BindJSON(&request)
+	var user obj.User
+	role, err := convertUserRole(request.Role)
+	if err != nil {
+		ctx.JSON(400, gin.H{"message": err.Error()})
+		return
+	}
+	user.Role = role
+	err = db.UpdateUser(&user)
+	if err != nil {
+		ctx.JSON(500, gin.H{"message": "用戶更新失敗\n" + err.Error()})
+		return
+	}
 }
 
 func HandleDeleteUser(ctx *gin.Context) {
@@ -99,4 +124,36 @@ func getUserFromHazelnutParadiseDB(user *obj.User, condition map[string]string) 
 		return 200, nil
 	}
 	return 502, errors.New("無法連線到榛果繽紛樂會員系統")
+}
+
+func convertUserRole(role string) (obj.UserRole, error) {
+	var result obj.UserRole
+	switch role {
+	case "USER":
+		result = obj.UserRoleUser
+	case "AUTHOR":
+		result = obj.UserRoleAuthor
+	case "EDITOR":
+		result = obj.UserRoleEditor
+	case "ADMIN":
+		result = obj.UserRoleAdmin
+	default:
+		return 255, errors.New("無效的用戶角色")
+	}
+	return result, nil
+}
+
+func convertUserRoleToString(role obj.UserRole) string {
+	switch role {
+	case obj.UserRoleUser:
+		return "USER"
+	case obj.UserRoleAuthor:
+		return "AUTHOR"
+	case obj.UserRoleEditor:
+		return "EDITOR"
+	case obj.UserRoleAdmin:
+		return "ADMIN"
+	default:
+		return ""
+	}
 }

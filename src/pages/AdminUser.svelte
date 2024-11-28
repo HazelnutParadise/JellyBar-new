@@ -17,6 +17,7 @@
     const roles = {
         ADMIN: '管理員',
         EDITOR: '編輯',
+        AUTHOR: '作者',
         USER: '一般用戶',
     }
 
@@ -99,7 +100,7 @@
         const user = users.find((u) => u.id === userId)
         if (!user) return
 
-        const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/USER):', user.role)
+        const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/AUTHOR/USER):', user.role)
         if (!newRole || !roles[newRole.toUpperCase()]) {
             alert('無效的角色！')
             return
