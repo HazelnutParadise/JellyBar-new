@@ -23,3 +23,11 @@ const (
 	UserRoleEditor
 	UserRoleAdmin
 )
+
+type UserStatus string
+
+const (
+	UserStatusActive    UserStatus = "active"
+	UserStatusSuspended UserStatus = "suspended"
+	UserStatusBanned    UserStatus = "banned"
+)
