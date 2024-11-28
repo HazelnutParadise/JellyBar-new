@@ -27,13 +27,13 @@ func AddUser(user *obj.User) error {
 	return err
 }
 
-func UpdateUser(user obj.User) error {
-	result := database.Save(&user)
+func UpdateUser(user *obj.User) error {
+	result := database.Save(user)
 	return result.Error
 }
 
-func DeleteUser(user obj.User) error {
-	result := database.Delete(&user)
+func DeleteUser(user *obj.User) error {
+	result := database.Delete(user)
 	return result.Error
 }
 

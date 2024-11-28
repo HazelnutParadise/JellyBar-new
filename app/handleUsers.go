@@ -65,7 +65,7 @@ func HandleDeleteUser(ctx *gin.Context) {
 	user := obj.User{
 		ID: uint(conv.ParseInt(ctx.Query("id"))),
 	}
-	err := db.DeleteUser(user)
+	err := db.DeleteUser(&user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶刪除失敗\n" + err.Error()})
 		return
