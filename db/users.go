@@ -2,6 +2,8 @@ package db
 
 import (
 	"jellybar/obj"
+
+	"gorm.io/gorm"
 )
 
 func GetUsers() ([]obj.User, error) {
@@ -10,9 +12,19 @@ func GetUsers() ([]obj.User, error) {
 	return users, result.Error
 }
 
-func AddUser(user obj.User) error {
-	result := database.Create(&user)
-	return result.Error
+func AddUser(user *obj.User) error {
+	err := database.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(user).Error; err != nil {
+			return err
+		}
+		user.Author.UserID = user.ID
+		user.Author.Name = user.Name
+		if err := tx.Create(&user.Author).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 func UpdateUser(user obj.User) error {

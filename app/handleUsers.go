@@ -52,10 +52,8 @@ func HandlePostUser(ctx *gin.Context) {
 		ctx.JSON(statusCode, gin.H{"message": err.Error()})
 		return
 	}
-
-	user.Author.Name = user.Name
-
-	err = db.AddUser(user)
+	user.Author.UserID = user.ID
+	err = db.AddUser(&user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
 		return
