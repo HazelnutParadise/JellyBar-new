@@ -41,10 +41,18 @@
         return [result.ok, resultJson]
     }
 
-    const apiUpdateUserRole = async (userId: string, newRole: string) => {
+    const apiUpdateUserRole = async (userId: number, newRole: string): Promise<[boolean, any]> => {
         // TODO: 調用 API 更新用戶角色
         console.log('API - Updating user role:', userId, newRole)
-        return true
+        const result = await fetch(`/api/admin/user?id=${userId}&role=${newRole}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+        const resultJson = await result.json()
+        return [result.ok, resultJson]
     }
 
     const apiUpdateUserStatus = async (userId: string, newStatus: string) => {
@@ -96,24 +104,29 @@
         }
     }
 
-    const uiHandleEditRole = async (userId: string) => {
-        const user = users.find((u) => u.id === userId)
-        if (!user) return
+    const uiHandleEditRole = async (userId: number) => {
+        // const user = users.find((u) => u.id === userId)
+        // if (!user) {
+        //     alert('找不到用戶')
+        //     return
+        // }
 
-        const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/AUTHOR/USER):', user.role)
+        const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/AUTHOR/USER):')
         if (!newRole || !roles[newRole.toUpperCase()]) {
             alert('無效的角色！')
             return
         }
 
         try {
-            const success = await apiUpdateUserRole(
+            const [success, resultJson] = await apiUpdateUserRole(
                 userId,
                 newRole.toUpperCase(),
             )
             if (success) {
                 await updateTable()
-                alert('用戶角色更新成功')
+                alert(resultJson.message)
+            } else {
+                alert(resultJson.message || '更新角色失敗')
             }
         } catch (error) {
             alert('更新角色失敗')
@@ -169,7 +182,7 @@
         if (!userId) return
 
         if (target.classList.contains('edit-role-btn')) {
-            uiHandleEditRole(userId)
+            uiHandleEditRole(Number(userId))
         } else if (target.classList.contains('toggle-status-btn')) {
             uiHandleToggleStatus(userId)
         } else if (target.classList.contains('delete-user-btn')) {

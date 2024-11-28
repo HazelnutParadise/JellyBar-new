@@ -70,20 +70,29 @@ func HandlePostUser(ctx *gin.Context) {
 }
 
 func HandleUpdateUser(ctx *gin.Context) {
-	var request userFrontend
-	ctx.BindJSON(&request)
 	var user obj.User
-	role, err := convertUserRole(request.Role)
+	user.ID = uint(conv.ParseInt(ctx.Query("id")))
+	role := ctx.Query("role")
+
+	if err := ctx.ShouldBindJSON(&user); err != nil {
+		ctx.JSON(400, gin.H{"message": "解析用戶資料失敗：" + err.Error()})
+		return
+	}
+
+	userRole, err := convertUserRole(role)
 	if err != nil {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
-	user.Role = role
+	user.Role = userRole
+
 	err = db.UpdateUser(&user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶更新失敗\n" + err.Error()})
 		return
 	}
+
+	ctx.JSON(200, gin.H{"message": "用戶更新成功"})
 }
 
 func HandleDeleteUser(ctx *gin.Context) {

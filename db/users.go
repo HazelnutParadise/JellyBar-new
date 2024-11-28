@@ -1,9 +1,8 @@
 package db
 
 import (
+	"fmt"
 	"jellybar/obj"
-
-	"gorm.io/gorm"
 )
 
 func GetUsers() ([]obj.User, error) {
@@ -21,22 +20,27 @@ func AddUser(user *obj.User) error {
 }
 
 func UpdateUser(user *obj.User) error {
-	err := database.Transaction(func(tx *gorm.DB) error {
-		var err error
-		var oldUser obj.User
-		tx.Preload("Author").First(&oldUser, user.ID)
+	var err error
+	var oldUserAuthor obj.Author
+	count := database.Where("user_id = ?", user.ID).Find(&oldUserAuthor).RowsAffected
+	fmt.Println(count)
+	if count == 0 {
 		if user.Role > obj.UserRoleUser {
-			if oldUser.Author.ID == 0 {
-				tx.Create(&obj.Author{UserID: user.ID})
+			if user.Role > obj.UserRoleUser {
+				if oldUserAuthor.ID == 0 {
+					user.Author.UserID = user.ID
+					user.Author.Name = user.Name
+				}
 			}
 		}
-		err = tx.Save(user).Error
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	return err
+	}
+
+	err = database.Model(user).Where("id = ?", user.ID).Updates(user).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func DeleteUser(user *obj.User) error {

@@ -3,11 +3,11 @@ package obj
 import "time"
 
 type User struct {
-	ID             uint   `json:"id" gorm:"primaryKey"`
-	Uuid           string `json:"uuid" gorm:"unique"`
-	Username       string `json:"username"`
-	Name           string `json:"name"`
-	Role           UserRole
+	ID             uint      `json:"id" gorm:"primaryKey"`
+	Uuid           string    `json:"uuid" gorm:"unique"`
+	Username       string    `json:"username"`
+	Name           string    `json:"name"`
+	Role           UserRole  `json:"-"`
 	CreateAt       time.Time `json:"create_at"`
 	Status         string    `json:"status"`
 	StatusUpdateAt time.Time `json:"status_update_at"`
@@ -18,7 +18,7 @@ type User struct {
 type UserRole uint8
 
 const (
-	UserRoleUser UserRole = iota
+	UserRoleUser UserRole = iota + 1
 	UserRoleAuthor
 	UserRoleEditor
 	UserRoleAdmin
