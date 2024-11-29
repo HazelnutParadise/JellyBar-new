@@ -54,8 +54,8 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	// register the main Golte middleware
 	r.Use(wrapMiddleware(build.Golte))
 
-	r.Use(checkDBConnection(siteName, logo, mode))
 	r.Use(alertDevMode(mode))
+	r.Use(checkDBConnection(siteName, logo, mode))
 
 	// 設定404頁面
 	r.NoRoute(handle404(siteName, logo))
