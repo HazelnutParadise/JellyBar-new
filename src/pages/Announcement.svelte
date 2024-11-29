@@ -121,7 +121,7 @@
 </style>
 
 {#if announcementType === "info"}
-    <Navbar {siteName} />
+    <Navbar {siteName} logo={siteLogo_base64} />
 {/if}
 <div class="announcement-page {announcementType === 'info' ? 'with-navbar' : ''}">
     <div class="site-header">

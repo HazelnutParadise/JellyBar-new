@@ -67,7 +67,7 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	r.NoRoute(handle404(siteName, logo))
 
 	// 使用 subAssetsDir 而不是 assetsDir
-	defineRoutes(r, siteName, subAssetsDir)
+	defineRoutes(r, siteName, subAssetsDir, &logo)
 
 	return r
 }

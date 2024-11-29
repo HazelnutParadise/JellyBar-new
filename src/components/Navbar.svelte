@@ -1,5 +1,6 @@
-<script>
-    export let siteName
+<script lang="ts">
+    export let siteName: string
+    export let logo: string
     let isActive = false;
     
     const toggleMenu = () => {
@@ -62,7 +63,7 @@
         <div class="navbar-brand">
             <a class="navbar-item brand-logo" href="/">
                 <img
-                    src="/assets/logo.png"
+                    src="data:image/png;base64,{logo}"
                     alt="Logo"
                     height="28"
                     style="margin-right: -0.5rem;"
