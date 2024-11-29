@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     export let siteName: string
-
+    export let logo: string
     let isDropdownOpen = false
     let isMobileMenuOpen = false
 
@@ -242,7 +242,7 @@
             <!-- Logo 區域 -->
             <div class="navbar-brand">
                 <a href="/admin" class="logo">
-                    <img src="/assets/logo.png" alt="Logo" class="logo-image" />
+                    <img src="data:image/png;base64,{logo}" alt="Logo" class="logo-image" />
                     <span>{siteName} 後台</span>
                 </a>
                 <button class="mobile-toggle" on:click={toggleMobileMenu}>

@@ -50,29 +50,31 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 		log.Printf("Warning: Could not read logo file: %v", err)
 	}
 
+	logoBase64 := base64.StdEncoding.EncodeToString(logo)
+
 	r := gin.Default()
 	// register the main Golte middleware
 	r.Use(wrapMiddleware(build.Golte))
 
 	r.Use(func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "App", map[string]any{
-			"logo": base64.StdEncoding.EncodeToString(logo),
+			"logo": logoBase64,
 		})
 	})
 
 	r.Use(alertDevMode(mode))
-	r.Use(checkDBConnection(siteName, logo, mode))
+	r.Use(checkDBConnection(siteName, &logoBase64, mode))
 
 	// 設定404頁面
-	r.NoRoute(handle404(siteName, logo))
+	r.NoRoute(handle404(siteName, &logoBase64))
 
 	// 使用 subAssetsDir 而不是 assetsDir
-	defineRoutes(r, siteName, subAssetsDir, &logo)
+	defineRoutes(r, siteName, subAssetsDir, &logoBase64)
 
 	return r
 }
 
-func checkDBConnection(siteName string, logo []byte, mode int) gin.HandlerFunc {
+func checkDBConnection(siteName string, logoBase64 *string, mode int) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		if db.IsDBConnected(mode) {
 			ctx.Next()
@@ -89,8 +91,8 @@ func checkDBConnection(siteName string, logo []byte, mode int) gin.HandlerFunc {
 			"announcementType":    "error",
 		}
 
-		if logo != nil {
-			data["siteLogo_base64"] = base64.StdEncoding.EncodeToString(logo)
+		if logoBase64 != nil {
+			data["siteLogo_base64"] = *logoBase64
 		}
 
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
@@ -98,7 +100,7 @@ func checkDBConnection(siteName string, logo []byte, mode int) gin.HandlerFunc {
 	}
 }
 
-func handle404(siteName string, logo []byte) gin.HandlerFunc {
+func handle404(siteName string, logoBase64 *string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		data := map[string]any{
 			"siteName":            siteName,
@@ -106,8 +108,8 @@ func handle404(siteName string, logo []byte) gin.HandlerFunc {
 			"announcementContent": "怎麼了？你消失了？！我們找不到您試圖前往的頁面，請檢查網址是否正確。",
 			"announcementType":    "info",
 		}
-		if logo != nil {
-			data["siteLogo_base64"] = base64.StdEncoding.EncodeToString(logo)
+		if logoBase64 != nil {
+			data["siteLogo_base64"] = *logoBase64
 		}
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 	}

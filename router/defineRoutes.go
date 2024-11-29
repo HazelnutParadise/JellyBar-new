@@ -1,7 +1,6 @@
 package router
 
 import (
-	"encoding/base64"
 	"io/fs"
 	"net/http"
 	"time"
@@ -13,14 +12,14 @@ import (
 	"github.com/nichady/golte"
 )
 
-func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, logo *[]byte) {
+func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, logoBase64 *string) {
 	r.StaticFS("/assets", http.FS(assets))
 
 	pages := r.Group("/")
 	pages.Use(func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "layouts/NavbarAndFooter", map[string]any{
 			"siteName": siteName,
-			"logo":     base64.StdEncoding.EncodeToString(*logo),
+			"logo":     *logoBase64,
 		})
 	})
 	pages.GET("/", func(ctx *gin.Context) {
@@ -173,6 +172,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, logo *[]byte) {
 	admin := r.Group("/admin", func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "layouts/AdminNavbarAndFooter", map[string]any{
 			"siteName": siteName,
+			"logo":     *logoBase64,
 		})
 	})
 	defineAdminPages(admin, siteName)
