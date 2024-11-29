@@ -118,16 +118,18 @@
 
         try {
             // 發送刪除請求到後端 API
-            const response = await fetch(`/api/categories/${id}`, {
+            const response = await fetch(`/api/admin/category?id=${id}`, {
                 method: 'DELETE',
             })
+            const responseJson = await response.json()
 
             if (!response.ok) {
-                throw new Error('刪除類別失敗')
+                alert(responseJson.message || '刪除類別失敗')
+                return
             }
 
             await reloadData('categories') // 重新載入資料
-            alert('類別已成功刪除！')
+            alert(responseJson.message)
         } catch (error) {
             console.error('刪除類別時發生錯誤:', error)
             alert('刪除類別失敗：' + error.message)

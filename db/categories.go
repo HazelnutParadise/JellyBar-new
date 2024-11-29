@@ -17,3 +17,8 @@ func AddCategory(category *obj.Category) error {
 	err := database.Create(category).Error
 	return err
 }
+
+func DeleteCategory(category *obj.Category) error {
+	err := database.Delete(category).Error
+	return err
+}
