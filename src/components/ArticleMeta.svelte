@@ -1,5 +1,4 @@
 <script>
-    import "../app.css"
     export let author = {}
     export let article = {}
     

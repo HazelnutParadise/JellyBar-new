@@ -162,6 +162,12 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 		})
 	})
 
+	pages.GET("/login", func(ctx *gin.Context) {
+		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Login", map[string]any{
+			"siteName": siteName,
+		})
+	})
+
 	admin := r.Group("/admin", func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "layouts/AdminNavbarAndFooter", map[string]any{
 			"siteName": siteName,

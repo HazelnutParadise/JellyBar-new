@@ -1,5 +1,4 @@
 <script lang="ts">
-    import '../app.css'
     import '../lib/declares'
     import DataTable from '../components/DataTable.svelte'
     import { onMount } from 'svelte'

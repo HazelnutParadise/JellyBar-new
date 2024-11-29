@@ -1,5 +1,4 @@
 <script lang="ts">
-    import "../app.css"
     import Footer from "../components/Footer.svelte"
     import Navbar from "../components/Navbar.svelte"
     import setTitle from "../lib/setTitle"

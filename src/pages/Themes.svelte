@@ -1,7 +1,6 @@
 <script lang="ts">
     export let title: string
     export let siteName: string
-    import '../app.css'
     import ArticleGrid from '../components/ArticleGrid.svelte'
     import setTitle from '../lib/setTitle'
     const themes = [

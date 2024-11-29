@@ -2,7 +2,6 @@
     import setTitle from '../lib/setTitle.js'
     export let siteName: string
     export let title: string
-    import '../app.css'
     import ArticleGrid from '../components/ArticleGrid.svelte'
 
     setTitle(title, siteName)

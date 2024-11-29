@@ -1,5 +1,4 @@
 <script>
-    import '../app.css'
     import ArticleCard from '../components/ArticleCard.svelte'
     import setTitle from '../lib/setTitle.js'
     import SideBar from '../components/SideBar.svelte'

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import '../app.css'
     import setTitle from '../lib/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
     import type { Article } from '../types/article'

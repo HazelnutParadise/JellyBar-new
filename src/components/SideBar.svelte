@@ -1,5 +1,4 @@
 <script>
-    import '../app.css'
     export let categories = []
     export let latestArticles = []
 </script>
