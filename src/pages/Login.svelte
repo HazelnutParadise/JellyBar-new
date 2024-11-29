@@ -53,7 +53,7 @@
 
 <style>
   .login-container {
-    min-height: 100vh;
+    height: calc(100vh - 100px - 52px);
     display: flex;
     align-items: center;
     justify-content: center;
