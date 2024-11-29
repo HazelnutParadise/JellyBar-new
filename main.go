@@ -23,6 +23,6 @@ func main() {
 	go db.InitDB(mode)
 	r := router.GinRouter(siteName, assetsDir, mode)
 
-	fmt.Println("Serving on :8000")
-	http.ListenAndServe(":8000", r)
+	fmt.Println("Serving on :3333")
+	http.ListenAndServe(":3333", r)
 }
