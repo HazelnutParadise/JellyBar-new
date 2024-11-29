@@ -72,7 +72,7 @@ func HandlePostUser(ctx *gin.Context) {
 
 func HandleUpdateUser(ctx *gin.Context) {
 	var user obj.User
-	user.ID = uint(conv.ParseInt(ctx.Query("id")))
+	user.ID = uint(conv.ParseInt(ctx.Param("id")))
 	role := ctx.Query("role")
 
 	if err := ctx.ShouldBindJSON(&user); err != nil {
@@ -100,7 +100,7 @@ func HandleUpdateUser(ctx *gin.Context) {
 
 func HandleDeleteUser(ctx *gin.Context) {
 	user := obj.User{
-		ID: uint(conv.ParseInt(ctx.Query("id"))),
+		ID: uint(conv.ParseInt(ctx.Param("id"))),
 	}
 	err := db.DeleteUser(&user)
 	if err != nil {

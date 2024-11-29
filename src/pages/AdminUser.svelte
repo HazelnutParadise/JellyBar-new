@@ -47,7 +47,7 @@
     ): Promise<[boolean, any]> => {
         // TODO: 調用 API 更新用戶角色
         console.log('API - Updating user role:', userId, newRole)
-        const result = await fetch(`/api/admin/user?id=${userId}&role=${newRole}`, {
+        const result = await fetch(`/api/admin/user/${userId}?role=${newRole}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -65,7 +65,7 @@
     ): Promise<[boolean, any]> => {
         // TODO: 調用 API 更新用戶狀態
         console.log('API - Updating user status:', userId, newStatus)
-        const result = await fetch(`/api/admin/user?id=${userId}`, {
+        const result = await fetch(`/api/admin/user/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -82,7 +82,7 @@
     const apiDeleteUser = async (userId: number): Promise<[boolean, any]> => {
         // TODO: 調用 API 刪除用戶
         console.log('API - Deleting user:', userId)
-        const result = await fetch(`/api/admin/user?id=${userId}`, {
+        const result = await fetch(`/api/admin/user/${userId}`, {
             method: 'DELETE',
         })
         const resultJson = await result.json()

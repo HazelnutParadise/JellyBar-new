@@ -118,7 +118,7 @@
 
         try {
             // 發送刪除請求到後端 API
-            const response = await fetch(`/api/admin/category?id=${id}`, {
+            const response = await fetch(`/api/admin/category/${id}`, {
                 method: 'DELETE',
             })
             const responseJson = await response.json()

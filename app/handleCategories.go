@@ -31,7 +31,7 @@ func HandlePostCategory(ctx *gin.Context) {
 }
 
 func HandleDeleteCategory(ctx *gin.Context) {
-	id := uint(conv.ParseInt(ctx.Query("id")))
+	id := uint(conv.ParseInt(ctx.Param("id")))
 	if id == 0 {
 		ctx.JSON(400, gin.H{"message": "刪除類別失敗\nID錯誤"})
 		return
