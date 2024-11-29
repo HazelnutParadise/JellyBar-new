@@ -21,7 +21,7 @@ func main() {
 		mode = db.PROD
 	}
 	go db.InitDB(mode)
-	r := router.GinRouter(siteName, assetsDir, mode)
+	r := router.GinRouter(siteName, &assetsDir, mode)
 
 	fmt.Println("Serving on :3333")
 	http.ListenAndServe(":3333", r)

@@ -12,8 +12,8 @@ import (
 	"github.com/nichady/golte"
 )
 
-func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, logoBase64 *string) {
-	r.StaticFS("/assets", http.FS(assets))
+func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *string) {
+	r.StaticFS("/assets", http.FS(*assets))
 
 	pages := r.Group("/")
 	pages.Use(func(ctx *gin.Context) {

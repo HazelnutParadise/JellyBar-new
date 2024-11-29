@@ -14,7 +14,7 @@ import (
 	"github.com/nichady/golte"
 )
 
-func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
+func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 	// Gin doesn't have a function to wrap middleware, so define our own
 	wrapMiddleware := func(middleware func(http.Handler) http.Handler) func(ctx *gin.Context) {
 		return func(ctx *gin.Context) {
@@ -37,7 +37,7 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	// }
 
 	// 使用一個新的變量來存儲 fs.Sub 的結果
-	subAssetsDir, err := fs.Sub(assetsDir, "src/assets")
+	subAssetsDir, err := fs.Sub(*assetsDir, "src/assets")
 	if err != nil {
 		log.Fatalf("Failed to get assets directory: %v", err)
 	}
@@ -69,7 +69,7 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	r.NoRoute(handle404(siteName, &logoBase64))
 
 	// 使用 subAssetsDir 而不是 assetsDir
-	defineRoutes(r, siteName, subAssetsDir, &logoBase64)
+	defineRoutes(r, siteName, &subAssetsDir, &logoBase64)
 
 	return r
 }
