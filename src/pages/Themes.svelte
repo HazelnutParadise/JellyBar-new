@@ -1,10 +1,9 @@
-<script>
-    export let siteName
-    export let title
+<script lang="ts">
+    export let title: string
+    export let siteName: string
     import '../app.css'
     import ArticleGrid from '../components/ArticleGrid.svelte'
-    import Navbar from '../components/Navbar.svelte'
-
+    import setTitle from '../js/setTitle'
     const themes = [
         'default',
         'forest',
@@ -29,6 +28,8 @@
         'midnight',
         'charcoal',
     ]
+
+    setTitle(title, siteName)
 
     const articles = themes.map((theme) => ({
         title: `主題：${theme}`,
@@ -70,12 +71,10 @@
     }
 </style>
 
-<Navbar {siteName} />
-
 <section class="hero is-fullheight main-content">
     <div class="hero-body">
         <div class="container">
-            <h1 class="main-title has-text-centered mb-6">主題展示</h1>
+            <h1 class="main-title has-text-centered mb-6">{title}</h1>
 
             <ArticleGrid {articles} />
         </div>

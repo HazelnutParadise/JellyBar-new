@@ -1,11 +1,9 @@
 <script lang="ts">
     import setTitle from '../js/setTitle.js'
-    export let siteName
-    export let title
+    export let siteName: string
+    export let title: string
     import '../app.css'
     import ArticleGrid from '../components/ArticleGrid.svelte'
-    import Navbar from '../components/Navbar.svelte'
-    import Footer from '../components/Footer.svelte'
 
     setTitle(title, siteName)
 
@@ -130,8 +128,6 @@
     }
 </style>
 
-<Navbar {siteName} />
-
 <section class="hero is-fullheight main-content">
     <div class="hero-body">
         <div class="container">
@@ -182,4 +178,3 @@
     </div>
 </section>
 
-<Footer {siteName} />

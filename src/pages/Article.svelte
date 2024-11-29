@@ -1,13 +1,11 @@
-<script>
+<script lang="ts">
     import '../app.css'
-    import Navbar from '../components/Navbar.svelte'
     import setTitle from '../js/setTitle.js'
     import Breadcrumbs from '../components/Breadcrumbs.svelte'
     import ArticleMeta from '../components/ArticleMeta.svelte'
     import SideBar from '../components/SideBar.svelte'
-    import Footer from '../components/Footer.svelte'
-    export let siteName
-    export let article = {}
+    export let siteName: string
+    export let article: any = {}
     export let author = {}
     export let category = {}
     export let categories = []
@@ -165,7 +163,6 @@
     }
 </style>
 
-<Navbar {siteName} />
 <div class="article-page">
     <header class="article-header">
         <div class="header-content">
@@ -205,4 +202,4 @@
         </div>
     </div>
 </div>
-<Footer {siteName} />
+

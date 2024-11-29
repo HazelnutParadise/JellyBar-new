@@ -10,6 +10,7 @@
 <style>
     .navbar-wrapper {
         width: 100%;
+        z-index: 9999;
     }
 
     .navbar-spacer {

@@ -1,8 +1,6 @@
 <script>
     import '../app.css'
     import ArticleCard from '../components/ArticleCard.svelte'
-    import Navbar from '../components/Navbar.svelte'
-    import Footer from '../components/Footer.svelte'
     import setTitle from '../js/setTitle.js'
     import SideBar from '../components/SideBar.svelte'
     import pageConfigs from '../js/pageStyle.js'
@@ -166,7 +164,6 @@
 </style>
 
 <section class="categories-page">
-    <Navbar {siteName} />
     <header
         class="categories-header"
         style="--header-bg: {currentTheme.header}; 
@@ -217,4 +214,3 @@
         </div>
     </div>
 </section>
-<Footer {siteName} />

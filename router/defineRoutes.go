@@ -16,6 +16,11 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 	r.StaticFS("/assets", http.FS(assets))
 
 	pages := r.Group("/")
+	pages.Use(func(ctx *gin.Context) {
+		golte.AddLayout(ctx.Request, "layouts/NavbarAndFooter", map[string]any{
+			"siteName": siteName,
+		})
+	})
 	pages.GET("/", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/App", map[string]any{
 			"siteName": siteName,
