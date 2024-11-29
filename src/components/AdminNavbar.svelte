@@ -10,17 +10,18 @@
         { label: '儀表板', icon: 'fa-chart-line', href: '/admin' },
         { label: '文章與類別', icon: 'fa-file-alt', href: '/admin/articles' },
         { label: '用戶管理', icon: 'fa-users', href: '/admin/users' },
-        { label: '設定', icon: 'fa-cog', href: '/admin/settings' },
+        // { label: '設定', icon: 'fa-cog', href: '/admin/settings' },
     ]
 
     // 用戶選單項目
     const userMenuItems = [
-        { label: '個人資料', icon: 'fa-user', href: '/admin/profile' },
+        { label: '我的作者資訊', icon: 'fa-user', href: '/admin/profile' },
         { label: '返回前台', icon: 'fa-home', href: '/' },
         { label: '登出', icon: 'fa-sign-out-alt', href: '/logout' },
     ]
 
-    function toggleDropdown() {
+    function toggleDropdown(event) {
+        event.stopPropagation()
         isDropdownOpen = !isDropdownOpen
     }
 
@@ -31,7 +32,13 @@
     // 點擊外部關閉下拉選單
     function handleClickOutside(event) {
         const dropdown = document.querySelector('.user-dropdown')
-        if (dropdown && !dropdown.contains(event.target)) {
+        const userButton = document.querySelector('.user-button')
+        
+        if (
+            dropdown && 
+            !dropdown.contains(event.target) && 
+            !userButton.contains(event.target)
+        ) {
             isDropdownOpen = false
         }
     }
