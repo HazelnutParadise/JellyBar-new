@@ -35,11 +35,11 @@ func HandleGetUserList(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"message": "取得用戶列表失敗\n" + err.Error()})
 		return
 	}
-	for _, user := range users {
+	for _, user := range *users {
 		role := convertUserRoleToString(user.Role)
 		result = append(result, userFrontend{User: user, Role: role})
 	}
-	ctx.JSON(200, gin.H{"users": result})
+	ctx.JSON(200, gin.H{"users": &result})
 }
 
 func HandlePostUser(ctx *gin.Context) {
@@ -122,7 +122,7 @@ func getUserFromHazelnutParadiseDB(user *obj.User, condition map[string]string) 
 		if len(apiResponse.Result) == 0 {
 			return 409, errors.New("榛果繽紛樂會員系統無此用戶")
 		}
-		userResult := apiResponse.Result[0]
+		userResult := &apiResponse.Result[0]
 
 		var name string
 		if utils.IsASCII(userResult.Lastname) {

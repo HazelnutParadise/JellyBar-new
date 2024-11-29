@@ -2,7 +2,7 @@ package db
 
 import "jellybar/obj"
 
-func GetCategories(preloadArticles bool) ([]obj.Category, error) {
+func GetCategories(preloadArticles bool) (*[]obj.Category, error) {
 	var categories []obj.Category
 	var err error
 	if preloadArticles {
@@ -10,7 +10,7 @@ func GetCategories(preloadArticles bool) ([]obj.Category, error) {
 	} else {
 		err = database.Find(&categories).Error
 	}
-	return categories, err
+	return &categories, err
 }
 
 func AddCategory(category *obj.Category) error {

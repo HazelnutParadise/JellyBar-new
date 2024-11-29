@@ -5,10 +5,10 @@ import (
 	"jellybar/obj"
 )
 
-func GetUsers() ([]obj.User, error) {
+func GetUsers() (*[]obj.User, error) {
 	var users []obj.User
 	err := database.Find(&users).Error
-	return users, err
+	return &users, err
 }
 
 func AddUser(user *obj.User) error {

@@ -1,6 +1,6 @@
 <script lang="ts">
     import "./app.css"
-    import { beforeUpdate, onMount } from "svelte"
+    import { onMount } from "svelte"
     export let logo: string
     
     onMount(() => {
