@@ -530,11 +530,6 @@
         background-color: #f7f9fc;
     }
 
-    .admin-actions {
-        display: flex;
-        justify-content: flex-end;
-    }
-
     .table-container {
         box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1);
         border-radius: 6px;
@@ -687,7 +682,7 @@
     }
 
     .modal-card-body {
-            padding: 1rem;
+        padding: 1rem;
         display: flex;
         flex-direction: column;
     }
@@ -726,30 +721,6 @@
         overflow: hidden; /* 止內容溢出 */
     }
 
-    /* 加排序標題樣式 */
-    .sort-header {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: inherit;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .sort-header:hover {
-        color: var(--theme-primary);
-    }
-
-    .sort-header .icon {
-        font-size: 0.8em;
-        opacity: 0.7;
-        transition: transform 0.2s ease;
-    }
-
-    .sort-header:hover .icon {
-        opacity: 1;
-    }
-
     /* 調整表格標題樣式 */
     .table th {
         white-space: nowrap;
@@ -757,37 +728,6 @@
 
     .table th a {
         text-decoration: none;
-    }
-
-    /* 更新浮動標籤樣式 */
-    .field.has-floating-label {
-        position: relative;
-        margin-top: 1.5em;
-    }
-
-    .field.has-floating-label .floating-label {
-        position: absolute;
-        top: -1.5em;
-        left: 0;
-        font-size: 0.75em;
-        color: #666;
-        pointer-events: none;
-        line-height: 1;
-    }
-
-    /* 調整日期輸入框的樣式 */
-    .field.has-floating-label input[type='date'] {
-        width: 150px; /* 調整寬度以確保日期完整顯示 */
-        padding: 0.5em;
-    }
-
-    /* 確保標籤不會被其他元素覆蓋 */
-    .field.has-floating-label {
-        z-index: 1;
-    }
-
-    .field.has-floating-label .floating-label {
-        z-index: 2;
     }
 
     .date-field-group {
@@ -854,21 +794,6 @@
         align-items: flex-end;
     }
 
-    .date-type-select {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    .date-type-select label {
-        font-size: 0.75rem;
-        color: #666;
-    }
-
-    .date-type-select .select {
-        min-width: 120px;
-    }
-
     .date-field {
         display: flex;
         flex-direction: column;
@@ -927,45 +852,6 @@
     .date-column {
         min-width: 130px;
         white-space: nowrap;
-    }
-
-    /* 修改排序圖標相關樣式 */
-    .sort-header {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: inherit;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .sort-header:hover {
-        color: var(--theme-primary);
-    }
-
-    .sort-header .icon {
-        font-size: 0.8em;
-        opacity: 0.7;
-        transition:
-            opacity 0.2s ease,
-            transform 0.2s ease;
-    }
-
-    .sort-header.active .icon {
-        opacity: 1;
-    }
-
-    .sort-header .icon i {
-        display: none;
-    }
-
-    .sort-header.active .icon i.fa-sort-up,
-    .sort-header.active .icon i.fa-sort-down {
-        display: inline-block;
-    }
-
-    .sort-header:not(.active) .icon i.fa-sort {
-        display: inline-block;
     }
 
     /* 調整表格容器樣式 */
@@ -1098,7 +984,6 @@
     }
 </style>
 
-
 <div class="admin-container">
     <div class="container">
         <h1 class="title is-2 has-text-centered mb-6 mt-2">{title}</h1>
@@ -1146,9 +1031,12 @@
 
                         <div class="filter-controls-right">
                             <div class="select-field">
-                                <label>類別</label>
+                                <label for="categorySelect">類別</label>
                                 <div class="select">
-                                    <select bind:value={selectedCategory}>
+                                    <select
+                                        id="categorySelect"
+                                        bind:value={selectedCategory}
+                                    >
                                         <option
                                             value={null}
                                             disabled
@@ -1335,14 +1223,17 @@
                                     <th class="is-narrow">分類</th>
                                     <th class="date-column">發布日期</th>
                                     <th class="date-column">修改日期</th>
-                                    <th class="is-narrow has-text-centered">操作</th
+                                    <th class="is-narrow has-text-centered"
+                                        >操作</th
                                     >
                                 </tr>
                             </thead>
                             <tbody>
                                 {#each filteredArticles as article, index}
                                     <tr>
-                                        <td class="has-text-grey">{index + 1}</td>
+                                        <td class="has-text-grey"
+                                            >{index + 1}</td
+                                        >
                                         <td>
                                             <div class="article-title">
                                                 <a
@@ -1375,17 +1266,21 @@
                                                     title="編輯文章"
                                                 >
                                                     <span class="icon">
-                                                        <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-edit"
+                                                        ></i>
                                                     </span>
                                                 </a>
                                                 <button
                                                     class="button is-danger"
                                                     title="刪除文章"
                                                     on:click={() =>
-                                                        handleDelete(article.id)}
+                                                        handleDelete(
+                                                            article.id,
+                                                        )}
                                                 >
                                                     <span class="icon">
-                                                        <i class="fas fa-trash-alt"
+                                                        <i
+                                                            class="fas fa-trash-alt"
                                                         ></i>
                                                     </span>
                                                 </button>
