@@ -50,6 +50,7 @@ func HandlePostUser(ctx *gin.Context) {
 		Role:           obj.UserRoleUser,
 		CreateAt:       time.Now(),
 		Status:         "active",
+		StatusReason:   "-",
 		StatusUpdateAt: time.Now(),
 	}
 	ctx.BindJSON(&user)
@@ -79,14 +80,16 @@ func HandleUpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	userRole, err := convertUserRole(role)
-	if err != nil {
-		ctx.JSON(400, gin.H{"message": err.Error()})
-		return
+	if role != "" {
+		userRole, err := convertUserRole(role)
+		if err != nil {
+			ctx.JSON(400, gin.H{"message": err.Error()})
+			return
+		}
+		user.Role = userRole
 	}
-	user.Role = userRole
 
-	err = db.UpdateUser(&user)
+	err := db.UpdateUser(&user)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "用戶更新失敗\n" + err.Error()})
 		return

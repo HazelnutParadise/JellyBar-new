@@ -1,12 +1,13 @@
 <script lang="ts">
     import '../app.css'
     import '../lib/declares'
-    import AdminNavbar from '../components/AdminNavbar.svelte'
-    import Footer from '../components/Footer.svelte'
     import DataTable from '../components/DataTable.svelte'
     import { onMount } from 'svelte'
+    import setTitle from '../lib/setTitle'
 
     export let siteName: string
+    export let title: string
+    setTitle(title, siteName)
 
     let newUsername = ''
     let errorMessage = ''
@@ -41,7 +42,10 @@
         return [result.ok, resultJson]
     }
 
-    const apiUpdateUserRole = async (userId: number, newRole: string): Promise<[boolean, any]> => {
+    const apiUpdateUserRole = async (
+        userId: number,
+        newRole: string,
+    ): Promise<[boolean, any]> => {
         // TODO: 調用 API 更新用戶角色
         console.log('API - Updating user role:', userId, newRole)
         const result = await fetch(`/api/admin/user?id=${userId}&role=${newRole}`, {
@@ -55,13 +59,28 @@
         return [result.ok, resultJson]
     }
 
-    const apiUpdateUserStatus = async (userId: string, newStatus: string) => {
+    const apiUpdateUserStatus = async (
+        userId: number,
+        newStatus: string,
+        reason: string,
+    ): Promise<[boolean, any]> => {
         // TODO: 調用 API 更新用戶狀態
         console.log('API - Updating user status:', userId, newStatus)
-        return true
+        const result = await fetch(`/api/admin/user?id=${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                status: newStatus,
+                status_reason: reason,
+            }),
+        })
+        const resultJson = await result.json()
+        return [result.ok, resultJson]
     }
 
-    const apiDeleteUser = async (userId: string): Promise<[boolean, any]> => {
+    const apiDeleteUser = async (userId: number): Promise<[boolean, any]> => {
         // TODO: 調用 API 刪除用戶
         console.log('API - Deleting user:', userId)
         const result = await fetch(`/api/admin/user?id=${userId}`, {
@@ -105,12 +124,6 @@
     }
 
     const uiHandleEditRole = async (userId: number) => {
-        // const user = users.find((u) => u.id === userId)
-        // if (!user) {
-        //     alert('找不到用戶')
-        //     return
-        // }
-
         const newRole = prompt('請選擇新角色 (ADMIN/EDITOR/AUTHOR/USER):')
         if (!newRole || !roles[newRole.toUpperCase()]) {
             alert('無效的角色！')
@@ -134,7 +147,7 @@
         }
     }
 
-    const uiHandleToggleStatus = async (userId: string) => {
+    const uiHandleToggleStatus = async (userId: number) => {
         const user = users.find((u) => u.id === userId)
         if (!user) return
 
@@ -146,11 +159,22 @@
 
         if (!confirm(confirmMessage)) return
 
+        let reason = '-'
+        if (newStatus === 'suspended') {
+            reason = prompt('請輸入停權原因：')
+        }
+
         try {
-            const success = await apiUpdateUserStatus(userId, newStatus)
+            const [success, resultJson] = await apiUpdateUserStatus(
+                userId,
+                newStatus,
+                reason,
+            )
             if (success) {
                 await updateTable()
-                alert(`用戶已${newStatus === 'active' ? '解除停權' : '停權'}`)
+                alert(`${resultJson.message}\n用戶已${newStatus === 'active' ? '解除停權' : '停權'}`)
+            } else {
+                alert(resultJson.message || '更新狀態失敗')
             }
         } catch (error) {
             alert('更新狀態失敗')
@@ -158,7 +182,7 @@
         }
     }
 
-    const uiHandleDeleteUser = async (userId: string) => {
+    const uiHandleDeleteUser = async (userId: number) => {
         if (!confirm('確定要刪除此用戶嗎？')) return
 
         try {
@@ -184,9 +208,9 @@
         if (target.classList.contains('edit-role-btn')) {
             uiHandleEditRole(Number(userId))
         } else if (target.classList.contains('toggle-status-btn')) {
-            uiHandleToggleStatus(userId)
+            uiHandleToggleStatus(Number(userId))
         } else if (target.classList.contains('delete-user-btn')) {
-            uiHandleDeleteUser(userId)
+            uiHandleDeleteUser(Number(userId))
         }
     }
 
@@ -222,12 +246,12 @@
             {
                 data: 'username',
                 title: '用戶名',
-                width: '25%',
+                width: '20%',
             },
             {
                 data: 'role',
                 title: '角色',
-                width: '15%',
+                width: '10%',
                 render: (data) =>
                     `<span class="role-badge ${data.toLowerCase()}">${roles[data]}</span>`,
             },
@@ -240,6 +264,11 @@
                         ${data === 'active' ? '正常' : '已停權'}
                     </span>
                 `,
+            },
+            {
+                data: 'status_reason',
+                title: '停權原因',
+                width: '10%',
             },
             {
                 data: 'create_at',
@@ -396,8 +425,6 @@
 </style>
 
 <div class="container">
-    <AdminNavbar {siteName} />
-
     <main class="section">
         <div class="content">
             <h1 class="title is-3">用戶管理</h1>
@@ -453,6 +480,7 @@
                             <th>用戶名</th>
                             <th>角色</th>
                             <th>狀態</th>
+                            <th>停權原因</th>
                             <th>建立時間</th>
                             <th>操作</th>
                         </tr>
@@ -463,4 +491,3 @@
         </div>
     </main>
 </div>
-<Footer {siteName} />
