@@ -93,25 +93,7 @@
                 throw new Error('更新類別失敗')
             }
 
-            categories = categories.map((c) =>
-                c.id === editingCategory.id
-                    ? { ...c, name: editingCategoryName.trim() }
-                    : c,
-            )
-
-            // 更新相關文章的類別名稱
-            articles = articles.map((article) =>
-                article.category.name === editingCategory.name
-                    ? {
-                          ...article,
-                          category: {
-                              ...article.category,
-                              name: editingCategoryName.trim(),
-                          },
-                      }
-                    : article,
-            )
-
+            await reloadData('categories') // 重新載入資料
             editingCategory = null
             editingCategoryName = ''
             alert('類別更新成功！')
@@ -144,7 +126,7 @@
                 throw new Error('刪除類別失敗')
             }
 
-            categories = categories.filter((category) => category.id !== id)
+            await reloadData('categories') // 重新載入資料
             alert('類別已成功刪除！')
         } catch (error) {
             console.error('刪除類別時發生錯誤:', error)
@@ -180,16 +162,6 @@
     let articleSort = null // 當前排序的欄位，null 表示未排序
     let articleSortDirection = 'asc'
 
-    // 修改文章排序相關函數
-    const toggleArticleSort = (field) => {
-        if (articleSort === field) {
-            articleSortDirection =
-                articleSortDirection === 'asc' ? 'desc' : 'asc'
-        } else {
-            articleSort = field
-            articleSortDirection = 'asc'
-        }
-    }
 
     // 更新篩選和排序邏輯
     $: filteredArticles = articles
@@ -339,16 +311,6 @@
     let categorySort = null // 當前排序的欄位，null 表示未排序
     let categorySortDirection = 'asc' // 'asc' | 'desc'
 
-    // 修改類別排序相關函數
-    const toggleSort = (field) => {
-        if (categorySort === field) {
-            categorySortDirection =
-                categorySortDirection === 'asc' ? 'desc' : 'asc'
-        } else {
-            categorySort = field
-            categorySortDirection = 'asc'
-        }
-    }
 
     // 更新類別篩選和排序邏輯
     $: filteredCategories = categories
@@ -422,9 +384,7 @@
                 throw new Error('刪除文章失敗')
             }
 
-            // 從前端狀態中移除文章
-            articles = articles.filter((article) => article.id !== articleId)
-            updateCategoryCount() // 更新類別文章數
+            await reloadData('articles') // 重新載入資料
             alert('文章已成功刪除！')
         } catch (error) {
             console.error('刪除文章時發生錯誤:', error)
@@ -445,30 +405,22 @@
         }
 
         try {
-            // 發送新增請求到後端 API
-            const response = await fetch('/api/categories', {
+            const response = await fetch('/api/admin/category', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ name: newCategory.trim() }),
             })
+            const responseJson = await response.json()
 
             if (!response.ok) {
-                throw new Error('新增類別失敗')
+                alert(responseJson.message || '新增類別失敗')
+                return
             }
-
-            const newCategoryData = await response.json()
-            categories = [
-                ...categories,
-                {
-                    id: newCategoryData.id,
-                    name: newCategory.trim(),
-                    articleCount: 0,
-                },
-            ]
+            alert(responseJson.message)
+            await reloadData('categories') // 重新載入資料
             newCategory = ''
-            alert('類別新增成功！')
         } catch (error) {
             console.error('新增類別時發生錯誤:', error)
             alert('新增類別失敗：' + error.message)
@@ -503,28 +455,56 @@
         if (!editingCategoryPage) return
 
         try {
-            // 發送請求到後端保存類別頁面內容
-            const response = await fetch(
-                `/api/categories/${editingCategoryPage.id}/page`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ content: categoryPageContent }),
+            const response = await fetch(`/api/categories/${editingCategoryPage.id}/page`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-            )
+                body: JSON.stringify({ content: categoryPageContent }),
+            })
 
             if (!response.ok) {
                 throw new Error('保存類別頁面失敗')
             }
 
+            await reloadData('categories') // 重新載入資料
             alert('類別頁面保存成功！')
             editingCategoryPage = null
             categoryPageContent = ''
         } catch (error) {
             console.error('保存類別頁面時發生錯誤:', error)
             alert('保存失敗：' + error.message)
+        }
+    }
+
+    // 新增一個函數來重新載入資料
+    const reloadData = async (toReload: string) => {
+        try {
+            switch (toReload) {
+                case 'articles':
+                    // 載入文章資料
+                    const articlesResponse = await fetch('/api/articles')
+                    if (!articlesResponse.ok) throw new Error('載入文章失敗')
+                    articles = await articlesResponse.json()
+                    break
+                case 'categories':
+                    // 載入類別資料
+                    const categoriesResponse = await fetch('/api/categories')
+                    if (!categoriesResponse.ok) throw new Error('載入類別失敗')
+                    const categoriesData = await categoriesResponse.json()
+
+                    categories = categoriesData.categories.map(category => ({
+                        id: category.id,
+                        name: category.name,
+                        articleCount: category.articles?.length || 0,
+                    }))
+                    break
+                default:
+                    throw new Error('無效的重新載入類型')
+            }
+        } catch (error) {
+            console.error('重新載入資料時發生錯誤:', error)
+            alert('重新載入資料失敗：' + error.message)
         }
     }
 </script>
