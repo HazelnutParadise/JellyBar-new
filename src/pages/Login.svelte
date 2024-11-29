@@ -32,7 +32,7 @@
         border-radius: 24px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         width: 100%;
-        max-width: 600px;
+        max-width: 700px;
         backdrop-filter: blur(10px);
         border-left: 5px solid #667eea;
         overflow: hidden;
@@ -101,9 +101,13 @@
     }
 
     .column {
-        padding: 10px;
+        padding: 10px 0;
         flex: 1;
         min-width: 250px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     /* 美化輸入框 */
@@ -283,14 +287,6 @@
         }
     }
 
-    .column.flex {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-height: 400px;
-        padding: 2rem;
-    }
-
     .w-full {
         max-width: 320px;
         margin: 0 auto;
@@ -305,8 +301,8 @@
             <div class="login-description">
                 <p>使用 <strong>榛果繽紛樂</strong> 帳號登入</p>
                 <p class="tips">
-                    首次使用？請點擊下方「註冊新帳號」<br />
-                    若遇登入問題，請<a
+                    沒有帳號？請點擊「註冊新帳號」<br />
+                    若遇登入問題，請 <a
                         href="https://apps.hazelnut-paradise.com/mail"
                         target="_blank">聯繫我們</a
                     >
