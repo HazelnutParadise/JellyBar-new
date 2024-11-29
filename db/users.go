@@ -13,10 +13,7 @@ func GetUsers() ([]obj.User, error) {
 
 func AddUser(user *obj.User) error {
 	err := database.Create(user).Error
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func UpdateUser(user *obj.User) error {
@@ -36,11 +33,7 @@ func UpdateUser(user *obj.User) error {
 	}
 
 	err = database.Model(user).Where("id = ?", user.ID).Updates(user).Error
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func DeleteUser(user *obj.User) error {
