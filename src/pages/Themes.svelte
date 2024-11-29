@@ -3,7 +3,7 @@
     export let siteName: string
     import '../app.css'
     import ArticleGrid from '../components/ArticleGrid.svelte'
-    import setTitle from '../js/setTitle'
+    import setTitle from '../lib/setTitle'
     const themes = [
         'default',
         'forest',

@@ -1,9 +1,9 @@
 <script>
     import '../app.css'
     import ArticleCard from '../components/ArticleCard.svelte'
-    import setTitle from '../js/setTitle.js'
+    import setTitle from '../lib/setTitle.js'
     import SideBar from '../components/SideBar.svelte'
-    import pageConfigs from '../js/pageStyle.js'
+    import pageConfigs from '../lib/pageStyle.js'
 
     export let siteName
     export let data = {}

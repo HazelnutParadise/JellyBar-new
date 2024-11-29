@@ -1,8 +1,7 @@
 <script lang="ts">
     import '../app.css'
-    import '../js/declares'
-    import AdminNavbar from '../components/AdminNavbar.svelte'
-    import Footer from '../components/Footer.svelte'
+    import '../lib/declares'
+    import setTitle from '../lib/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
     import { onMount } from 'svelte'
     import { Article } from '../types/article'
@@ -10,6 +9,7 @@
     export let siteName: string
     export let title: string
     export let thisArticle: Article
+    setTitle(title, siteName)
 
     // 文章狀態選項
     const statusOptions = [
@@ -414,7 +414,6 @@
     }
 </style>
 
-<AdminNavbar {siteName} />
 <div class="page-wrapper">
     <div class="admin-layout">
         <div class="main-content">
@@ -556,5 +555,3 @@
         </div>
     </div>
 </div>
-
-<Footer {siteName} />

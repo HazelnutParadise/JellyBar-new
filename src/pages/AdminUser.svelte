@@ -1,6 +1,6 @@
 <script lang="ts">
     import '../app.css'
-    import '../js/declares'
+    import '../lib/declares'
     import AdminNavbar from '../components/AdminNavbar.svelte'
     import Footer from '../components/Footer.svelte'
     import DataTable from '../components/DataTable.svelte'

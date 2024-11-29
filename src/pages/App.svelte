@@ -1,5 +1,5 @@
 <script lang="ts">
-    import setTitle from '../js/setTitle.js'
+    import setTitle from '../lib/setTitle.js'
     export let siteName: string
     export let title: string
     import '../app.css'

@@ -1,9 +1,6 @@
 <script lang="ts">
     import '../app.css'
-    import { onMount, onDestroy } from 'svelte'
-    import AdminNavbar from '../components/AdminNavbar.svelte'
-    import Footer from '../components/Footer.svelte'
-    import setTitle from '../js/setTitle'
+    import setTitle from '../lib/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
     import type { Article } from '../types/article'
     import type { Category } from '../types/category'
@@ -1102,7 +1099,6 @@
     }
 </style>
 
-<AdminNavbar {siteName} />
 
 <div class="admin-container">
     <div class="container">
@@ -1554,7 +1550,6 @@
         {/if}
     </div>
 </div>
-<Footer {siteName} />
 
 <!-- 修改模態的部分 -->
 {#if editingCategoryPage}

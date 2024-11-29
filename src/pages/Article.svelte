@@ -1,6 +1,6 @@
 <script lang="ts">
     import '../app.css'
-    import setTitle from '../js/setTitle.js'
+    import setTitle from '../lib/setTitle.js'
     import Breadcrumbs from '../components/Breadcrumbs.svelte'
     import ArticleMeta from '../components/ArticleMeta.svelte'
     import SideBar from '../components/SideBar.svelte'

@@ -165,7 +165,11 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 	admin := r.Group("/admin")
 	defineAdminPages(admin, siteName)
 
-	api := r.Group("/api")
+	api := r.Group("/api", func(ctx *gin.Context) {
+		golte.AddLayout(ctx.Request, "layouts/AdminNavbarAndFooter", map[string]any{
+			"siteName": siteName,
+		})
+	})
 	defineApi(api)
 
 }
