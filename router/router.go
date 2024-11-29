@@ -55,12 +55,13 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	r.Use(wrapMiddleware(build.Golte))
 
 	r.Use(checkDBConnection(siteName, logo, mode))
+	r.Use(alertDevMode(mode))
 
 	// 設定404頁面
 	r.NoRoute(handle404(siteName, logo))
 
 	// 使用 subAssetsDir 而不是 assetsDir
-	defineRoutes(r, siteName, subAssetsDir, mode)
+	defineRoutes(r, siteName, subAssetsDir)
 
 	return r
 }
@@ -109,11 +110,8 @@ func handle404(siteName string, logo []byte) gin.HandlerFunc {
 func alertDevMode(mode int) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 如果非ajax，則顯示開發模式警告
-		if mode == db.DEV && ctx.Request.Header.Get("X-Requested-With") != "XMLHttpRequest" {
-			ctx.Writer.Write([]byte(`
-		<div style='position: fixed; bottom: 0; left: 0; width: 100%; height: 15px; text-align: center; background-color: yellow; z-index: 9999;'>
-		未偵測到環境變數，正在使用開發模式
-		</div>`))
+		if mode == db.DEV {
+			golte.AddLayout(ctx.Request, "layouts/DevModeAlert", nil)
 		}
 		ctx.Next()
 	}

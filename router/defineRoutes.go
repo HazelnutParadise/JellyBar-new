@@ -12,10 +12,10 @@ import (
 	"github.com/nichady/golte"
 )
 
-func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, mode int) {
+func defineRoutes(r *gin.Engine, siteName string, assets fs.FS) {
 	r.StaticFS("/assets", http.FS(assets))
 
-	pages := r.Group("/", alertDevMode(mode))
+	pages := r.Group("/")
 	pages.GET("/", func(ctx *gin.Context) {
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/App", map[string]any{
 			"siteName": siteName,
@@ -157,7 +157,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets fs.FS, mode int) {
 		})
 	})
 
-	admin := r.Group("/admin", alertDevMode(mode))
+	admin := r.Group("/admin")
 	defineAdminPages(admin, siteName)
 
 	api := r.Group("/api")
