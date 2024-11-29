@@ -7,6 +7,7 @@ import (
 )
 
 func defineApi(r *gin.RouterGroup) {
+	r.GET("/categories", app.HandleGetCategories)
 	adminApi := r.Group("/admin")
 	defineAdminApi(adminApi)
 }

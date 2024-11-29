@@ -35,11 +35,21 @@
         },
     ]
 
+    export let categoriesData: Category[] = []
+
     let categories = [
-        { id: 1, name: 'Rust', articleCount: 1 },
-        { id: 2, name: 'Web', articleCount: 1 },
-        { id: 3, name: 'Python', articleCount: 0 },
+        // { id: 1, name: 'Rust', articleCount: 1 },
+        // { id: 2, name: 'Web', articleCount: 1 },
+        // { id: 3, name: 'Python', articleCount: 0 },
     ]
+
+    for (const category of categoriesData) {
+        categories.push({
+            id: category.id,
+            name: category.name,
+            articleCount: category.articles.length,
+        })
+    }
 
     let editingCategory = null
     let editingCategoryName = ''

@@ -17,9 +17,15 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 	})
 
 	r.GET("/articles", func(ctx *gin.Context) {
+		categories, err := db.GetCategories(true)
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminArticleAndCategory", map[string]any{
-			"siteName": siteName,
-			"title":    "文章與類別",
+			"siteName":       siteName,
+			"title":          "文章與類別",
+			"categoriesData": categories,
 		})
 	})
 
