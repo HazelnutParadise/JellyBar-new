@@ -54,7 +54,11 @@ func GinRouter(siteName string, assetsDir embed.FS, mode int) http.Handler {
 	// register the main Golte middleware
 	r.Use(wrapMiddleware(build.Golte))
 
-	r.Use(wrapMiddleware(golte.Layout("App")))
+	r.Use(func(ctx *gin.Context) {
+		golte.AddLayout(ctx.Request, "App", map[string]any{
+			"logo": base64.StdEncoding.EncodeToString(logo),
+		})
+	})
 
 	r.Use(alertDevMode(mode))
 	r.Use(checkDBConnection(siteName, logo, mode))
