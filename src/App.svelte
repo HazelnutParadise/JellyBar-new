@@ -7,8 +7,6 @@
         const iconLink = document.querySelector("link[rel='icon']")
         if (iconLink) {
             iconLink.setAttribute("href", `data:image/png;base64,${logo}`)
-            console.log('Logo updated:', logo)
-            console.log('Icon link:', iconLink)
         }
     })
 </script>

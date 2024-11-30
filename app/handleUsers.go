@@ -24,7 +24,7 @@ type userAPIResponse struct {
 }
 
 type userFrontend struct {
-	obj.User
+	*obj.User
 	Role string `json:"role"`
 }
 
@@ -37,7 +37,7 @@ func HandleGetUserList(ctx *gin.Context) {
 	}
 	for _, user := range *users {
 		role := convertUserRoleToString(user.Role)
-		result = append(result, userFrontend{User: user, Role: role})
+		result = append(result, userFrontend{User: &user, Role: role})
 	}
 	ctx.JSON(200, gin.H{"users": &result})
 }
