@@ -347,12 +347,7 @@
             { width: '20%', targets: 2 },
         ],
         searching: false,
-        responsive: true,
-        language: {
-            emptyTable: categorySearchKeyword 
-                ? '沒有符合搜尋條件的類別'
-                : '目前沒有任何類別'
-        }
+        responsive: true
     }
 
     // 處理標籤切換
@@ -890,7 +885,7 @@
         text-decoration: underline;
     }
 
-    /* DataTable 相關樣式 */
+    /* DataTable 關樣式 */
     :global(.dataTables_wrapper) {
         padding: 1rem 0;
     }
@@ -1356,81 +1351,85 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {#each filteredCategories as category}
-                                    <tr>
-                                        <td>
-                                            {#if editingCategory?.id === category.id}
-                                                <div class="field has-addons">
-                                                    <div class="control">
-                                                        <input
-                                                            class="input is-small"
-                                                            type="text"
-                                                            bind:value={editingCategoryName}
-                                                        />
+                                {#if filteredCategories.length > 0}
+                                    {#each filteredCategories as category}
+                                        <tr>
+                                            <td>
+                                                {#if editingCategory?.id === category.id}
+                                                    <div class="field has-addons">
+                                                        <div class="control">
+                                                            <input
+                                                                class="input is-small"
+                                                                type="text"
+                                                                bind:value={editingCategoryName}
+                                                            />
+                                                        </div>
+                                                        <div class="control">
+                                                            <button
+                                                                class="button is-small is-success"
+                                                                on:click={handleSaveCategory}
+                                                            >
+                                                                儲存
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div class="control">
-                                                        <button
-                                                            class="button is-small is-success"
-                                                            on:click={handleSaveCategory}
-                                                        >
-                                                            儲存
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            {:else}
-                                                <button
-                                                    class="category-link"
-                                                    on:click={() =>
-                                                        handleCategoryClick(
-                                                            category,
-                                                        )}
-                                                >
-                                                    {category.name}
-                                                </button>
-                                            {/if}
-                                        </td>
-                                        <td>
-                                            <span class="tag is-info is-light">
-                                                {category.articleCount} 篇
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="buttons are-small">
-                                                {#if editingCategory?.id !== category.id}
+                                                {:else}
                                                     <button
-                                                        class="button is-info is-small"
-                                                        on:click={() =>
-                                                            handleEditCategory(
-                                                                category,
-                                                            )}
+                                                        class="category-link"
+                                                        on:click={() => handleCategoryClick(category)}
                                                     >
-                                                        編輯類別名稱
+                                                        {category.name}
                                                     </button>
                                                 {/if}
-                                                <button
-                                                    class="button is-primary is-small"
-                                                    on:click={() =>
-                                                        handleEditCategoryPage(
-                                                            category,
-                                                        )}
-                                                >
-                                                    編輯類別頁面
-                                                </button>
-                                                <button
-                                                    class="button is-danger is-small"
-                                                    class:is-light={category.articleCount >
-                                                        0}
-                                                    on:click={() =>
-                                                        handleDeleteCategory(
-                                                            category.id,
-                                                        )}
-                                                >
-                                                    刪除
-                                                </button>
+                                            </td>
+                                            <td>
+                                                <span class="tag is-info is-light">
+                                                    {category.articleCount} 篇
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="buttons are-small">
+                                                    {#if editingCategory?.id !== category.id}
+                                                        <button
+                                                            class="button is-info is-small"
+                                                            on:click={() => handleEditCategory(category)}
+                                                        >
+                                                            編輯類別名稱
+                                                        </button>
+                                                    {/if}
+                                                    <button
+                                                        class="button is-primary is-small"
+                                                        on:click={() => handleEditCategoryPage(category)}
+                                                    >
+                                                        編輯類別頁面
+                                                    </button>
+                                                    <button
+                                                        class="button is-danger is-small"
+                                                        class:is-light={category.articleCount > 0}
+                                                        on:click={() => handleDeleteCategory(category.id)}
+                                                    >
+                                                        刪除
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {/each}
+                                {:else}
+                                    <tr>
+                                        <td colspan="3" class="has-text-centered py-6">
+                                            <div class="my-6">
+                                                <span class="icon is-large has-text-grey-light">
+                                                    <i class="fas fa-folder-open fa-2x"></i>
+                                                </span>
+                                                <p class="has-text-grey mt-2">
+                                                    {categorySearchKeyword 
+                                                        ? '沒有符合搜尋條件的類別'
+                                                        : '目前沒有任何類別'}
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
-                                {/each}
+                                {/if}
                             </tbody>
                         </table>
                     </DataTable>
