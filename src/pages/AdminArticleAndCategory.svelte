@@ -162,7 +162,7 @@
     let searchKeyword = ''
 
     // 修改文章排序相關變量
-    let articleSort = null // 當前排序的欄位��null 表示未排序
+    let articleSort = null // 當前排序的欄位null 表示未排序
     let articleSortDirection = 'asc'
 
     // 更新篩選和排序邏輯
@@ -347,6 +347,12 @@
             { width: '20%', targets: 2 },
         ],
         searching: false,
+        responsive: true,
+        language: {
+            emptyTable: categorySearchKeyword 
+                ? '沒有符合搜尋條件的類別'
+                : '目前沒有任何類別'
+        }
     }
 
     // 處理標籤切換
@@ -411,9 +417,16 @@
                 alert(responseJson.message || '新增類別失敗')
                 return
             }
-            alert(responseJson.message)
-            await reloadData() // 重新載入資料
+
+            // 先清除輸入框
             newCategory = ''
+            
+            // 等待一小段時間再重新載入資料
+            await new Promise(resolve => setTimeout(resolve, 100))
+            await reloadData()
+            
+            // 最後才顯示成功訊息
+            alert(responseJson.message)
         } catch (error) {
             console.error('新增類別時發生錯誤:', error)
             alert('新增類別失敗：' + error.message)
@@ -481,15 +494,18 @@
             if (!categoriesResponse.ok) throw new Error('載入類別失敗')
             const Data = await categoriesResponse.json()
 
+            // 先更新 categories
             categories = Data.categories.map((category) => ({
                 id: category.id,
                 name: category.name,
                 articleCount: category.articles?.length || 0,
             }))
 
+            // 再更新 articles
             articles = Data.categories.flatMap(
                 (category: Category) => category.articles,
             )
+
         } catch (error) {
             console.error('重新載入資料時發生錯誤:', error)
             alert('重新載入資料失敗：' + error.message)
@@ -1295,7 +1311,7 @@
                             <input
                                 class="input"
                                 type="text"
-                                placeholder="入新類別名稱"
+                                placeholder="輸入新類別名稱"
                                 bind:value={newCategory}
                             />
                         </div>
