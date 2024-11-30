@@ -251,23 +251,29 @@
                 data: 'role',
                 title: '角色',
                 width: '10%',
-                render: (data) =>
-                    `<span class="role-badge ${data.toLowerCase()}">${roles[data]}</span>`,
+                render: (data) => {
+                    if (!data) return '-';
+                    return `<span class="role-badge ${data.toLowerCase()}">${roles[data] || '未知'}</span>`;
+                },
             },
             {
                 data: 'status',
                 title: '狀態',
                 width: '12%',
-                render: (data) => `
-                    <span class="status-badge ${data}">
-                        ${data === 'active' ? '正常' : '已停權'}
-                    </span>
-                `,
+                render: (data) => {
+                    if (!data) return '-';
+                    return `
+                        <span class="status-badge ${data}">
+                            ${data === 'active' ? '正常' : '已停權'}
+                        </span>
+                    `;
+                },
             },
             {
                 data: 'status_reason',
                 title: '停權原因',
                 width: '10%',
+                render: (data) => data || '-',
             },
             {
                 data: 'create_at',
