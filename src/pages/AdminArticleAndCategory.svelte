@@ -13,29 +13,30 @@
 
     // 假資料
     let articles: Article[] = [
-        {
-            id: 1,
-            title: 'Rust繁中簡學！',
-            publishDate: '2024-03-20',
-            updateDate: '2024-05-21',
-            category: {
-                id: 1,
-                name: 'Rust',
-            },
-        },
-        {
-            id: 2,
-            title: 'Web開發教學',
-            publishDate: '2024-03-21',
-            updateDate: '2024-03-21',
-            category: {
-                id: 2,
-                name: 'Web',
-            },
-        },
+        // {
+        //     id: 1,
+        //     title: 'Rust繁中簡學！',
+        //     publishDate: '2024-03-20',
+        //     updateDate: '2024-05-21',
+        //     category: {
+        //         id: 1,
+        //         name: 'Rust',
+        //     },
+        // },
+        // {
+        //     id: 2,
+        //     title: 'Web開發教學',
+        //     publishDate: '2024-03-21',
+        //     updateDate: '2024-03-21',
+        //     category: {
+        //         id: 2,
+        //         name: 'Web',
+        //     },
+        // },
     ]
 
     export let categoriesData: Category[] = []
+    articles = categoriesData.flatMap((category) => category.articles)
 
     let categories = [
         // { id: 1, name: 'Rust', articleCount: 1 },
@@ -93,7 +94,7 @@
                 throw new Error('更新類別失敗')
             }
 
-            await reloadData('categories') // 重新載入資料
+            await reloadData() // 重新載入資料
             editingCategory = null
             editingCategoryName = ''
             alert('類別更新成功！')
@@ -128,7 +129,7 @@
                 return
             }
 
-            await reloadData('categories') // 重新載入資料
+            await reloadData() // 重新載入資料
             alert(responseJson.message)
         } catch (error) {
             console.error('刪除類別時發生錯誤:', error)
@@ -161,9 +162,8 @@
     let searchKeyword = ''
 
     // 修改文章排序相關變量
-    let articleSort = null // 當前排序的欄位，null 表示未排序
+    let articleSort = null // 當前排序的欄位��null 表示未排序
     let articleSortDirection = 'asc'
-
 
     // 更新篩選和排序邏輯
     $: filteredArticles = articles
@@ -261,16 +261,6 @@
         articleSortDirection = 'asc'
     }
 
-    // 更新類別文章數量
-    const updateCategoryCount = () => {
-        categories = categories.map((category) => ({
-            ...category,
-            articleCount: articles.filter(
-                (article) => article.category.name === category.name,
-            ).length,
-        }))
-    }
-
     // 修改日期驗證
     $: {
         if (dateFilter.created.from && dateFilter.created.to) {
@@ -313,7 +303,6 @@
     let categorySort = null // 當前排序的欄位，null 表示未排序
     let categorySortDirection = 'asc' // 'asc' | 'desc'
 
-
     // 更新類別篩選和排序邏輯
     $: filteredCategories = categories
         .filter((category) => {
@@ -336,15 +325,17 @@
 
     // 定義表格配置
     const articleTableConfig = {
-        order: [[1, 'asc']],
+        order: [[0, 'desc']],
         columnDefs: [
-            { orderable: false, targets: [0, 5] },
-            { width: '50px', targets: 0 },
-            { width: '120px', targets: [3, 4] },
-            { width: '100px', targets: 2 },
-            { width: '150px', targets: 5 },
+            { targets: 0, width: '50px' },
+            { targets: 1 },
+            { targets: 2, width: '100px' },
+            { targets: 3, width: '120px' },
+            { targets: 4, width: '120px' },
+            { targets: 5, width: '150px', orderable: false }
         ],
         searching: false,
+        responsive: true
     }
 
     const categoryTableConfig = {
@@ -386,7 +377,7 @@
                 throw new Error('刪除文章失敗')
             }
 
-            await reloadData('articles') // 重新載入資料
+            await reloadData() // 重新載入資料
             alert('文章已成功刪除！')
         } catch (error) {
             console.error('刪除文章時發生錯誤:', error)
@@ -421,7 +412,7 @@
                 return
             }
             alert(responseJson.message)
-            await reloadData('categories') // 重新載入資料
+            await reloadData() // 重新載入資料
             newCategory = ''
         } catch (error) {
             console.error('新增類別時發生錯誤:', error)
@@ -457,19 +448,22 @@
         if (!editingCategoryPage) return
 
         try {
-            const response = await fetch(`/api/categories/${editingCategoryPage.id}/page`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await fetch(
+                `/api/categories/${editingCategoryPage.id}/page`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: categoryPageContent }),
                 },
-                body: JSON.stringify({ content: categoryPageContent }),
-            })
+            )
 
             if (!response.ok) {
                 throw new Error('保存類別頁面失敗')
             }
 
-            await reloadData('categories') // 重新載入資料
+            await reloadData() // 重新載入資料
             alert('類別頁面保存成功！')
             editingCategoryPage = null
             categoryPageContent = ''
@@ -480,30 +474,22 @@
     }
 
     // 新增一個函數來重新載入資料
-    const reloadData = async (toReload: string) => {
+    const reloadData = async () => {
         try {
-            switch (toReload) {
-                case 'articles':
-                    // 載入文章資料
-                    const articlesResponse = await fetch('/api/articles')
-                    if (!articlesResponse.ok) throw new Error('載入文章失敗')
-                    articles = await articlesResponse.json()
-                    break
-                case 'categories':
-                    // 載入類別資料
-                    const categoriesResponse = await fetch('/api/categories')
-                    if (!categoriesResponse.ok) throw new Error('載入類別失敗')
-                    const categoriesData = await categoriesResponse.json()
+            // 載入類別資料
+            const categoriesResponse = await fetch('/api/categories')
+            if (!categoriesResponse.ok) throw new Error('載入類別失敗')
+            const categoriesData = await categoriesResponse.json()
 
-                    categories = categoriesData.categories.map(category => ({
-                        id: category.id,
-                        name: category.name,
-                        articleCount: category.articles?.length || 0,
-                    }))
-                    break
-                default:
-                    throw new Error('無效的重新載入類型')
-            }
+            categories = categoriesData.categories.map((category) => ({
+                id: category.id,
+                name: category.name,
+                articleCount: category.articles?.length || 0,
+            }))
+
+            articles = categoriesData.flatMap(
+                (category: Category) => category.articles,
+            )
         } catch (error) {
             console.error('重新載入資料時發生錯誤:', error)
             alert('重新載入資料失敗：' + error.message)
@@ -962,7 +948,7 @@
         box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1);
     }
 
-    /* 調整分頁控件的間距 */
+    /* 調整分頁控件間距 */
     :global(.dataTables_wrapper .dataTables_paginate) {
         margin-top: 1rem;
         padding-top: 0.5rem;
@@ -1207,7 +1193,7 @@
 
                 <div class="table-container">
                     <DataTable id="articleTable" config={articleTableConfig}>
-                        <table id="articleTable" class="table is-fullwidth">
+                        <table class="table is-fullwidth">
                             <thead>
                                 <tr>
                                     <th class="is-narrow">#</th>
@@ -1215,82 +1201,83 @@
                                     <th class="is-narrow">分類</th>
                                     <th class="date-column">發布日期</th>
                                     <th class="date-column">修改日期</th>
-                                    <th class="is-narrow has-text-centered"
-                                        >操作</th
-                                    >
+                                    <th class="is-narrow has-text-centered">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {#each filteredArticles as article, index}
+                                {#if filteredArticles.length > 0}
+                                    {#each filteredArticles as article}
+                                        <tr>
+                                            <td class="has-text-grey">{article.id}</td>
+                                            <td>
+                                                <div class="article-title">
+                                                    <a
+                                                        href={`/article/${article.id}`}
+                                                        target="_blank"
+                                                        class="has-text-dark"
+                                                    >
+                                                        {article.title}
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="tag is-info is-light">
+                                                    {article.category.name}
+                                                </span>
+                                            </td>
+                                            <td class="has-text-grey">
+                                                {article.publishDate}
+                                            </td>
+                                            <td class="has-text-grey">
+                                                {article.updateDate}
+                                            </td>
+                                            <td>
+                                                <div
+                                                    class="buttons is-centered are-small"
+                                                >
+                                                    <a
+                                                        href={`/admin/article/edit/${article.id}`}
+                                                        class="button is-info"
+                                                        title="編輯文章"
+                                                    >
+                                                        <span class="icon">
+                                                            <i class="fas fa-edit"
+                                                            ></i>
+                                                        </span>
+                                                    </a>
+                                                    <button
+                                                        class="button is-danger"
+                                                        title="刪除文章"
+                                                        on:click={() =>
+                                                            handleDelete(
+                                                                article.id,
+                                                            )}
+                                                    >
+                                                        <span class="icon">
+                                                            <i
+                                                                class="fas fa-trash-alt"
+                                                            ></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {/each}
+                                {:else}
                                     <tr>
-                                        <td class="has-text-grey"
-                                            >{index + 1}</td
-                                        >
-                                        <td>
-                                            <div class="article-title">
-                                                <a
-                                                    href={`/article/${article.id}`}
-                                                    target="_blank"
-                                                    class="has-text-dark"
-                                                >
-                                                    {article.title}
-                                                </a>
+                                        <td colspan="6" class="has-text-centered py-6">
+                                            <div class="my-6">
+                                                <span class="icon is-large has-text-grey-light">
+                                                    <i class="fas fa-inbox fa-2x"></i>
+                                                </span>
+                                                <p class="has-text-grey mt-2">
+                                                    {selectedCategory 
+                                                        ? `「${selectedCategory.name}」類別目前沒有文章` 
+                                                        : searchKeyword 
+                                                            ? '沒有符合搜尋條件的文章'
+                                                            : '目前沒有任何文章'}
+                                                </p>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <span class="tag is-info is-light">
-                                                {article.category.name}
-                                            </span>
-                                        </td>
-                                        <td class="has-text-grey">
-                                            {article.publishDate}
-                                        </td>
-                                        <td class="has-text-grey">
-                                            {article.updateDate}
-                                        </td>
-                                        <td>
-                                            <div
-                                                class="buttons is-centered are-small"
-                                            >
-                                                <a
-                                                    href={`/admin/article/edit/${article.id}`}
-                                                    class="button is-info"
-                                                    title="編輯文章"
-                                                >
-                                                    <span class="icon">
-                                                        <i class="fas fa-edit"
-                                                        ></i>
-                                                    </span>
-                                                </a>
-                                                <button
-                                                    class="button is-danger"
-                                                    title="刪除文章"
-                                                    on:click={() =>
-                                                        handleDelete(
-                                                            article.id,
-                                                        )}
-                                                >
-                                                    <span class="icon">
-                                                        <i
-                                                            class="fas fa-trash-alt"
-                                                        ></i>
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {/each}
-                                {#if filteredArticles.length === 0}
-                                    <tr>
-                                        <td
-                                            colspan="6"
-                                            class="has-text-centered py-6"
-                                        >
-                                            <p class="has-text-grey">
-                                                {selectedCategory
-                                                    ? `「${selectedCategory.name}」類別目前沒有文章`
-                                                    : '目前沒有任何文章'}
-                                            </p>
                                         </td>
                                     </tr>
                                 {/if}
@@ -1308,7 +1295,7 @@
                             <input
                                 class="input"
                                 type="text"
-                                placeholder="輸入新類別名稱"
+                                placeholder="入新類別名稱"
                                 bind:value={newCategory}
                             />
                         </div>
@@ -1323,7 +1310,7 @@
                     </div>
                 </div>
 
-                <!-- 添加類別篩選區域 -->
+                <!-- 添加類別篩選區 -->
                 <div class="filter-section mt-5 mb-4">
                     <div class="filter-controls">
                         <div class="field-group is-expanded">

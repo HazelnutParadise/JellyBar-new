@@ -6,7 +6,7 @@ func GetCategories(preloadArticles bool) (*[]obj.Category, error) {
 	var categories []obj.Category
 	var err error
 	if preloadArticles {
-		err = database.Preload("Articles").Find(&categories).Error
+		err = database.Preload("Articles").Preload("Articles.Category").Find(&categories).Error
 	} else {
 		err = database.Find(&categories).Error
 	}
