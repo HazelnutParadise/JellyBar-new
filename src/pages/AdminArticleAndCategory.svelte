@@ -477,17 +477,17 @@
     const reloadData = async () => {
         try {
             // 載入類別資料
-            const categoriesResponse = await fetch('/api/categories')
+            const categoriesResponse = await fetch('/api/categories?preloadArticles=true')
             if (!categoriesResponse.ok) throw new Error('載入類別失敗')
-            const categoriesData = await categoriesResponse.json()
+            const Data = await categoriesResponse.json()
 
-            categories = categoriesData.categories.map((category) => ({
+            categories = Data.categories.map((category) => ({
                 id: category.id,
                 name: category.name,
                 articleCount: category.articles?.length || 0,
             }))
 
-            articles = categoriesData.flatMap(
+            articles = Data.categories.flatMap(
                 (category: Category) => category.articles,
             )
         } catch (error) {
