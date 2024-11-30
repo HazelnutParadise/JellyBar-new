@@ -165,7 +165,10 @@
     let articleSort = null // 當前排序的欄位null 表示未排序
     let articleSortDirection = 'asc'
 
-    // 更新篩選和排序邏輯
+    // 在 script 區塊中添加狀態篩選相關變數
+    let statusFilter = null // 'draft' | 'published' | 'scheduled' | null
+
+    // 修改 filteredArticles 的篩選邏輯
     $: filteredArticles = articles
         .filter((article) => {
             let matchCategory = selectedCategory
@@ -212,7 +215,26 @@
                     .includes(searchKeyword.toLowerCase())
             }
 
-            return matchCategory && matchDate && matchSearch
+            // 添加狀態篩選
+            let matchStatus = true
+            if (statusFilter) {
+                const now = new Date()
+                const publishDate = new Date(article.publishDate)
+                
+                switch (statusFilter) {
+                    case 'draft':
+                        matchStatus = article.status === 'draft'
+                        break
+                    case 'published':
+                        matchStatus = article.status === 'published' && publishDate <= now
+                        break
+                    case 'scheduled':
+                        matchStatus = article.status === 'scheduled' && publishDate > now
+                        break
+                }
+            }
+
+            return matchCategory && matchDate && matchSearch && matchStatus
         })
         .sort((a, b) => {
             if (!articleSort) return 0
@@ -259,6 +281,7 @@
         searchKeyword = ''
         articleSort = null
         articleSortDirection = 'asc'
+        statusFilter = null
     }
 
     // 修改日期驗證
@@ -289,7 +312,7 @@
     const cleanupEditor = async () => {
         // 如果內容有變更，則顯示確認對話框
         if (categoryPageContent.trim()) {
-            const confirmed = confirm('確定要離開嗎？未儲存的變更將會遺失。')
+            const confirmed = confirm('確定要離開嗎？未儲���的變更將會遺失。')
             if (!confirmed) {
                 return
             }
@@ -974,6 +997,22 @@
         margin-top: 1rem;
         padding-top: 0.5rem;
     }
+
+    /* 在 style 區塊中添加狀態標籤樣式 */
+    .tag.is-warning {
+        background-color: #ffdd57;
+        color: rgba(0, 0, 0, 0.7);
+    }
+
+    .tag.is-success {
+        background-color: #48c774;
+        color: #fff;
+    }
+
+    .tag.is-info {
+        background-color: #3298dc;
+        color: #fff;
+    }
 </style>
 
 <div class="admin-container">
@@ -1022,8 +1061,9 @@
                         </div>
 
                         <div class="filter-controls-right">
-                            <div class="select-field">
-                                <label for="categorySelect">類別</label>
+                            <div class="flex-column ">
+                                <div class="select-field">
+                                    <label for="categorySelect">類別</label>
                                 <div class="select">
                                     <select
                                         id="categorySelect"
@@ -1045,6 +1085,21 @@
                                 </div>
                             </div>
 
+                            <div class="select-field">
+                                <label for="statusSelect">狀態</label>
+                                <div class="select">
+                                    <select
+                                        id="statusSelect"
+                                        bind:value={statusFilter}
+                                    >
+                                        <option value={null}>全部狀態</option>
+                                        <option value="draft">草稿</option>
+                                        <option value="published">已發布</option>
+                                        <option value="scheduled">預定發布</option>
+                                    </select>
+                                </div>
+                            </div>
+                            </div>
                             <div class="date-field-group">
                                 <div class="date-group">
                                     <div class="date-label">發布日期</div>
@@ -1128,7 +1183,7 @@
                     </div>
 
                     <div class="filter-tags">
-                        {#if selectedCategory || dateFilter.created.from || dateFilter.created.to || dateFilter.updated.from || dateFilter.updated.to || searchKeyword}
+                        {#if selectedCategory || dateFilter.created.from || dateFilter.created.to || dateFilter.updated.from || dateFilter.updated.to || searchKeyword || statusFilter}
                             <div class="tags">
                                 {#if searchKeyword}
                                     <span class="tag is-medium is-warning">
@@ -1192,6 +1247,17 @@
                                         ></button>
                                     </span>
                                 {/if}
+                                {#if statusFilter}
+                                    <span class="tag is-medium is-primary">
+                                        狀態：{statusFilter === 'draft' ? '草稿' : 
+                                              statusFilter === 'published' ? '已發布' : 
+                                              '預定發布'}
+                                        <button
+                                            class="delete"
+                                            on:click={() => (statusFilter = null)}
+                                        ></button>
+                                    </span>
+                                {/if}
                                 <button
                                     class="button is-small is-light"
                                     on:click={clearAllFilters}
@@ -1199,8 +1265,6 @@
                                     清除所有篩選
                                 </button>
                             </div>
-                        {:else}
-                            <span class="has-text-grey">尚未設定篩選條件</span>
                         {/if}
                     </div>
                 </div>
@@ -1213,6 +1277,7 @@
                                     <th class="is-narrow">#</th>
                                     <th>標題</th>
                                     <th class="is-narrow">分類</th>
+                                    <th class="is-narrow">狀態</th>
                                     <th class="date-column">發布日期</th>
                                     <th class="date-column">修改日期</th>
                                     <th class="is-narrow has-text-centered">操作</th>
@@ -1238,6 +1303,17 @@
                                                 <span class="tag is-info is-light">
                                                     {article.category.name}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                {#if article.status === 'draft'}
+                                                    <span class="tag is-warning">草稿</span>
+                                                {:else}
+                                                    {#if new Date(article.publishDate) > new Date()}
+                                                        <span class="tag is-info">預定發布</span>
+                                                    {:else}
+                                                        <span class="tag is-success">已發布</span>
+                                                    {/if}
+                                                {/if}
                                             </td>
                                             <td class="has-text-grey">
                                                 {article.publishDate}
