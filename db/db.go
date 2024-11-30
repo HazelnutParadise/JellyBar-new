@@ -25,7 +25,7 @@ type dbConfig struct {
 
 var devConfig = dbConfig{
 	DB_HOST:     "192.168.1.164",
-	DB_PORT:     "5432",
+	DB_PORT:     "3332",
 	DB_NAME:     "jellydev",
 	DB_USER:     "user",
 	DB_PASSWORD: "password",
