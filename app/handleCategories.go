@@ -9,7 +9,8 @@ import (
 )
 
 func HandleGetCategories(ctx *gin.Context) {
-	categories, err := db.GetCategories(false)
+	preloadArticles := ctx.Query("preloadArticles") == "true"
+	categories, err := db.GetCategories(preloadArticles)
 	if err != nil {
 		ctx.JSON(500, gin.H{"message": "取得類別列表失敗\n" + err.Error()})
 		return
