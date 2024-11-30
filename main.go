@@ -7,6 +7,8 @@ import (
 	"jellybar/router"
 	"net/http"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 //go:embed src/assets/*
@@ -19,6 +21,7 @@ func main() {
 	mode := db.DEV
 	if modeEnv == "PROD" {
 		mode = db.PROD
+		gin.SetMode(gin.ReleaseMode)
 	}
 	go db.InitDB(mode)
 	r := router.GinRouter(siteName, &assetsDir, mode)
