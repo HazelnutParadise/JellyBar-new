@@ -14,31 +14,20 @@ import (
 	"github.com/nichady/golte"
 )
 
+func wrapMiddleware(middleware func(http.Handler) http.Handler, ctx *gin.Context) {
+	if golte.GetRenderContext(func() *http.Request {
+		middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx.Request = r
+			ctx.Next()
+		})).ServeHTTP(ctx.Writer, ctx.Request)
+		return ctx.Request
+	}()) == nil {
+		ctx.Abort()
+	}
+}
+
 func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 	// Gin doesn't have a function to wrap middleware, so define our own
-	wrapMiddleware := func(middleware func(http.Handler) http.Handler) func(ctx *gin.Context) {
-		return func(ctx *gin.Context) {
-			// 將 ctx.Request 和 ctx.Writer 使用指標引用，避免拷貝
-			req := ctx.Request
-			writer := ctx.Writer
-
-			// 靜態化處理器，直接使用閉包並保持指標傳遞
-			staticHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				// 使用指標直接操作 ctx 的 Request
-				ctx.Request = r
-				ctx.Next()
-			})
-
-			// 使用中介軟體處理請求
-			handler := middleware(staticHandler)
-			handler.ServeHTTP(writer, req)
-
-			// 使用指標直接操作請求進行檢查
-			if renderCtx := golte.GetRenderContext(req); renderCtx == nil {
-				ctx.Abort()
-			}
-		}
-	}
 
 	// since gin doesm't use stdlib-compatible signatures, we have to wrap them
 	// page := func(c string) gin.HandlerFunc {
@@ -66,7 +55,9 @@ func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 
 	r := gin.Default()
 	// register the main Golte middleware
-	r.Use(wrapMiddleware(build.Golte))
+	r.Use(func(ctx *gin.Context) {
+		wrapMiddleware(build.Golte, ctx)
+	})
 
 	r.Use(func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "App", map[string]any{
