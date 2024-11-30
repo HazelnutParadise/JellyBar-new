@@ -19,7 +19,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	pages.Use(func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "layouts/NavbarAndFooter", map[string]any{
 			"siteName": siteName,
-			"logo":     *logoBase64,
+			"logo":     logoBase64,
 		})
 	})
 	pages.GET("/", func(ctx *gin.Context) {
@@ -172,7 +172,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	admin := r.Group("/admin", func(ctx *gin.Context) {
 		golte.AddLayout(ctx.Request, "layouts/AdminNavbarAndFooter", map[string]any{
 			"siteName": siteName,
-			"logo":     *logoBase64,
+			"logo":     logoBase64,
 		})
 	})
 	defineAdminPages(admin, siteName)

@@ -14,9 +14,9 @@ import (
 	"github.com/nichady/golte"
 )
 
-func wrapMiddleware(middleware func(http.Handler) http.Handler, ctx *gin.Context) {
+func wrapMiddleware(middleware *func(http.Handler) http.Handler, ctx *gin.Context) {
 	if golte.GetRenderContext(func() *http.Request {
-		middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		(*middleware)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx.Request = r
 			ctx.Next()
 		})).ServeHTTP(ctx.Writer, ctx.Request)
@@ -34,7 +34,10 @@ func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 	// 	return gin.WrapH(golte.Page(c))
 	// }
 	// layout := func(c string) gin.HandlerFunc {
-	// 	return wrapMiddleware(golte.Layout(c))
+	// 	return func(ctx *gin.Context) {
+	// 		handler := golte.Layout(c)
+	// 		wrapMiddleware(&handler, ctx)
+	// 	}
 	// }
 
 	// 使用一個新的變量來存儲 fs.Sub 的結果
@@ -56,7 +59,7 @@ func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 	r := gin.Default()
 	// register the main Golte middleware
 	r.Use(func(ctx *gin.Context) {
-		wrapMiddleware(build.Golte, ctx)
+		wrapMiddleware(&build.Golte, ctx)
 	})
 
 	r.Use(func(ctx *gin.Context) {
@@ -95,7 +98,7 @@ func checkDBConnection(siteName string, logoBase64 *string, mode int) gin.Handle
 		}
 
 		if logoBase64 != nil {
-			data["siteLogo_base64"] = *logoBase64
+			data["siteLogo_base64"] = logoBase64
 		}
 
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
@@ -112,7 +115,7 @@ func handle404(siteName string, logoBase64 *string) gin.HandlerFunc {
 			"announcementType":    "info",
 		}
 		if logoBase64 != nil {
-			data["siteLogo_base64"] = *logoBase64
+			data["siteLogo_base64"] = logoBase64
 		}
 		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 	}

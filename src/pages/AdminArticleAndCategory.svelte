@@ -341,13 +341,16 @@
     const categoryTableConfig = {
         order: [[0, 'asc']],
         columnDefs: [
-            { orderable: false, targets: 2 },
-            { width: '60%', targets: 0 },
-            { width: '20%', targets: 1 },
-            { width: '20%', targets: 2 },
+            { targets: 0, width: '60%' },  // 類別名稱列
+            { targets: 1, width: '20%' },  // 文章數量列
+            { targets: 2, width: '20%', orderable: false }  // 操作列
         ],
         searching: false,
-        responsive: true
+        responsive: true,
+        language: {
+            emptyTable: '目前沒有任何類別',
+            zeroRecords: '沒有符合搜尋條件的類別'
+        }
     }
 
     // 處理標籤切換
@@ -1342,12 +1345,12 @@
 
                 <div class="table-container">
                     <DataTable id="categoryTable" config={categoryTableConfig}>
-                        <table id="categoryTable" class="table is-fullwidth">
+                        <table class="table is-fullwidth">
                             <thead>
                                 <tr>
                                     <th>類別名稱</th>
                                     <th>文章數量</th>
-                                    <th class="is-narrow">操作</th>
+                                    <th class="has-text-centered">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1387,28 +1390,37 @@
                                                     {category.articleCount} 篇
                                                 </span>
                                             </td>
-                                            <td>
-                                                <div class="buttons are-small">
+                                            <td class="has-text-centered">
+                                                <div class="buttons is-centered are-small">
                                                     {#if editingCategory?.id !== category.id}
                                                         <button
                                                             class="button is-info is-small"
                                                             on:click={() => handleEditCategory(category)}
                                                         >
-                                                            編輯類別名稱
+                                                            <span class="icon">
+                                                                <i class="fas fa-edit"></i>
+                                                            </span>
+                                                            <span>編輯名稱</span>
                                                         </button>
                                                     {/if}
                                                     <button
                                                         class="button is-primary is-small"
                                                         on:click={() => handleEditCategoryPage(category)}
                                                     >
-                                                        編輯類別頁面
+                                                        <span class="icon">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </span>
+                                                        <span>編輯頁面</span>
                                                     </button>
                                                     <button
                                                         class="button is-danger is-small"
                                                         class:is-light={category.articleCount > 0}
                                                         on:click={() => handleDeleteCategory(category.id)}
                                                     >
-                                                        刪除
+                                                        <span class="icon">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </span>
+                                                        <span>刪除</span>
                                                     </button>
                                                 </div>
                                             </td>

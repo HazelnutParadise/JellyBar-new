@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"net/http"
 	"unicode"
 
@@ -9,18 +10,32 @@ import (
 )
 
 // var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 var json = jsoniter.ConfigFastest
 
 // 自定義 JSON 函式
-func FastJSON(c *gin.Context, code int, obj interface{}) {
+func FastJSON(c *gin.Context, code int, obj any) {
+	// 序列化數據
 	data, err := json.Marshal(obj)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "JSON serialization error"})
+		// 返回具體的錯誤描述，幫助調試
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": fmt.Sprintf("JSON serialization error: %v", err),
+		})
 		return
 	}
+
+	// 設置 Header 必須在 WriteHeader 之前
 	c.Writer.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	// 返回狀態碼
 	c.Writer.WriteHeader(code)
-	c.Writer.Write(data)
+
+	// 寫入數據，檢查錯誤
+	if _, writeErr := c.Writer.Write(data); writeErr != nil {
+		// 如果寫入失敗，記錄錯誤
+		c.Error(writeErr) // Gin 的內建錯誤記錄
+	}
 }
 
 func IsASCII(s string) bool {
