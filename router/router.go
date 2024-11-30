@@ -18,11 +18,23 @@ func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 	// Gin doesn't have a function to wrap middleware, so define our own
 	wrapMiddleware := func(middleware func(http.Handler) http.Handler) func(ctx *gin.Context) {
 		return func(ctx *gin.Context) {
-			middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// 將 ctx.Request 和 ctx.Writer 使用指標引用，避免拷貝
+			req := ctx.Request
+			writer := ctx.Writer
+
+			// 靜態化處理器，直接使用閉包並保持指標傳遞
+			staticHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				// 使用指標直接操作 ctx 的 Request
 				ctx.Request = r
 				ctx.Next()
-			})).ServeHTTP(ctx.Writer, ctx.Request)
-			if golte.GetRenderContext(ctx.Request) == nil {
+			})
+
+			// 使用中介軟體處理請求
+			handler := middleware(staticHandler)
+			handler.ServeHTTP(writer, req)
+
+			// 使用指標直接操作請求進行檢查
+			if renderCtx := golte.GetRenderContext(req); renderCtx == nil {
 				ctx.Abort()
 			}
 		}
