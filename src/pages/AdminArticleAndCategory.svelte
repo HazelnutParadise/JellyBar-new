@@ -312,7 +312,7 @@
     const cleanupEditor = async () => {
         // 如果內容有變更，則顯示確認對話框
         if (categoryPageContent.trim()) {
-            const confirmed = confirm('確定要離開嗎？未儲���的變更將會遺失。')
+            const confirmed = confirm('確定要離開嗎？未儲的變更將會遺失。')
             if (!confirmed) {
                 return
             }
@@ -321,7 +321,7 @@
         categoryPageContent = ''
     }
 
-    // 添加類別篩選相關變量
+    // 添加類別篩���相關變量
     let categorySearchKeyword = ''
     let categorySort = null // 當前排序的欄位，null 表示未排序
     let categorySortDirection = 'asc' // 'asc' | 'desc'
@@ -645,8 +645,7 @@
         gap: 1rem;
         align-items: center;
         margin-left: auto;
-        flex-shrink: 0;
-        min-width: 0;
+        flex-wrap: wrap;
     }
 
     .filter-tags {
@@ -673,7 +672,7 @@
     .field-group {
         position: relative;
         display: flex;
-        align-items: flex-end;
+        align-items: end;
         gap: 0.5rem;
     }
 
@@ -863,7 +862,7 @@
         height: 2.25em;
     }
 
-    /* 調整日期欄位寬度 */
+    /* 調���日期欄位寬度 */
     .date-column {
         min-width: 130px;
         white-space: nowrap;
@@ -1013,6 +1012,127 @@
         background-color: #3298dc;
         color: #fff;
     }
+
+    /* 在 style 區塊中添加或修改以下樣式 */
+    .filter-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .filter-controls-right {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        margin-left: auto;
+        flex-wrap: wrap;
+    }
+
+    .selects-group {
+        background: #f8f9fa;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+    }
+
+    .selects-column {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .select-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 200px;
+    }
+
+    .select-field label {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 600;
+        margin-left: 0.25rem;
+    }
+
+    .select-field .select {
+        width: 100%;
+    }
+
+    .select-field .select select {
+        width: 100%;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        padding: 0.375rem 2rem 0.375rem 0.75rem;
+        background-color: white;
+        height: 2.5rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .select-field .select select:hover {
+        border-color: #adb5bd;
+    }
+
+    .select-field .select select:focus {
+        border-color: var(--theme-primary);
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+
+    /* 調整日期篩選器組的樣式以匹配 */
+    .date-field-group {
+        background: #f8f9fa;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+    }
+
+    /* 確保新增文章按鈕垂直對齊 */
+    .field-group .button.is-success {
+        height: 2.5rem;
+        margin-top: 1.5rem; /* 對齊其他篩選器的底部 */
+    }
+
+    /* 修改搜尋框相關樣式 */
+    .field-group.is-expanded {
+        flex: 0 1 200px; /* 改為 200px */
+        min-width: 160px; /* 改為 160px */
+    }
+
+    .field-group.is-expanded .control {
+        width: 100%;
+    }
+
+    .field-group.is-expanded .input {
+        height: 2.5rem;
+        font-size: 0.875rem;
+        padding-left: 2.5rem;
+    }
+
+    .field-group.is-expanded .icon.is-left {
+        height: 2.5rem;
+        width: 2.5rem;
+    }
+
+    .filter-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-end;
+        width: 100%;
+    }
+
+    .filter-controls-right {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-end;
+        margin-left: auto;
+        flex-wrap: wrap;
+    }
 </style>
 
 <div class="admin-container">
@@ -1061,45 +1181,42 @@
                         </div>
 
                         <div class="filter-controls-right">
-                            <div class="flex-column ">
-                                <div class="select-field">
-                                    <label for="categorySelect">類別</label>
-                                <div class="select">
-                                    <select
-                                        id="categorySelect"
-                                        bind:value={selectedCategory}
-                                    >
-                                        <option
-                                            value={null}
-                                            disabled
-                                            selected={!selectedCategory}
-                                        >
-                                            選擇類別
-                                        </option>
-                                        {#each categories as category}
-                                            <option value={category}>
-                                                {category.name} ({category.articleCount})
-                                            </option>
-                                        {/each}
-                                    </select>
+                            <div class="selects-group">
+                                <div class="selects-column">
+                                    <div class="select-field">
+                                        <label for="categorySelect">類別</label>
+                                        <div class="select">
+                                            <select
+                                                id="categorySelect"
+                                                bind:value={selectedCategory}
+                                            >
+                                                <option value={null}>全部類別</option>
+                                                {#each categories as category}
+                                                    <option value={category}>
+                                                        {category.name} ({category.articleCount})
+                                                    </option>
+                                                {/each}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="select-field">
+                                        <label for="statusSelect">狀態</label>
+                                        <div class="select">
+                                            <select
+                                                id="statusSelect"
+                                                bind:value={statusFilter}
+                                            >
+                                                <option value={null}>全部狀態</option>
+                                                <option value="draft">草稿</option>
+                                                <option value="published">已發布</option>
+                                                <option value="scheduled">預定發布</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="select-field">
-                                <label for="statusSelect">狀態</label>
-                                <div class="select">
-                                    <select
-                                        id="statusSelect"
-                                        bind:value={statusFilter}
-                                    >
-                                        <option value={null}>全部狀態</option>
-                                        <option value="draft">草稿</option>
-                                        <option value="published">已發布</option>
-                                        <option value="scheduled">預定發布</option>
-                                    </select>
-                                </div>
-                            </div>
-                            </div>
                             <div class="date-field-group">
                                 <div class="date-group">
                                     <div class="date-label">發布日期</div>
@@ -1271,7 +1388,7 @@
 
                 <div class="table-container">
                     <DataTable id="articleTable" config={articleTableConfig}>
-                        <table class="table is-fullwidth">
+                        <table id="articleTable" class="table is-fullwidth">
                             <thead>
                                 <tr>
                                     <th class="is-narrow">#</th>
@@ -1369,6 +1486,12 @@
                                                 </p>
                                             </div>
                                         </td>
+                                        <td style="display: none;"></td>
+                                        <td style="display: none;"></td>
+                                        <td style="display: none;"></td>
+                                        <td style="display: none;"></td>
+                                        <td style="display: none;"></td>
+                                        <td style="display: none;"></td>
                                     </tr>
                                 {/if}
                             </tbody>
@@ -1421,7 +1544,7 @@
 
                 <div class="table-container">
                     <DataTable id="categoryTable" config={categoryTableConfig}>
-                        <table class="table is-fullwidth">
+                        <table id="categoryTable" class="table is-fullwidth">
                             <thead>
                                 <tr>
                                     <th>類別名稱</th>
@@ -1516,7 +1639,11 @@
                                                 </p>
                                             </div>
                                         </td>
+                                        <td style="display: none;"></td>
+                                        <td style="display: none;"></td>
                                     </tr>
+                            
+                                    
                                 {/if}
                             </tbody>
                         </table>
