@@ -1,7 +1,7 @@
 github.com/HazelnutParadise/Go-Utils v0.7.10 h1:d4T36Kea1VRpqbasORZ8uZEQLsF1hnyAhusoNqeK26Y=
 github.com/HazelnutParadise/Go-Utils v0.7.10/go.mod h1:JzuH5U+UNgAQzzotFf6k4zoJiOkBPyWPK7JTJrheYas=
-github.com/HazelnutParadise/sveltigo v0.0.0-alpha.3 h1:6yWJdTpC+ENfzvW8/uw6kNBNzG7zUA758oLe8qGLTrY=
-github.com/HazelnutParadise/sveltigo v0.0.0-alpha.3/go.mod h1:KM6yKlfLWIqFZOtV9YIR4P2bDdCxjs3qFIOzMO2W568=
+github.com/HazelnutParadise/sveltigo v0.0.0-alpha-8 h1:4zvfrOVIIcnlExgC+7wYO8MkosL7Gppf5G42k2AZa9E=
+github.com/HazelnutParadise/sveltigo v0.0.0-alpha-8/go.mod h1:KM6yKlfLWIqFZOtV9YIR4P2bDdCxjs3qFIOzMO2W568=
 github.com/Masterminds/semver/v3 v3.2.1 h1:RN9w6+7QoMeJVGyfmbcgs28Br8cvmnucEXnY0rYXWg0=
 github.com/Masterminds/semver/v3 v3.2.1/go.mod h1:qvl/7zhW3nngYb5+80sSMF+FG2BjYrf8m9wsX0PNOMQ=
 github.com/bytedance/sonic v1.12.4 h1:9Csb3c9ZJhfUWeMtpCDCq6BUoH5ogfDFLUgQ/jG+R0k=
