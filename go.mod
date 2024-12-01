@@ -3,6 +3,7 @@ module jellybar
 go 1.22.7
 
 require (
+	github.com/HazelnutParadise/sveltigo v0.0.0-alpha.63
 	github.com/russross/blackfriday/v2 v2.1.0
 	gorm.io/gorm v1.25.12
 )
@@ -19,7 +20,6 @@ require (
 
 require (
 	github.com/HazelnutParadise/Go-Utils v0.7.10
-	github.com/HazelnutParadise/sveltigo v0.0.0-alpha.38
 	github.com/bytedance/sonic v1.12.4 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect

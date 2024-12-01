@@ -10,6 +10,7 @@ import (
 
 	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
+	// sveltigo "github.com/nichady/golte"
 )
 
 func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *string) {
