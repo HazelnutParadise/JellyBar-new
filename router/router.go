@@ -10,12 +10,12 @@ import (
 	"jellybar/build"
 	"jellybar/db"
 
+	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
-	"github.com/nichady/golte"
 )
 
 func wrapMiddleware(middleware *func(http.Handler) http.Handler, ctx *gin.Context) {
-	if golte.GetRenderContext(func() *http.Request {
+	if sveltigo.GetRenderContext(func() *http.Request {
 		(*middleware)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx.Request = r
 			ctx.Next()
@@ -31,11 +31,11 @@ func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 
 	// since gin doesm't use stdlib-compatible signatures, we have to wrap them
 	// page := func(c string) gin.HandlerFunc {
-	// 	return gin.WrapH(golte.Page(c))
+	// 	return gin.WrapH(sveltigo.Page(c))
 	// }
 	// layout := func(c string) gin.HandlerFunc {
 	// 	return func(ctx *gin.Context) {
-	// 		handler := golte.Layout(c)
+	// 		handler := sveltigo.Layout(c)
 	// 		wrapMiddleware(&handler, ctx)
 	// 	}
 	// }
@@ -57,13 +57,13 @@ func GinRouter(siteName string, assetsDir *embed.FS, mode int) http.Handler {
 	logoBase64 := base64.StdEncoding.EncodeToString(logo)
 
 	r := gin.Default()
-	// register the main Golte middleware
+	// register the main sveltigo middleware
 	r.Use(func(ctx *gin.Context) {
-		wrapMiddleware(&build.Golte, ctx)
+		wrapMiddleware(&build.Sveltigo, ctx)
 	})
 
 	r.Use(func(ctx *gin.Context) {
-		golte.AddLayout(ctx.Request, "App", map[string]any{
+		sveltigo.AddLayout(ctx.Request, "App", map[string]any{
 			"logo": logoBase64,
 		})
 	})
@@ -101,7 +101,7 @@ func checkDBConnection(siteName string, logoBase64 *string, mode int) gin.Handle
 			data["siteLogo_base64"] = logoBase64
 		}
 
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 		ctx.Abort()
 	}
 }
@@ -117,7 +117,7 @@ func handle404(siteName string, logoBase64 *string) gin.HandlerFunc {
 		if logoBase64 != nil {
 			data["siteLogo_base64"] = logoBase64
 		}
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Announcement", data)
 	}
 }
 
@@ -125,7 +125,7 @@ func alertDevMode(mode int) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 如果非ajax，則顯示開發模式警告
 		if mode == db.DEV {
-			golte.AddLayout(ctx.Request, "layouts/DevModeAlert", nil)
+			sveltigo.AddLayout(ctx.Request, "layouts/DevModeAlert", nil)
 		}
 		ctx.Next()
 	}

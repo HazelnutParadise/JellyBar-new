@@ -8,8 +8,8 @@ import (
 	"jellybar/md"
 	"jellybar/obj"
 
+	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
-	"github.com/nichady/golte"
 )
 
 func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *string) {
@@ -17,27 +17,27 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 
 	pages := r.Group("/")
 	pages.Use(func(ctx *gin.Context) {
-		golte.AddLayout(ctx.Request, "layouts/NavbarAndFooter", map[string]any{
+		sveltigo.AddLayout(ctx.Request, "layouts/NavbarAndFooter", map[string]any{
 			"siteName": siteName,
 			"logo":     logoBase64,
 		})
 	})
 	pages.GET("/", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Index", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Index", map[string]any{
 			"siteName": siteName,
 			"title":    "歡迎光臨 Jelly Bar",
 		})
 	})
 
 	pages.GET("/themes", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Themes", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Themes", map[string]any{
 			"siteName": siteName,
 			"title":    "主題展示",
 		})
 	})
 
 	pages.GET("/article", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType": "articles",
@@ -56,7 +56,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/article/:id", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
 			"siteName": siteName,
 			"article": obj.Article{
 				Title:       "testjkjkknknknknkmnmknkmnmnjmnmnmnmnmnmnmnjbhjbjefbcjebnfjebnfjewnejcejcnjencnjencjencejjncnecejcnejnncejncjncjenej",
@@ -85,7 +85,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/category", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType":    "categories",
@@ -112,7 +112,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/category/:id", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType": "category",
@@ -130,7 +130,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/author", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType": "author",
@@ -146,7 +146,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/search/:keyword", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType": "search",
@@ -164,13 +164,13 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/login", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/Login", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Login", map[string]any{
 			"siteName": siteName,
 		})
 	})
 
 	admin := r.Group("/admin", func(ctx *gin.Context) {
-		golte.AddLayout(ctx.Request, "layouts/AdminNavbarAndFooter", map[string]any{
+		sveltigo.AddLayout(ctx.Request, "layouts/AdminNavbarAndFooter", map[string]any{
 			"siteName": siteName,
 			"logo":     logoBase64,
 		})

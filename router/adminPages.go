@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
-	"github.com/nichady/golte"
 )
 
 func defineAdminPages(r *gin.RouterGroup, siteName string) {
@@ -22,7 +22,7 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			ctx.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminArticleAndCategory", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/AdminArticleAndCategory", map[string]any{
 			"siteName":       siteName,
 			"title":          "文章與類別",
 			"categoriesData": categories,
@@ -30,7 +30,7 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 	})
 
 	r.GET("/article/new", func(ctx *gin.Context) {
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
 			"siteName": siteName,
 			"title":    "新增文章",
 		})
@@ -59,7 +59,7 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			Media: []string{},
 		}
 
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
 			"siteName":    siteName,
 			"title":       "編輯文章",
 			"thisArticle": thisArticle,
@@ -72,7 +72,7 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			ctx.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
-		golte.RenderPage(ctx.Writer, ctx.Request, "pages/AdminUser", map[string]any{
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/AdminUser", map[string]any{
 			"siteName": siteName,
 			"title":    "用戶管理",
 			"users":    users,
