@@ -1,4 +1,4 @@
-package app
+package apiHandler
 
 import (
 	"jellybar/db"
@@ -13,7 +13,7 @@ func HandleGetCategories(ctx *gin.Context) {
 	preloadArticles := ctx.Query("preloadArticles") == "true"
 	categories, err := db.GetCategories(preloadArticles)
 	if err != nil {
-		ctx.JSON(500, gin.H{"message": "取得類別列表失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "取得類別列表失敗\n" + err.Error()})
 		return
 	}
 	utils.FastJSON(ctx, 200, gin.H{"categories": categories})
@@ -21,27 +21,27 @@ func HandleGetCategories(ctx *gin.Context) {
 
 func HandlePostCategory(ctx *gin.Context) {
 	var category obj.Category
-	if err := ctx.ShouldBindJSON(&category); err != nil {
-		ctx.JSON(400, gin.H{"message": "新增類別失敗\n" + err.Error()})
+	if err := utils.FastShouldBindJSON(ctx, &category); err != nil {
+		utils.FastJSON(ctx, 400, gin.H{"message": "新增類別失敗\n" + err.Error()})
 		return
 	}
 	if err := db.AddCategory(&category); err != nil {
-		ctx.JSON(500, gin.H{"message": "新增類別失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "新增類別失敗\n" + err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"message": "新增類別成功"})
+	utils.FastJSON(ctx, 200, gin.H{"message": "新增類別成功"})
 }
 
 func HandleDeleteCategory(ctx *gin.Context) {
 	id := uint(conv.ParseInt(ctx.Param("id")))
 	if id == 0 {
-		ctx.JSON(400, gin.H{"message": "刪除類別失敗\nID錯誤"})
+		utils.FastJSON(ctx, 400, gin.H{"message": "刪除類別失敗\nID錯誤"})
 		return
 	}
 	category := obj.Category{ID: id}
 	if err := db.DeleteCategory(&category); err != nil {
-		ctx.JSON(500, gin.H{"message": "刪除類別失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "刪除類別失敗\n" + err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"message": "刪除類別成功"})
+	utils.FastJSON(ctx, 200, gin.H{"message": "刪除類別成功"})
 }

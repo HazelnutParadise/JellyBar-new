@@ -1,4 +1,4 @@
-package app
+package apiHandler
 
 import (
 	"encoding/json"
@@ -32,14 +32,14 @@ func HandleGetUserList(ctx *gin.Context) {
 	var result []userFrontend
 	users, err := db.GetUsers()
 	if err != nil {
-		ctx.JSON(500, gin.H{"message": "取得用戶列表失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "取得用戶列表失敗\n" + err.Error()})
 		return
 	}
 	for _, user := range *users {
 		role := convertUserRoleToString(user.Role)
 		result = append(result, userFrontend{User: &user, Role: role})
 	}
-	ctx.JSON(200, gin.H{"users": &result})
+	utils.FastJSON(ctx, 200, gin.H{"users": &result})
 }
 
 func HandlePostUser(ctx *gin.Context) {
@@ -53,21 +53,24 @@ func HandlePostUser(ctx *gin.Context) {
 		StatusReason:   "-",
 		StatusUpdateAt: time.Now(),
 	}
-	ctx.BindJSON(&user)
+	if err := utils.FastShouldBindJSON(ctx, &user); err != nil {
+		utils.FastJSON(ctx, 400, gin.H{"message": "新增用戶失敗\n" + err.Error()})
+		return
+	}
 	condition := map[string]string{
 		"username": user.Username,
 	}
 	statusCode, err := getUserFromHazelnutParadiseDB(&user, condition)
 	if err != nil {
-		ctx.JSON(statusCode, gin.H{"message": err.Error()})
+		utils.FastJSON(ctx, statusCode, gin.H{"message": err.Error()})
 		return
 	}
 	err = db.AddUser(&user)
 	if err != nil {
-		ctx.JSON(500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "用戶新增失敗\n" + err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"message": "用戶新增成功"})
+	utils.FastJSON(ctx, 200, gin.H{"message": "用戶新增成功"})
 }
 
 func HandleUpdateUser(ctx *gin.Context) {
@@ -75,15 +78,15 @@ func HandleUpdateUser(ctx *gin.Context) {
 	user.ID = uint(conv.ParseInt(ctx.Param("id")))
 	role := ctx.Query("role")
 
-	if err := ctx.ShouldBindJSON(&user); err != nil {
-		ctx.JSON(400, gin.H{"message": "解析用戶資料失敗：" + err.Error()})
+	if err := utils.FastShouldBindJSON(ctx, &user); err != nil {
+		utils.FastJSON(ctx, 400, gin.H{"message": "解析用戶資料失敗：" + err.Error()})
 		return
 	}
 
 	if role != "" {
 		userRole, err := convertUserRole(role)
 		if err != nil {
-			ctx.JSON(400, gin.H{"message": err.Error()})
+			utils.FastJSON(ctx, 400, gin.H{"message": err.Error()})
 			return
 		}
 		user.Role = userRole
@@ -91,11 +94,11 @@ func HandleUpdateUser(ctx *gin.Context) {
 
 	err := db.UpdateUser(&user)
 	if err != nil {
-		ctx.JSON(500, gin.H{"message": "用戶更新失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "用戶更新失敗\n" + err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"message": "用戶更新成功"})
+	utils.FastJSON(ctx, 200, gin.H{"message": "用戶更新成功"})
 }
 
 func HandleDeleteUser(ctx *gin.Context) {
@@ -104,10 +107,10 @@ func HandleDeleteUser(ctx *gin.Context) {
 	}
 	err := db.DeleteUser(&user)
 	if err != nil {
-		ctx.JSON(500, gin.H{"message": "用戶刪除失敗\n" + err.Error()})
+		utils.FastJSON(ctx, 500, gin.H{"message": "用戶刪除失敗\n" + err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"message": "用戶刪除成功"})
+	utils.FastJSON(ctx, 200, gin.H{"message": "用戶刪除成功"})
 }
 
 func getUserFromHazelnutParadiseDB(user *obj.User, condition map[string]string) (int, error) {

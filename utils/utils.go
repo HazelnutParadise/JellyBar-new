@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"unicode"
 
@@ -36,6 +37,14 @@ func FastJSON(c *gin.Context, code int, obj any) {
 		// 如果寫入失敗，記錄錯誤
 		c.Error(writeErr) // Gin 的內建錯誤記錄
 	}
+}
+
+func FastShouldBindJSON(c *gin.Context, obj any) error {
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(body, obj)
 }
 
 func IsASCII(s string) bool {
