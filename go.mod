@@ -3,7 +3,7 @@ module jellybar
 go 1.22.7
 
 require (
-	github.com/HazelnutParadise/sveltigo v0.0.3-alpha.0
+	github.com/HazelnutParadise/sveltigo v0.0.3-alpha.3
 	github.com/russross/blackfriday/v2 v2.1.0
 	gorm.io/gorm v1.25.12
 )
