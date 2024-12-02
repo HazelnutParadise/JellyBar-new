@@ -32,6 +32,25 @@ func HandlePostCategory(ctx *gin.Context) {
 	utils.FastJSON(ctx, 200, gin.H{"message": "新增類別成功"})
 }
 
+func HandlePutCategory(ctx *gin.Context) {
+	id := uint(conv.ParseInt(ctx.Param("id")))
+	if id == 0 {
+		utils.FastJSON(ctx, 400, gin.H{"message": "更新類別失敗\nID錯誤"})
+		return
+	}
+	var category obj.Category
+	if err := utils.FastShouldBindJSON(ctx, &category); err != nil {
+		utils.FastJSON(ctx, 400, gin.H{"message": "更新類別失敗\n" + err.Error()})
+		return
+	}
+	category.ID = id
+	if err := db.UpdateCategory(&category); err != nil {
+		utils.FastJSON(ctx, 500, gin.H{"message": "更新類別失敗\n" + err.Error()})
+		return
+	}
+	utils.FastJSON(ctx, 200, gin.H{"message": "更新類別成功"})
+}
+
 func HandleDeleteCategory(ctx *gin.Context) {
 	id := uint(conv.ParseInt(ctx.Param("id")))
 	if id == 0 {

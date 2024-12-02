@@ -18,6 +18,11 @@ func AddCategory(category *obj.Category) error {
 	return err
 }
 
+func UpdateCategory(category *obj.Category) error {
+	err := database.Model(category).Updates(category).Error
+	return err
+}
+
 func DeleteCategory(category *obj.Category) error {
 	err := database.Delete(category).Error
 	return err

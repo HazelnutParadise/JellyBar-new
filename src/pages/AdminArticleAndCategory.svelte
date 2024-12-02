@@ -80,7 +80,7 @@
         try {
             // 發送更新請求到後端 API
             const response = await fetch(
-                `/api/categories/${editingCategory.id}`,
+                `/api/admin/category/${editingCategory.id}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -90,16 +90,16 @@
                 },
             )
 
+            const responseJson = await response.json()
             if (!response.ok) {
-                throw new Error('更新類別失敗')
+                throw new Error(responseJson.message || '更新類別失敗')
             }
 
             await reloadData() // 重新載入資料
             editingCategory = null
             editingCategoryName = ''
-            alert('類別更新成功！')
+            alert(responseJson.message)
         } catch (error) {
-            console.error('更新類別時發生錯誤:', error)
             alert('更新類別失敗：' + error.message)
         }
     }

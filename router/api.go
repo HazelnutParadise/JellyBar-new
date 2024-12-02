@@ -18,5 +18,6 @@ func defineAdminApi(r *gin.RouterGroup) {
 	r.DELETE("/user/:id", apiHandler.HandleDeleteUser)
 	r.PUT("/user/:id", apiHandler.HandleUpdateUser)
 	r.POST("/category", apiHandler.HandlePostCategory)
+	r.PUT("/category/:id", apiHandler.HandlePutCategory)
 	r.DELETE("/category/:id", apiHandler.HandleDeleteCategory)
 }
