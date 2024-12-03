@@ -200,6 +200,7 @@
         background: transparent;
         font-family: inherit;
         transition: border-color 0.3s ease;
+        line-height: 1.5;
     }
 
     .title-input:focus {

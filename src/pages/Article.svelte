@@ -53,7 +53,7 @@
 
     .article-main {
         min-width: 0;
-        margin-top: 1rem;
+        /* margin-top: 1rem; */
         padding-right: 2rem;
         box-sizing: border-box;
         flex: 1;
@@ -76,11 +76,17 @@
     }
 
     .article-content {
+        border: 1px solid var(--interactive-medium);
+        border-radius: 10px;
+        padding: 2rem;
         line-height: 1.8;
+        min-height: 100%;
         width: 100%;
         word-wrap: break-word;
         overflow-wrap: break-word;
         color: var(--theme-text);
+        background-color: var(--neutral-light);
+        font-family: 'Noto Sans TC';
     }
 
     .author-column {
@@ -105,8 +111,8 @@
     .sidebar-wrapper {
         width: 300px;
         position: sticky;
-        top: 2rem;
-        padding: 1rem;
+        top: 0;
+        /* padding: 1rem; */
         flex: 1;
         display: flex;
         flex-direction: column;
