@@ -16,3 +16,10 @@ type Article struct {
 	AuthorID    uint      `json:"authorId"`
 	Author      Author    `json:"author" gorm:"foreignKey:AuthorID;references:ID"`
 }
+
+type ArticleStatus string
+
+const (
+	Draft   ArticleStatus = "draft"
+	Publish ArticleStatus = "publish"
+)

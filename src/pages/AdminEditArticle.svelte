@@ -16,9 +16,9 @@
     // 文章狀態選項
     const statusOptions = [
         { value: 'draft', label: '草稿', icon: 'fa-file' },
-        { value: 'review', label: '待審核', icon: 'fa-clock' },
-        { value: 'publish', label: '已發布', icon: 'fa-check-circle' },
-        { value: 'private', label: '私人', icon: 'fa-lock' },
+        // { value: 'review', label: '待審核', icon: 'fa-clock' },
+        { value: 'publish', label: '發布', icon: 'fa-check-circle' },
+        // { value: 'private', label: '私人', icon: 'fa-lock' },
     ]
 
     let article = {
@@ -398,7 +398,9 @@
         position: absolute;
         width: 100%;
         max-height: 200px;
+        max-width: 280px;
         overflow-y: auto;
+        overflow-x: hidden;
         background: white;
         border: 1px solid var(--neutral-medium);
         border-radius: 6px;
@@ -422,9 +424,8 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        overflow: hidden; /* 新增 */
-        text-overflow: ellipsis; /* 新增 */
-        white-space: nowrap; /* 新增 */
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .dropdown-item:hover {
