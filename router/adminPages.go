@@ -33,9 +33,16 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 	})
 
 	r.GET("/article/new", func(ctx *gin.Context) {
+		categories, err := db.GetCategories(false)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
-			"siteName": siteName,
-			"title":    "新增文章",
+			"siteName":   siteName,
+			"title":      "新增文章",
+			"categories": categories,
 		})
 	})
 

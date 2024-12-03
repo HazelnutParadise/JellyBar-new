@@ -4,11 +4,14 @@
     import VditorEditor from '../components/VditorEditor.svelte'
     import { onMount } from 'svelte'
     import { Article } from '../types/article'
+    import type { Category } from '../types/category'
 
     export let siteName: string
     export let title: string
     export let thisArticle: Article
     setTitle(title, siteName)
+
+    let nowAuthorId = 2 // 需從後端取得
 
     // 文章狀態選項
     const statusOptions = [
@@ -24,33 +27,16 @@
         content:
             thisArticle?.content ||
             '# 歡迎使用編輯器\n\n這裡可以開始編寫您的文章...',
-        category: thisArticle?.category?.name || '',
+        category: thisArticle?.category || null,
+        categoryId: thisArticle?.category?.id || null,
         description: thisArticle?.description || '',
-        media: thisArticle?.media || '',
+        media: thisArticle?.media || [],
         status: thisArticle?.status || 'draft',
-        // tags: thisArticle?.tags || [],
     }
 
+
     // 預設分類列表
-    let categories = [
-        '前端開發',
-        '後端技術',
-        'JavaScript',
-        'Python',
-        'Go語言',
-        'DevOps',
-        '資料庫',
-        '系統架構',
-        '程式設計',
-        '演算法',
-        '資訊安全',
-        '雲端服務',
-        '容器技術',
-        '人工智慧',
-        '機器學習',
-        '心得分享',
-        '專案管理',
-    ]
+    export let categories: Category[]
 
     let searchTerm = ''
     let showDropdown = false
@@ -58,22 +44,27 @@
     // 根據搜尋詞過濾分類
     $: filteredCategories = searchTerm
         ? categories.filter((cat) =>
-              cat.toLowerCase().includes(searchTerm.toLowerCase()),
+              cat.name.toLowerCase().includes(searchTerm.toLowerCase()),
           )
         : categories
 
     onMount(() => {
         // 選擇分類
-        function selectCategory(category) {
-            article.category = category
-            searchTerm = category
-            showDropdown = false
+        function selectCategory(category: Category) {
+            article.category = category;
+            article.categoryId = category.id;
+            searchTerm = category.name;
+            showDropdown = false;
         }
 
         // 新增分類
         function addNewCategory() {
-            const newCategory = searchTerm.trim()
-            if (newCategory && !categories.includes(newCategory)) {
+            const newCategoryName = searchTerm.trim()
+            if (newCategoryName && !categories.some(cat => cat.name === newCategoryName)) {
+                const newCategory: Category = {
+                    id: Date.now(), // 臨時 ID，實際應該由後端產生
+                    name: newCategoryName
+                }
                 categories = [...categories, newCategory]
                 selectCategory(newCategory)
             }
@@ -81,9 +72,10 @@
 
         // 清除選擇的分類
         function clearCategory() {
-            article.category = ''
-            searchTerm = ''
-            showDropdown = false
+            article.category = null;
+            article.categoryId = null;
+            searchTerm = '';
+            showDropdown = false;
         }
 
         // 點擊外部時關閉下拉選單
@@ -94,7 +86,10 @@
             }
         }
 
-        selectCategory(article.category)
+        if (article.category) {
+            selectCategory(article.category)
+        }
+        
         document.addEventListener('click', handleClickOutside)
         return () => {
             document.removeEventListener('click', handleClickOutside)
@@ -124,7 +119,46 @@
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log('儲存文章:', article)
+        if (article.category === null) {
+            alert('請選擇分類')
+            return
+        }
+        if (article.title === '') {
+            alert('請輸入標題')
+            return
+        }
+
+        // 準備要發送的資料
+        const submitData = {
+            id: article.id,
+            title: article.title,
+            content: article.content,
+            categoryId: article.category?.id,
+            authorId: nowAuthorId,
+            description: article.description,
+            media: article.media,
+            status: article.status
+        }
+
+        try {
+            const result = await fetch('/api/admin/article', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(submitData)
+            })
+
+            const resultJson = await result.json()
+
+            if (!result.ok) {
+                throw new Error(`HTTP error! status: ${result.status}, ${resultJson.message}`)
+            }
+
+            alert(resultJson.message)
+        } catch (error) {
+            alert('儲存失敗：' + error.message)
+        }
     }
 </script>
 
@@ -482,7 +516,7 @@
                             on:input={() => {
                                 showDropdown = true
                                 if (!searchTerm) {
-                                    article.category = ''
+                                    article.category = null
                                 }
                             }}
                         />
@@ -502,34 +536,34 @@
                                 <li>
                                     <button
                                         class="dropdown-item"
-                                        class:active={category ===
-                                            article.category}
+                                        class:active={category.id === article.category?.id}
                                         on:click|stopPropagation={() => {
                                             article.category = category
-                                            searchTerm = category
+                                            searchTerm = category.name
                                             showDropdown = false
                                         }}
                                     >
                                         <i class="fas fa-tag"></i>
-                                        {category}
+                                        {category.name}
                                     </button>
                                 </li>
                             {/each}
 
-                            {#if searchTerm && !categories.includes(searchTerm)}
+                            {#if searchTerm && !categories.some(cat => cat.name === searchTerm)}
                                 <li>
                                     <button
                                         class="dropdown-item new-item"
                                         on:click|stopPropagation={() => {
-                                            const newCategory =
-                                                searchTerm.trim()
-                                            if (newCategory) {
-                                                categories = [
-                                                    ...categories,
-                                                    newCategory,
-                                                ]
-                                                article.category = newCategory
-                                                showDropdown = false
+                                            const newCategoryName = searchTerm.trim();
+                                            if (newCategoryName) {
+                                                const newCategory = {
+                                                    id: Date.now(),
+                                                    name: newCategoryName
+                                                };
+                                                categories = [...categories, newCategory];
+                                                article.category = newCategory;
+                                                article.categoryId = newCategory.id;
+                                                showDropdown = false;
                                             }
                                         }}
                                     >

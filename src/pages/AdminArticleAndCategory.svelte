@@ -321,7 +321,7 @@
         categoryPageContent = ''
     }
 
-    // 添加類別篩���相關變量
+    // 添加類別篩選相關變量
     let categorySearchKeyword = ''
     let categorySort = null // 當前排序的欄位，null 表示未排序
     let categorySortDirection = 'asc' // 'asc' | 'desc'

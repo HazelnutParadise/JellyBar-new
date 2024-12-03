@@ -20,4 +20,5 @@ func defineAdminApi(r *gin.RouterGroup) {
 	r.POST("/category", apiHandler.HandlePostCategory)
 	r.PUT("/category/:id", apiHandler.HandlePutCategory)
 	r.DELETE("/category/:id", apiHandler.HandleDeleteCategory)
+	r.POST("/article", apiHandler.HandleAddArticle)
 }
