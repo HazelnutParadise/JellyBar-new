@@ -13,6 +13,9 @@
 
     let nowAuthorId = 2 // 需從後端取得
 
+    // TODO: 檢查文章是否已經修改過
+    let hasChanged = false
+
     // 文章狀態選項
     const statusOptions = [
         { value: 'draft', label: '草稿', icon: 'fa-file' },

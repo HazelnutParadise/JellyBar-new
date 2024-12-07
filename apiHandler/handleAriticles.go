@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HandleGetArticles(c *gin.Context) {
+func HandleGetArticles(c *gin.Context, onlyPublished bool) {
 	categoryId := c.Query("categoryId")
-	articles, err := db.GetArticles(categoryId)
+	articles, err := db.GetArticles(categoryId, onlyPublished)
 	if err != nil {
 		utils.FastJSON(c, 500, gin.H{"message": "取得文章列表失敗\n" + err.Error()})
 		return

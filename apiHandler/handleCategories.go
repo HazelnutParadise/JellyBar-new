@@ -11,7 +11,11 @@ import (
 
 func HandleGetCategories(ctx *gin.Context) {
 	preloadArticles := ctx.Query("preloadArticles") == "true"
-	categories, err := db.GetCategories(preloadArticles)
+	onlyPublished := ctx.Query("onlyPublished") == "true"
+	categories, err := db.GetCategories(db.GetCategoriesOption{
+		PreloadArticles: preloadArticles,
+		OnlyPublished:   onlyPublished,
+	})
 	if err != nil {
 		utils.FastJSON(ctx, 500, gin.H{"message": "取得類別列表失敗\n" + err.Error()})
 		return

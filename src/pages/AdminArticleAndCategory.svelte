@@ -511,7 +511,7 @@
     const reloadData = async () => {
         try {
             // 載入類別資料
-            const categoriesResponse = await fetch('/api/categories?preloadArticles=true')
+            const categoriesResponse = await fetch('/api/categories?preloadArticles=true&onlyPublished=false')
             if (!categoriesResponse.ok) throw new Error('載入類別失敗')
             const Data = await categoriesResponse.json()
 

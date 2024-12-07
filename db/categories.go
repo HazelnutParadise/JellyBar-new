@@ -2,14 +2,26 @@ package db
 
 import "jellybar/obj"
 
-func GetCategories(preloadArticles bool) (*[]obj.Category, error) {
+type GetCategoriesOption struct {
+	PreloadArticles bool
+	OnlyPublished   bool
+}
+
+func GetCategories(option GetCategoriesOption) (*[]obj.Category, error) {
 	var categories []obj.Category
 	var err error
-	if preloadArticles {
-		err = database.Preload("Articles").Preload("Articles.Category").Find(&categories).Error
-	} else {
-		err = database.Find(&categories).Error
+	query := database
+
+	if option.PreloadArticles {
+		if option.OnlyPublished {
+			query = query.Preload("Articles", "status = ?", "publish")
+		} else {
+			query = query.Preload("Articles")
+		}
+		query = query.Preload("Articles.Category")
 	}
+
+	err = query.Find(&categories).Error
 	return &categories, err
 }
 

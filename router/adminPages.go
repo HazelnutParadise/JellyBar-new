@@ -19,7 +19,10 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 	})
 
 	r.GET("/articles", func(ctx *gin.Context) {
-		categories, err := db.GetCategories(true)
+		categories, err := db.GetCategories(db.GetCategoriesOption{
+			PreloadArticles: true,
+			OnlyPublished:   false,
+		})
 		if err != nil {
 			fmt.Println(err)
 			ctx.AbortWithStatus(http.StatusInternalServerError)
@@ -33,7 +36,9 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 	})
 
 	r.GET("/article/new", func(ctx *gin.Context) {
-		categories, err := db.GetCategories(false)
+		categories, err := db.GetCategories(db.GetCategoriesOption{
+			PreloadArticles: false,
+		})
 		if err != nil {
 			fmt.Println(err)
 			ctx.AbortWithStatus(http.StatusInternalServerError)
