@@ -65,7 +65,8 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 			return
 		}
 		if article == nil {
-			ctx.AbortWithStatus(http.StatusNotFound)
+			ctx.Request.URL.Path = "/not_found"
+			r.HandleContext(ctx)
 			return
 		}
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
@@ -95,7 +96,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 		})
 		if err != nil {
 			fmt.Println(err)
-			ctx.AbortWithStatus(http.StatusInternalServerError)
+			ctx.Status(http.StatusInternalServerError)
 			return
 		}
 
