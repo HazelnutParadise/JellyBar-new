@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"io/fs"
 	"net/http"
 	"time"
@@ -8,6 +9,9 @@ import (
 	"jellybar/md"
 	"jellybar/obj"
 
+	"jellybar/db"
+
+	"github.com/HazelnutParadise/Go-Utils/conv"
 	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
 	// sveltigo "github.com/nichady/golte"
@@ -86,30 +90,36 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/category", func(ctx *gin.Context) {
+		categories, err := db.GetCategories(db.GetCategoriesOption{
+			PreloadArticles: false,
+		})
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
+		var items []obj.ListItem
+		for i := range *categories {
+			category := (*categories)[i]
+			items = append(items, obj.ListItem{
+				Title:       category.Name,
+				Description: category.Description,
+				Url:         "/category/" + conv.ToString(category.ID),
+				ButtonText:  "查看",
+				Icon:        "📚",
+			})
+		}
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType":    "categories",
 				"title":       "類別列表",
 				"description": "test",
-				"items": []obj.ListItem{
-					{
-						Title:       "test",
-						Description: "test",
-						Url:         "test",
-						ButtonText:  "test",
-						Icon:        "test",
-					},
-					{
-						Title:       "test2",
-						Description: "test2",
-						Url:         "test2",
-						ButtonText:  "test",
-					},
-				},
-				"htmlContent": md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
+				"items":       items,
 			},
-		})
+		},
+		)
 	})
 
 	pages.GET("/category/:id", func(ctx *gin.Context) {
