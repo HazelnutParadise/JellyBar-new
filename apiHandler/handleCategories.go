@@ -9,9 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HandleGetCategories(ctx *gin.Context) {
+func HandleGetCategories(ctx *gin.Context, isAdminMode bool) {
 	preloadArticles := ctx.Query("preloadArticles") == "true"
-	onlyPublished := ctx.Query("onlyPublished") == "true"
+	var onlyPublished bool
+	if isAdminMode {
+		onlyPublished = false
+	} else {
+		onlyPublished = true
+	}
 	categories, err := db.GetCategories(db.GetCategoriesOption{
 		PreloadArticles: preloadArticles,
 		OnlyPublished:   onlyPublished,
