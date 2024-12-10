@@ -2,6 +2,20 @@ package db
 
 import "jellybar/obj"
 
+func GetArticleByID(articleID uint, onlyPublished bool) (*obj.Article, error) {
+	var articles []obj.Article
+	var err error
+	if onlyPublished {
+		err = database.Preload("Category").Where("id = ? AND status = ?", articleID, "publish").Find(&articles).Error
+	} else {
+		err = database.Preload("Category").Where("id = ?", articleID).Find(&articles).Error
+	}
+	if err != nil || len(articles) == 0 {
+		return nil, err
+	}
+	return &articles[0], nil
+}
+
 func GetArticles(categoryId string, onlyPublished bool) (*[]obj.Article, error) {
 	var articles []obj.Article
 	var err error

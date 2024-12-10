@@ -7,6 +7,20 @@ type GetCategoriesOption struct {
 	OnlyPublished   bool
 }
 
+func GetCategoryByID(id uint, onlyPublishedArticles bool) (*obj.Category, error) {
+	categories := []obj.Category{}
+	var err error
+	if onlyPublishedArticles {
+		err = database.Preload("Articles", "status = ?", "publish").Find(&categories, id).Error
+	} else {
+		err = database.Preload("Articles").Find(&categories, id).Error
+	}
+	if err != nil || len(categories) == 0 {
+		return nil, err
+	}
+	return &categories[0], nil
+}
+
 func GetCategories(option GetCategoriesOption) (*[]obj.Category, error) {
 	var categories []obj.Category
 	var err error

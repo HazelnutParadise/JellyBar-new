@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"time"
 
-	"jellybar/md"
 	"jellybar/obj"
 
 	"jellybar/db"
@@ -60,21 +58,24 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/article/:id", func(ctx *gin.Context) {
+		id := uint(conv.ParseInt(ctx.Param("id")))
+		article, err := db.GetArticleByID(id, true)
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		if article == nil {
+			ctx.AbortWithStatus(http.StatusNotFound)
+			return
+		}
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
 			"siteName": siteName,
-			"article": obj.Article{
-				Title:       "testjkjkknknknknkmnmknkmnmnjmnmnmnmnmnmnmnjbhjbjefbcjebnfjebnfjewnejcejcnjencnjencjencejjncnecejcnejnncejncjncjenej",
-				Description: "testDescriptionlłlll	lłll	llllllllllllllknkjnknknknknknknknknknkn",
-				PublishAt:   time.Now(),
-				UpdateAt:    time.Now(),
-				Content:     md.Parse("<h1>test</h1>\n<p>test</p>\n# markdown h1\n## markdown h2\n### markdown h3\n#### markdown h4\n##### markdown h5\n###### markdown h6\n```python\nprint(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")print(\"test\")\n```\n<li>test</li>\n<style>\n\th1 {\n\t\tcolor: red;\n\t}\n</style>"),
-			},
-			"category": obj.Category{
-				Name: "testCategory",
-			},
-			"author": obj.Author{
+			"article":  article,
+			"category": article.Category,
+			"author": obj.Author{ //TODO
 				Name: "testAuthor",
 			},
+			//sidebar
 			"categories": []obj.Category{
 				{
 					Name: "testCategory",
@@ -113,8 +114,8 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 			"siteName": siteName,
 			"data": map[string]any{
 				"pageType":    "categories",
-				"title":       "類別列表",
-				"description": "test",
+				"title":       "文章分類",
+				"description": "這裡列出了本站所有文章類別，挑一個來看看吧！",
 				"items":       items,
 			},
 		},
@@ -122,19 +123,35 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/category/:id", func(ctx *gin.Context) {
+		categoryID := uint(conv.ParseInt(ctx.Param("id")))
+		category, err := db.GetCategoryByID(categoryID, true)
+		if err != nil {
+			fmt.Println(err)
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		if category == nil {
+			ctx.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+		var items []obj.ListItem
+		for i := range category.Articles {
+			article := category.Articles[i]
+			items = append(items, obj.ListItem{
+				Title:       article.Title,
+				Description: article.Description,
+				Url:         "/article/" + conv.ToString(article.ID),
+				ButtonText:  "查看",
+				Icon:        "🗒️",
+			})
+		}
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/PageWithList", map[string]any{
 			"siteName": siteName,
 			"data": map[string]any{
-				"pageType": "category",
-				"title":    "文章分類",
-				"items": []obj.ListItem{
-					{
-						Title:       "test",
-						Description: "test",
-						Url:         "test",
-						ButtonText:  "test",
-					},
-				},
+				"pageType":    "category",
+				"title":       "[類別] " + category.Name,
+				"description": category.Description,
+				"items":       items,
 			},
 		})
 	})
