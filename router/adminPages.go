@@ -10,7 +10,6 @@ import (
 
 	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
-	// sveltigo "github.com/nichady/golte"
 )
 
 func defineAdminPages(r *gin.RouterGroup, siteName string) {
