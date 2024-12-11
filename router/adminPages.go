@@ -48,6 +48,7 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			"siteName":   siteName,
 			"title":      "新增文章",
 			"categories": categories,
+			"isNew":      true,
 		})
 	})
 

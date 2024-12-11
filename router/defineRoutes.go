@@ -73,9 +73,7 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 			"siteName": siteName,
 			"article":  article,
 			"category": article.Category,
-			"author": obj.Author{ //TODO
-				Name: "testAuthor",
-			},
+			"author":   article.Author,
 			//sidebar
 			"categories": []obj.Category{
 				{

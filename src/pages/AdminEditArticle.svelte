@@ -11,6 +11,7 @@
     export let thisArticle: Article
     setTitle(title, siteName)
 
+    export let isNew = false
     let nowAuthorId = 2 // 需從後端取得
 
     // TODO: 檢查文章是否已經修改過
@@ -159,6 +160,9 @@
             }
 
             alert(resultJson.message)
+            if (isNew) {
+                location.href = `/admin/articles`
+            }
         } catch (error) {
             alert('儲存失敗：' + error.message)
         }

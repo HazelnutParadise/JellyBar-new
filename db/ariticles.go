@@ -1,14 +1,17 @@
 package db
 
-import "jellybar/obj"
+import (
+	"jellybar/obj"
+	"time"
+)
 
 func GetArticleByID(articleID uint, onlyPublished bool) (*obj.Article, error) {
 	var articles []obj.Article
 	var err error
 	if onlyPublished {
-		err = database.Preload("Category").Where("id = ? AND status = ?", articleID, "publish").Find(&articles).Error
+		err = database.Preload("Category").Preload("Author").Where("id = ? AND status = ?", articleID, "publish").Find(&articles).Error
 	} else {
-		err = database.Preload("Category").Where("id = ?", articleID).Find(&articles).Error
+		err = database.Preload("Category").Preload("Author").Where("id = ?", articleID).Find(&articles).Error
 	}
 	if err != nil || len(articles) == 0 {
 		return nil, err
@@ -36,6 +39,8 @@ func GetArticles(categoryId string, onlyPublished bool) (*[]obj.Article, error) 
 }
 
 func AddArticle(article *obj.Article) error {
+	article.PublishAt = time.Now()
+	article.UpdateAt = time.Now()
 	err := database.Create(article).Error
 	return err
 }
