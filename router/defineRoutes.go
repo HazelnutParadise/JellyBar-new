@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"strconv"
 
 	"jellybar/obj"
 
@@ -58,7 +59,13 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/article/:id", func(ctx *gin.Context) {
-		id := uint(conv.ParseInt(ctx.Param("id")))
+		idInt, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			ctx.Request.URL.Path = "/not_found"
+			r.HandleContext(ctx)
+			return
+		}
+		id := uint(conv.ParseInt(idInt))
 		article, err := db.GetArticleByID(id, true)
 		if err != nil {
 			ctx.AbortWithStatus(http.StatusInternalServerError)
@@ -122,7 +129,13 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 	})
 
 	pages.GET("/category/:id", func(ctx *gin.Context) {
-		categoryID := uint(conv.ParseInt(ctx.Param("id")))
+		idInt, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			ctx.Request.URL.Path = "/not_found"
+			r.HandleContext(ctx)
+			return
+		}
+		categoryID := uint(conv.ParseInt(idInt))
 		category, err := db.GetCategoryByID(categoryID, true)
 		if err != nil {
 			fmt.Println(err)
@@ -130,7 +143,8 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 			return
 		}
 		if category == nil {
-			ctx.AbortWithStatus(http.StatusNotFound)
+			ctx.Request.URL.Path = "/not_found"
+			r.HandleContext(ctx)
 			return
 		}
 		var items []obj.ListItem
