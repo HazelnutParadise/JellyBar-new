@@ -2,7 +2,7 @@
     import '../lib/declares'
     import setTitle from '../lib/setTitle'
     import VditorEditor from '../components/VditorEditor.svelte'
-    import { onMount } from 'svelte'
+    import { onMount, onDestroy } from 'svelte'
     import { Article } from '../types/article'
     import type { Category } from '../types/category'
 
@@ -16,6 +16,20 @@
 
     // TODO: 檢查文章是否已經修改過
     let hasChanged = false
+    let oldContent = {}
+    // 檢查是否有修改
+    $: {
+        hasChanged = article !== oldContent
+    }
+    
+    function onBeforeUnload(e) {
+        if (hasChanged) {
+            e.preventDefault()
+            return (e.returnValue = '')
+        } else {
+            return
+        }
+    }
 
     // 文章狀態選項
     const statusOptions = [
@@ -38,7 +52,6 @@
         status: thisArticle?.status || 'draft',
     }
 
-
     // 預設分類列表
     export let categories: Category[]
 
@@ -55,19 +68,22 @@
     onMount(() => {
         // 選擇分類
         function selectCategory(category: Category) {
-            article.category = category;
-            article.categoryId = category.id;
-            searchTerm = category.name;
-            showDropdown = false;
+            article.category = category
+            article.categoryId = category.id
+            searchTerm = category.name
+            showDropdown = false
         }
 
         // 新增分類
         function addNewCategory() {
             const newCategoryName = searchTerm.trim()
-            if (newCategoryName && !categories.some(cat => cat.name === newCategoryName)) {
+            if (
+                newCategoryName &&
+                !categories.some((cat) => cat.name === newCategoryName)
+            ) {
                 const newCategory: Category = {
                     id: Date.now(), // 臨時 ID，實際應該由後端產生
-                    name: newCategoryName
+                    name: newCategoryName,
                 }
                 categories = [...categories, newCategory]
                 selectCategory(newCategory)
@@ -76,10 +92,10 @@
 
         // 清除選擇的分類
         function clearCategory() {
-            article.category = null;
-            article.categoryId = null;
-            searchTerm = '';
-            showDropdown = false;
+            article.category = null
+            article.categoryId = null
+            searchTerm = ''
+            showDropdown = false
         }
 
         // 點擊外部時關閉下拉選單
@@ -93,7 +109,7 @@
         if (article.category) {
             selectCategory(article.category)
         }
-        
+
         document.addEventListener('click', handleClickOutside)
         return () => {
             document.removeEventListener('click', handleClickOutside)
@@ -141,25 +157,32 @@
             authorId: nowAuthorId,
             description: article.description,
             media: article.media,
-            status: article.status
+            status: article.status,
         }
 
         try {
-            const result = await fetch('/api/admin/article', {
-                method: 'POST',
+            let url = isNew
+                ? '/api/admin/article'
+                : `/api/admin/article/${article.id}`
+            let method = isNew ? 'POST' : 'PUT'
+            const result = await fetch(url, {
+                method: method,
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(submitData)
+                body: JSON.stringify(submitData),
             })
 
             const resultJson = await result.json()
 
             if (!result.ok) {
-                throw new Error(`HTTP error! status: ${result.status}, ${resultJson.message}`)
+                throw new Error(
+                    `HTTP error! status: ${result.status}, ${resultJson.message}`,
+                )
             }
 
             alert(resultJson.message)
+            oldContent = article
             if (isNew) {
                 location.href = `/admin/articles`
             }
@@ -456,6 +479,7 @@
     }
 </style>
 
+<svelte:window  on:beforeunload={onBeforeUnload} />
 <div class="page-wrapper">
     <div class="admin-layout">
         <div class="main-content">
@@ -545,7 +569,8 @@
                                 <li>
                                     <button
                                         class="dropdown-item"
-                                        class:active={category.id === article.category?.id}
+                                        class:active={category.id ===
+                                            article.category?.id}
                                         on:click|stopPropagation={() => {
                                             article.category = category
                                             searchTerm = category.name
@@ -558,21 +583,26 @@
                                 </li>
                             {/each}
 
-                            {#if searchTerm && !categories.some(cat => cat.name === searchTerm)}
+                            {#if searchTerm && !categories.some((cat) => cat.name === searchTerm)}
                                 <li>
                                     <button
                                         class="dropdown-item new-item"
                                         on:click|stopPropagation={() => {
-                                            const newCategoryName = searchTerm.trim();
+                                            const newCategoryName =
+                                                searchTerm.trim()
                                             if (newCategoryName) {
                                                 const newCategory = {
                                                     id: Date.now(),
-                                                    name: newCategoryName
-                                                };
-                                                categories = [...categories, newCategory];
-                                                article.category = newCategory;
-                                                article.categoryId = newCategory.id;
-                                                showDropdown = false;
+                                                    name: newCategoryName,
+                                                }
+                                                categories = [
+                                                    ...categories,
+                                                    newCategory,
+                                                ]
+                                                article.category = newCategory
+                                                article.categoryId =
+                                                    newCategory.id
+                                                showDropdown = false
                                             }
                                         }}
                                     >
