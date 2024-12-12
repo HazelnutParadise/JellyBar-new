@@ -51,7 +51,7 @@
 
             vditor = new window.Vditor('vditor', {
                 height,
-                mode: 'wysiwyg',
+                mode: 'ir',
                 toolbar: [
                     'emoji',
                     'headings',
@@ -72,7 +72,6 @@
                     'table',
                     '|',
                     'preview',
-                    'fullscreen',
                     'outline',
                     'help',
                 ],
@@ -136,20 +135,21 @@
         padding: 5px;
     }
 
-    :global(.vditor-toolbar button) {
+    /* :global(.vditor-toolbar button) {
         all: unset;
         cursor: pointer;
         padding: 6px !important;
         margin: 0 2px !important;
         border-radius: 3px !important;
         display: inline-flex !important;
+        flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         width: 28px !important;
         height: 28px !important;
         box-sizing: border-box !important;
         position: relative !important;
-    }
+    } */
 
     :global(.vditor-toolbar button:hover) {
         background-color: #e1e4e8 !important;
