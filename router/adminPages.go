@@ -93,4 +93,11 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			"users":    users,
 		})
 	})
+
+	r.GET("/my-author-page", func(ctx *gin.Context) {
+		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/MyAuthorPage", map[string]any{
+			// "siteName": siteName,
+			// "title":    "作者資料",
+		})
+	})
 }

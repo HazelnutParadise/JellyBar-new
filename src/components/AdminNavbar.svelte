@@ -15,7 +15,7 @@
 
     // 用戶選單項目
     const userMenuItems = [
-        { label: '我的作者資訊', icon: 'fa-user', href: '/admin/profile' },
+        { label: '我的作者資訊', icon: 'fa-user', href: '/admin/my-author-page' },
         { label: '返回前台', icon: 'fa-home', href: '/' },
         { label: '登出', icon: 'fa-sign-out-alt', href: '/logout' },
     ]
