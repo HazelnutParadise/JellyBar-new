@@ -183,6 +183,7 @@
 
             alert(resultJson.message)
             oldContent = article
+            hasChanged = false
             if (isNew) {
                 location.href = `/admin/articles`
             }

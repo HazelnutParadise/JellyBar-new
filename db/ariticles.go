@@ -44,3 +44,8 @@ func AddArticle(article *obj.Article) error {
 	err := database.Create(article).Error
 	return err
 }
+
+func DeleteArticle(id string) error {
+	err := database.Where("id = ?", id).Delete(&obj.Article{}).Error
+	return err
+}

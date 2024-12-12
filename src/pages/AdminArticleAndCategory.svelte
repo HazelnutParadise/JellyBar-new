@@ -396,16 +396,17 @@
 
         try {
             // 發送刪除請求到後端 API
-            const response = await fetch(`/api/articles/${articleId}`, {
+            const response = await fetch(`/api/admin/article/${articleId}`, {
                 method: 'DELETE',
             })
 
-            if (!response.ok) {
-                throw new Error('刪除文章失敗')
-            }
+            const responseJson = await response.json()
 
+            if (!response.ok) {
+                throw new Error(responseJson.message || '刪除文章失敗')
+            }
+            alert(responseJson.message)
             await reloadData() // 重新載入資料
-            alert('文章已成功刪除！')
         } catch (error) {
             console.error('刪除文章時發生錯誤:', error)
             alert('刪除文章失敗：' + error.message)

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"jellybar/md"
 	"jellybar/obj"
 
 	"jellybar/db"
@@ -76,6 +77,8 @@ func defineRoutes(r *gin.Engine, siteName string, assets *fs.FS, logoBase64 *str
 			r.HandleContext(ctx)
 			return
 		}
+
+		article.Content = md.Parse(article.Content)
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/Article", map[string]any{
 			"siteName": siteName,
 			"article":  article,
