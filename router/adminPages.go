@@ -3,10 +3,8 @@ package router
 import (
 	"fmt"
 	"jellybar/db"
-	"jellybar/obj"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/HazelnutParadise/sveltigo"
 	"github.com/gin-gonic/gin"
@@ -58,26 +56,29 @@ func defineAdminPages(r *gin.RouterGroup, siteName string) {
 			ctx.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
-
-		thisArticle := obj.Article{
-			ID:          uint(idInt),
-			Title:       "Title",
-			Content:     "Content",
-			Description: "Description",
-			Status:      "draft",
-			PublishAt:   time.Now(),
-			UpdateAt:    time.Now(),
-			Category: obj.Category{
-				ID:   0,
-				Name: "Category",
-			},
-			Media: []string{},
+		article, err := db.GetArticleByID(uint(idInt), false)
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		if article == nil {
+			ctx.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+		categories, err := db.GetCategories(db.GetCategoriesOption{
+			PreloadArticles: false,
+		})
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusBadRequest)
+			return
 		}
 
 		sveltigo.RenderPage(ctx.Writer, ctx.Request, "pages/AdminEditArticle", map[string]any{
 			"siteName":    siteName,
 			"title":       "編輯文章",
-			"thisArticle": thisArticle,
+			"thisArticle": article,
+			"categories":  categories,
+			"isNew":       false,
 		})
 	})
 

@@ -45,6 +45,12 @@ func AddArticle(article *obj.Article) error {
 	return err
 }
 
+func UpdateArticle(id string, article *obj.Article) error {
+	article.UpdateAt = time.Now()
+	err := database.Model(&obj.Article{}).Where("id = ?", id).Updates(article).Error
+	return err
+}
+
 func DeleteArticle(id string) error {
 	err := database.Where("id = ?", id).Delete(&obj.Article{}).Error
 	return err

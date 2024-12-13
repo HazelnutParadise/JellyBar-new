@@ -31,7 +31,19 @@ func HandleAddArticle(c *gin.Context) {
 	utils.FastJSON(c, 200, gin.H{"message": "新增文章成功"})
 }
 
-func HandleUpdateArticle(c *gin.Context) {}
+func HandleUpdateArticle(c *gin.Context) {
+	id := c.Param("id")
+	var article obj.Article
+	if err := utils.FastShouldBindJSON(c, &article); err != nil {
+		utils.FastJSON(c, 400, gin.H{"message": "更新文章失敗\n" + err.Error()})
+		return
+	}
+	if err := db.UpdateArticle(id, &article); err != nil {
+		utils.FastJSON(c, 500, gin.H{"message": "更新文章失敗\n" + err.Error()})
+		return
+	}
+	utils.FastJSON(c, 200, gin.H{"message": "更新文章成功"})
+}
 
 func HandleDeleteArticle(c *gin.Context) {
 	id := c.Param("id")

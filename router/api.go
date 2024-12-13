@@ -30,5 +30,6 @@ func defineAdminApi(r *gin.RouterGroup) {
 		apiHandler.HandleGetArticles(c, false)
 	})
 	r.POST("/article", apiHandler.HandleAddArticle)
+	r.PUT("/article/:id", apiHandler.HandleUpdateArticle)
 	r.DELETE("/article/:id", apiHandler.HandleDeleteArticle)
 }
