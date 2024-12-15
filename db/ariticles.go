@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"jellybar/obj"
 	"time"
 )
@@ -41,8 +42,46 @@ func GetArticles(categoryId string, onlyPublished bool) (*[]obj.Article, error) 
 func AddArticle(article *obj.Article) error {
 	article.PublishAt = time.Now()
 	article.UpdateAt = time.Now()
-	err := database.Create(article).Error
-	return err
+
+	tx := database.Begin()
+	var err error
+
+	if article.CategoryID == 0 {
+		newCate := obj.Category{
+			Name: article.Category.Name,
+		}
+		// 新增類別
+		if err = tx.Create(&newCate).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("create category error: %v", err)
+		}
+
+		// 取得新類別 ID
+		var createdCategory obj.Category
+		if err = tx.Where("name = ?", newCate.Name).First(&createdCategory).Error; err != nil {
+			tx.Rollback()
+			return fmt.Errorf("find category error: %v", err)
+		}
+
+		article.CategoryID = createdCategory.ID
+		fmt.Printf("設置文章類別 ID: %d\n", article.CategoryID)
+	}
+	newArticle := obj.Article{
+		Title:      article.Title,
+		Content:    article.Content,
+		CategoryID: article.CategoryID,
+		AuthorID:   article.AuthorID,
+		Status:     article.Status,
+		PublishAt:  article.PublishAt,
+		UpdateAt:   article.UpdateAt,
+	}
+	// 新增文章
+	if err = tx.Create(&newArticle).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("create article error: %v", err)
+	}
+
+	return tx.Commit().Error
 }
 
 func UpdateArticle(id string, article *obj.Article) error {

@@ -74,21 +74,6 @@
             showDropdown = false
         }
 
-        // 新增分類
-        function addNewCategory() {
-            const newCategoryName = searchTerm.trim()
-            if (
-                newCategoryName &&
-                !categories.some((cat) => cat.name === newCategoryName)
-            ) {
-                const newCategory: Category = {
-                    id: Date.now(), // 臨時 ID，實際應該由後端產生
-                    name: newCategoryName,
-                }
-                categories = [...categories, newCategory]
-                selectCategory(newCategory)
-            }
-        }
 
         // 清除選擇的分類
         function clearCategory() {
@@ -154,6 +139,7 @@
             title: article.title,
             content: article.content,
             categoryId: article.category?.id,
+            category: article.category,
             authorId: nowAuthorId,
             description: article.description,
             media: article.media,
@@ -593,7 +579,7 @@
                                                 searchTerm.trim()
                                             if (newCategoryName) {
                                                 const newCategory = {
-                                                    id: Date.now(),
+                                                    id: 0,
                                                     name: newCategoryName,
                                                 }
                                                 categories = [
